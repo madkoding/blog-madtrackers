@@ -1,13 +1,13 @@
 ---
 title: "Que es el Drift?"
 excerpt: "Imagina que tienes una brújula digital en tu mano que te indica hacia dónde estás mirando. Con el tiempo, sin que te muevas, empieza a señalar en otra dirección. Esto sucede con ciertos **trackers**."
-coverImage: "/assets/blog/preview/cover.jpg"
+coverImage: "/assets/blog/preview/drift.jpg"
 date: "2024-07-06T22:40:07.322Z"
 author:
   name: madKoding
   picture: "/assets/blog/authors/madkoding.jpg"
 ogImage:
-  url: "/assets/blog/preview/cover.jpg"
+  url: "/assets/blog/preview/drift.jpg"
 ---
 # Que es el Drift?
 

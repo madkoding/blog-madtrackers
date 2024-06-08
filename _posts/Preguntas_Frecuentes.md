@@ -1,13 +1,13 @@
 ---
 title: "Preguntas Frecuentes"
 excerpt: "La mayor parte de las preguntas frecuentes que los usuarios realizan con respecto a los trackers."
-coverImage: "/assets/blog/preview/cover.jpg"
+coverImage: "/assets/blog/preview/faq.jpg"
 date: "2024-07-06T22:40:07.322Z"
 author:
   name: madKoding
   picture: "/assets/blog/authors/madkoding.jpg"
 ogImage:
-  url: "/assets/blog/preview/cover.jpg"
+  url: "/assets/blog/preview/faq.jpg"
 ---
 # Preguntas Frecuentes
 

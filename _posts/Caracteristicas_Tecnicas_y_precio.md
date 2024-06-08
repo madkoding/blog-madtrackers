@@ -1,13 +1,13 @@
 ---
 title: "Características Técnicas y precio"
 excerpt: "Como mínimo el paquete consta de 6 trackers que aseguran un buen manejo de posición y movimiento. Revisa los detalles."
-coverImage: "https://images.unsplash.com/photo-1560165143-fa7e2d9e594c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=3600"
+coverImage: "/assets/blog/preview/tecnico.jpg"
 date: "2024-07-06T22:40:07.322Z"
 author:
   name: madKoding
   picture: "/assets/blog/authors/madkoding.jpg"
 ogImage:
-  url: "https://images.unsplash.com/photo-1560165143-fa7e2d9e594c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=3600"
+  url: "/assets/blog/preview/tecnico.jpg"
 ---
 Como mínimo el paquete consta de 6 trackers que aseguran un buen manejo de posición y movimiento. A continuación las diferencias entre los dos paquetes que existen
 

@@ -1,13 +1,13 @@
 ---
 title: "Calibración de trackers"
 excerpt: "Todos los pasos iniciales para configurar y calibrar tus trackers de manera adecuada."
-coverImage: "/assets/blog/preview/cover.jpg"
+coverImage: "/assets/blog/preview/calibracion.jpg"
 date: "2024-07-06T22:40:07.322Z"
 author:
   name: madKoding
   picture: "/assets/blog/authors/madkoding.jpg"
 ogImage:
-  url: "/assets/blog/preview/cover.jpg"
+  url: "/assets/blog/preview/calibracion.jpg"
 ---
 ### Pasos para la Calibración
 

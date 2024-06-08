@@ -1,13 +1,13 @@
 ---
 title: "Configuración de Reinicio (Reset)"
 excerpt: "Los reinicios son una de las características más esenciales para configurar y obtener una experiencia mejorada, permitiéndote reiniciar en cuestión de segundos o menos. En esta guía, te mostraremos cómo configurarlos."
-coverImage: "/assets/blog/preview/cover.jpg"
+coverImage: "/assets/blog/preview/reset.jpg"
 date: "2024-07-06T22:40:07.322Z"
 author:
   name: madKoding
   picture: "/assets/blog/authors/madkoding.jpg"
 ogImage:
-  url: "/assets/blog/preview/cover.jpg"
+  url: "/assets/blog/preview/reset.jpg"
 ---
 # Configuración de Reinicio (Reset)
 
