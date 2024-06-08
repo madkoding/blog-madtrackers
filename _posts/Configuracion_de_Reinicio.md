@@ -1,3 +1,14 @@
+---
+title: "madTrackers"
+excerpt: "Los trackers inalámbricos son dispositivos que capturan y transmiten la posición del usuario en tiempo real a un servidor en su PC mediante una conexión WiFi de 2.4 GHz."
+coverImage: "/assets/blog/preview/cover.jpg"
+date: "2024-07-06T22:40:07.322Z"
+author:
+  name: madKoding
+  picture: "/assets/blog/authors/madkoding.jpg"
+ogImage:
+  url: "/assets/blog/preview/cover.jpg"
+---
 # Configuración de Reinicio (Reset)
 
 Los reinicios son una de las características más esenciales para configurar y obtener una experiencia mejorada, permitiéndote reiniciar en cuestión de segundos o menos. En esta guía, te mostraremos cómo configurarlos.

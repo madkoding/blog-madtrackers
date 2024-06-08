@@ -1,3 +1,14 @@
+---
+title: "madTrackers"
+excerpt: "Los trackers inalámbricos son dispositivos que capturan y transmiten la posición del usuario en tiempo real a un servidor en su PC mediante una conexión WiFi de 2.4 GHz."
+coverImage: "/assets/blog/preview/cover.jpg"
+date: "2024-07-06T22:40:07.322Z"
+author:
+  name: madKoding
+  picture: "/assets/blog/authors/madkoding.jpg"
+ogImage:
+  url: "/assets/blog/preview/cover.jpg"
+---
 # Servidor NodeJS para lectura OSC
 
 Para crear un servidor en Node.js que pueda capturar la posición de tus trackers SlimeVR a través de OSC (Open Sound Control), necesitarás instalar algunas dependencias y configurar tu servidor para recibir los datos OSC. A continuación, te proporciono un ejemplo completo de cómo hacerlo.

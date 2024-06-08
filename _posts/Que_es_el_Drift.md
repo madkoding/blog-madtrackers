@@ -1,3 +1,14 @@
+---
+title: "madTrackers"
+excerpt: "Los trackers inalámbricos son dispositivos que capturan y transmiten la posición del usuario en tiempo real a un servidor en su PC mediante una conexión WiFi de 2.4 GHz."
+coverImage: "/assets/blog/preview/cover.jpg"
+date: "2024-07-06T22:40:07.322Z"
+author:
+  name: madKoding
+  picture: "/assets/blog/authors/madkoding.jpg"
+ogImage:
+  url: "/assets/blog/preview/cover.jpg"
+---
 # Que es el Drift?
 
 Imagina que tienes una brújula digital en tu mano que te indica hacia dónde estás mirando. Con el tiempo, sin que te muevas, empieza a señalar en otra dirección. Esto sucede con ciertos **trackers**, los cuales nos ayudan a saber en qué posición o dirección estamos, pero sin necesitar de cámaras o puntos de referencia externos.

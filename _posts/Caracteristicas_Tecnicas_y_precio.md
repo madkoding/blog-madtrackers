@@ -1,3 +1,14 @@
+---
+title: "madTrackers"
+excerpt: "Los trackers inalámbricos son dispositivos que capturan y transmiten la posición del usuario en tiempo real a un servidor en su PC mediante una conexión WiFi de 2.4 GHz."
+coverImage: "/assets/blog/preview/cover.jpg"
+date: "2024-07-06T22:40:07.322Z"
+author:
+  name: madKoding
+  picture: "/assets/blog/authors/madkoding.jpg"
+ogImage:
+  url: "/assets/blog/preview/cover.jpg"
+---
 # Características Técnicas y precio
 
 Como mínimo el paquete consta de 6 trackers que aseguran un buen manejo de posición y movimiento. A continuación las diferencias entre los dos paquetes que existen
