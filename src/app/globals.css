@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .img-custom {
+    @apply rounded-[20px] shadow-lg;
+  }
+}
+
+/* Aplica los estilos a todas las imágenes */
+img {
+  @apply img-custom;
+}
