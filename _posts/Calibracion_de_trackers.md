@@ -44,4 +44,4 @@ Monitoriza el servidor SlimeVR para confirmar que cada posición es detectada y 
 
 Una vez que todas las orientaciones sean procesadas por el servidor, la calibración estará completa.
 
-[← Volver a los madTrackers](../madTrackers%20d7f09ef5cfec4b69b2be9524e493e13d.md)
+[← Volver a los madTrackers](/_posts/home.md)

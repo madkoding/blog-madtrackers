@@ -48,4 +48,4 @@ ogImage:
 
 ![Untitled](Configuracio%CC%81n%20Inicial%20babb979ee7d3407ab10bea490158cb43/Untitled%203.png)
 
-[← Volver a los madTrackers](../madTrackers%20d7f09ef5cfec4b69b2be9524e493e13d.md)
+[← Volver a los madTrackers](/_posts/home.md)

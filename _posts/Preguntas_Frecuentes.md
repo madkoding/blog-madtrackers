@@ -56,4 +56,4 @@ ogImage:
     > No es necesario tener habilidades técnicas avanzadas para el mantenimiento básico o la solución de problemas de los dispositivos SlimeVR. La comunidad de SlimeVR y los desarrolladores proporcionan una amplia gama de recursos, incluidos manuales de usuario, FAQs, y foros de soporte donde puedes obtener ayuda. Además, muchas soluciones a problemas comunes son sencillas y están bien documentadas.
     > 
 
-[← Volver a los madTrackers](../madTrackers%20d7f09ef5cfec4b69b2be9524e493e13d.md)
+[← Volver a los madTrackers](/_posts/home.md)
