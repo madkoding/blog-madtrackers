@@ -29,14 +29,7 @@ const Alert = ({ preview }: Props) => {
             </>
           ) : (
             <>
-              The source code for this blog is{" "}
-              <a
-                href={`https://github.com/vercel/next.js/tree/canary/examples/${EXAMPLE_PATH}`}
-                className="underline hover:text-blue-600 duration-200 transition-colors"
-              >
-                available on GitHub
-              </a>
-              .
+              La fabricación de un SlimeVR toma al rededor de 2 meses. Se debe realizar un abono de 50% no reembolsable para unirse a la cola de producción.
             </>
           )}
         </div>
