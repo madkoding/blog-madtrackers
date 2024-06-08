@@ -9,8 +9,6 @@ author:
 ogImage:
   url: "/assets/blog/preview/cover.jpg"
 ---
-# madTrackers
-
 ### **Funcionamiento y Configuración de los Trackers Inalámbricos**
 
 Los trackers SlimeVR inalámbricos son dispositivos que capturan y transmiten la posición del usuario en tiempo real a un servidor en su PC mediante una conexión WiFi de 2.4 GHz. Estos dispositivos están equipados con tecnología de seguimiento avanzada, incluidos un acelerómetro y un giroscopio, para garantizar una captura precisa de los movimientos en el espacio. Estos trackers utilizan el software de SlimeVR para funcionar.

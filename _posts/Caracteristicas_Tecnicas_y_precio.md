@@ -9,8 +9,6 @@ author:
 ogImage:
   url: "/assets/blog/preview/cover.jpg"
 ---
-# Características Técnicas y precio
-
 Como mínimo el paquete consta de 6 trackers que aseguran un buen manejo de posición y movimiento. A continuación las diferencias entre los dos paquetes que existen
 
 | Características | Trackers Económicos | Trackers Normales |

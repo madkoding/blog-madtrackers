@@ -9,8 +9,6 @@ author:
 ogImage:
   url: "/assets/blog/preview/cover.jpg"
 ---
-# Calibración de trackers
-
 ### Pasos para la Calibración
 
 ### 1. Precalentamiento
