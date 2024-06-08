@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: `madTrackers`,
   description: `Trackers SlimeVR por fan de VRChat para fans de VRChat.`,
   openGraph: {
-    images: [HOME_OG_IMAGE_URL],
+    images: ["https://www.madtrackers.com/assets/blog/preview/cover.jpg"],
   },
 };
 
