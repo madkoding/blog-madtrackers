@@ -24,4 +24,4 @@ Como mínimo el paquete consta de 6 trackers que aseguran un buen manejo de posi
 | Precio | $180.000= | $375.000= |
 | Tamaño aproximado | 100mm x 30mm | 100mm x 30mm |
 
-[← Volver a los madTrackers](/_posts/home.md)
+[← Volver a los madTrackers](/)

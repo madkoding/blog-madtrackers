@@ -19,4 +19,4 @@ El tipo de trackers económicos normalmente comienza a desviarse después de uno
 
 ⚠️ Tienes que tener mucho ojo si te intentan ofrecer trackers muy económicos, porque pueden venir con chips donde el desvío puede darse apenas a los 5 minutos!
 
-[← Volver a los madTrackers](/_posts/home.md)
+[← Volver a los madTrackers](/)

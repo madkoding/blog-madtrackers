@@ -34,4 +34,4 @@ Un **reinicio estándar** se utiliza para restaurar completamente tu modelo de e
 
 Un **reinicio rápido** solo restablece/corrige cualquier desviación potencial en un eje. Aunque es menos preciso, esto te permite reiniciar mientras estás sentado o acostado. Se recomienda enderezar tus extremidades y mirar hacia adelante al hacer esto para obtener resultados óptimos. Este método hace posible no tener que levantarte cada vez que necesites reiniciar.
 
-[← Volver a los madTrackers](/_posts/home.md)
+[← Volver a los madTrackers](/)

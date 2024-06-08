@@ -15,15 +15,15 @@ ogImage:
 
 Los trackers inalámbricos son dispositivos que capturan y transmiten la posición del usuario en tiempo real a un servidor en su PC mediante una conexión WiFi de 2.4 GHz. Estos dispositivos están equipados con tecnología de seguimiento avanzada, incluidos un acelerómetro y un giroscopio, para garantizar una captura precisa de los movimientos en el espacio. Estos trackers utilizan el software de SlimeVR para funcionar.
 
-[**Características Técnicas y precio**](/_posts/Caracteristicas_Tecnicas_y_precio.md)
+[**Características Técnicas y precio**](/posts/Caracteristicas_Tecnicas_y_precio)
 
-[**Configuración Inicial**](/_posts/Configuracion_Inicial.md)
+[**Configuración Inicial**](/posts/Configuracion_Inicial)
 
-[Calibración de trackers](/_posts/Calibracion_de_trackers.md)
+[Calibración de trackers](/posts/Calibracion_de_trackers)
 
-[Configuración de Reinicio (Reset)](/_posts/Configuracion_de_Reinicio.md)
+[Configuración de Reinicio (Reset)](/posts/Configuracion_de_Reinicio)
 
-[Que es el Drift?](/_posts/Que_es_el_Drift.md)
+[Que es el Drift?](/posts/Que_es_el_Drift)
 
-[Preguntas Frecuentes](/_posts/Preguntas_Frecuentes.md)
+[Preguntas Frecuentes](/posts/Preguntas_Frecuentes)
 
