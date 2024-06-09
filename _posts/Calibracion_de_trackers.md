@@ -32,19 +32,24 @@ Conecta los trackers al servidor SlimeVR y verifica que todos los dispositivos e
 - En la consola aparecerán distintos mensajes en el siguiente orden
     
     - `Flip front in 5 seconds to start calibration`
+
     da vuelta el tracker boca arriba
     
     - `Starting calibration…`
+
     En este momento comenzará la calibración del tracker, vuelve a poner el tracker boca abajo por 5 segundos
     
     - `Put the device into 6 unique orientations (all sides), leave it still and do not hold/touch for 3 seconds each`
     `Waiting for position 1`
+
     Déjalo boca abajo como estaba  por 3 segundos mas hasta que pida la segunda posición, recuerda no sostenerlo en la mano ni tocarlo, debes hacerlo en una superficie lisa
         
     - `Recorded, waiting for position 2...` 
+
     Da vuelta de lado el tracker y espera a los 3 segundos hasta que te pida la siguiente posición y así hasta la 6ta
     
     - `Finished calculating accelerometer calibration` 
+    
     Aquí ya habrá terminado la calibración y guardado las posiciones
 
 [← Volver a los madTrackers](/)
