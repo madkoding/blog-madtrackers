@@ -11,6 +11,8 @@ ogImage:
 ---
 ### Pasos para la Calibración
 
+Los trackers necesitan grabar una primera calibración la primera vez que los inicias, esta calibración luego se guarda en memoria para los siguiente usos. En el calibrado debes considerar el tracker como un dado o un cubo, tendrás que darlo vuelta en sus 6 caras. Sigue atentamente las instrucciones ya que de esto depende que tu tracker funcione de manera adecuada. Si no llegas a estar conforme con el movimiento, reintenta calibrar. 
+
 ### 1. Precalentamiento
 
 Antes de iniciar la calibración, utiliza los trackers durante aproximadamente 10 minutos para asegurar que estén a una temperatura de operación adecuada.
@@ -21,25 +23,28 @@ Conecta los trackers al servidor SlimeVR y verifica que todos los dispositivos e
 
 ### 3. Iniciar la Calibración
 
-Ingresa a cada uno de los sensores en el servidor, y presiona el botón de “Reinicio del sensor” para comenzar el proceso de calibración. (Puedes hacerlo desde la consola serial del servidor ubicada en ajustes→consola serial→utilidades, para tener mas verbosidad)
+- Ingresa a la “Consola serial” de tu servidor SlimeVR, que se encuentra en “Ajustes”
 
-### 4. Posicionamiento del Sensor
+![BotonReset](/calibracion/reset.png)
 
-Desacopla el tracker y colócalo en las siguientes seis orientaciones sobre una mesa, manteniendo cada posición por al menos 5 segundos:
-
-- **Cara hacia arriba**
-- **Cara hacia abajo**
-- **Cara hacia la izquierda**
-- **Cara hacia la derecha**
-- **Cara hacia adelante** (con el logo mirando hacia adelante)
-- **Cara hacia atrás** (con el logo mirando hacia atrás)
-
-### 5. Monitoreo
-
-Monitoriza el servidor SlimeVR para confirmar que cada posición es detectada y calibrada correctamente.
-
-### 6. Finalización
-
-Una vez que todas las orientaciones sean procesadas por el servidor, la calibración estará completa.
+- **Pon tu tracker boca abajo encendido**
+- Presiona el botón “Reiniciar” en la consola serial
+- En la consola aparecerán distintos mensajes en el siguiente orden
+    
+    - `Flip front in 5 seconds to start calibration`
+    da vuelta el tracker boca arriba
+    
+    - `Starting calibration…`
+    En este momento comenzará la calibración del tracker, vuelve a poner el tracker boca abajo por 5 segundos
+    
+    - `Put the device into 6 unique orientations (all sides), leave it still and do not hold/touch for 3 seconds each`
+    `Waiting for position 1`
+    Déjalo boca abajo como estaba  por 3 segundos mas hasta que pida la segunda posición, recuerda no sostenerlo en la mano ni tocarlo, debes hacerlo en una superficie lisa
+        
+    - `Recorded, waiting for position 2...` 
+    Da vuelta de lado el tracker y espera a los 3 segundos hasta que te pida la siguiente posición y así hasta la 6ta
+    
+    - `Finished calculating accelerometer calibration` 
+    Aquí ya habrá terminado la calibración y guardado las posiciones
 
 [← Volver a los madTrackers](/)
