@@ -16,7 +16,7 @@ ogImage:
 - **Descarga e Instalación:** Primero, descarga el [último instalador de SlimeVR desde el sitio web oficial](https://slimevr.dev/download). Ejecuta el instalador y sigue las instrucciones. Si solo vas a usar el servidor para uso independiente a través de OSC y no para realidad virtual en PC a través de SteamVR, puedes desmarcar las opciones de "SteamVR Driver", "SlimeVR Feeder App" y "Controladores USB".
 - **Nota Importante:** Si no tienes SteamVR instalado y ejecutado previamente, es posible que encuentres errores durante la instalación.
 
-![Instalacion](/inicio/paso0.png)
+![Instalacion](/assets/blog/inicio/paso0.png)
 
 **2. Testeo de Trackers:**
 
@@ -35,7 +35,7 @@ ogImage:
 
 - **Con SteamVR:** Inicia SteamVR, ve a "Configuración" > "Gestionar complementos". Verifica si SlimeVR aparece aquí y asegúrate de que esté activado.
 
-![Gestionar complementos SteamVR](/inicio/paso1.png)
+![Gestionar complementos SteamVR](/assets/blog/inicio/paso1.png)
 
 - **Iniciar el Servidor SlimeVR:** Inicia el Servidor SlimeVR a través del menú de inicio usando el acceso directo "Servidor SlimeVR".
 - **Reinicio de SteamVR:** Después de iniciar el servidor SlimeVR, reinicia SteamVR. Ahora deberías ver 3 trackers activos en SteamVR y en el servidor SlimeVR, deberías poder ver el cambio de rotación para tu casco y controladores a medida que los mueves.
@@ -44,6 +44,6 @@ ogImage:
 
 - **Configuración de Seguimiento:** Una vez que todo esté correctamente configurado y funcionando, podrás configurar las opciones de seguimiento para diferentes partes del cuerpo a través del servidor SlimeVR o aplicaciones asociadas.
 
-![SlimeVR](/inicio/paso2.png)
+![SlimeVR](/assets/blog/inicio/paso2.png)
 
 [← Volver a los madTrackers](/)

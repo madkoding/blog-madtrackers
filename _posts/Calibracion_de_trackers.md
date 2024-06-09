@@ -25,9 +25,9 @@ Conecta los trackers al servidor SlimeVR y verifica que todos los dispositivos e
 
 - Ingresa a la “Consola serial” de tu servidor SlimeVR, que se encuentra en “Ajustes”
 
-![BotonReset](/calibracion/reset.png)
+![BotonReset](/assets/blog/calibracion/reset.png)
 
-- **Pon tu tracker boca abajo encendido**
+- **Pon tu tracker boca abajo (logo hacia abajo) y enciendelo**
 - Presiona el botón “Reiniciar” en la consola serial
 - En la consola aparecerán distintos mensajes en el siguiente orden
     
