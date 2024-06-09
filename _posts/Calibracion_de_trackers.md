@@ -19,7 +19,7 @@ Antes de iniciar la calibración, utiliza los trackers durante aproximadamente 1
 
 ### 2. Conexión con el Servidor SlimeVR
 
-Conecta los trackers al servidor SlimeVR y verifica que todos los dispositivos estén reconocidos por el sistema.
+- Irás conectando de uno a uno cada uno de los trackers que quieras calibrar a traves del puerto USB
 
 ### 3. Iniciar la Calibración
 
