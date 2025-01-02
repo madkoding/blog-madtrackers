@@ -11,7 +11,7 @@ ogImage:
 ---
 Como mínimo el paquete consta de 6 trackers que aseguran un buen manejo de posición y movimiento. A continuación las diferencias entre los dos paquetes que existen
 
-Cálculo de Posición: 6 ejes
+Cálculo de Posición: 6 ejes sensor BMI270
 
 Drifting: Cada 30 minutos
 
