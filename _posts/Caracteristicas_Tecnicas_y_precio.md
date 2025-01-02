@@ -9,7 +9,7 @@ author:
 ogImage:
   url: "/assets/blog/preview/tecnico.jpg"
 ---
-Como mínimo el paquete consta de 6 trackers que aseguran un buen manejo de posición y movimiento. A continuación las diferencias entre los dos paquetes que existen
+Como mínimo el paquete consta de 6 trackers que aseguran un buen manejo de posición y movimiento. Siempre deben fijarse en el tipo de sensor que les vendan, ya que algunos solo utilizan unos ultra economicos donde no vale la pena la mala experiencia. A continuación las caracteristicas de los madTrackers
 
 Cálculo de Posición: 6 ejes sensor BMI270
 
