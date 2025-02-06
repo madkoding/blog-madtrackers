@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       borderRadius: {
-        '20px': '20px',
+        "20px": "20px",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -17,17 +17,21 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        "accent-1": "#FAFAFA",
-        "accent-2": "#EAEAEA",
-        "accent-7": "#333",
-        success: "#0070f3",
-        cyan: "#79FFE1",
+        "accent-1": "#2D004E", // Morado oscuro (fondo principal)
+        "accent-2": "#1A002A", // Fondo secundario más oscuro
+        "accent-7": "#00FF85", // Verde flúor para textos destacados
+        success: "#00FF85", // Verde flúor reutilizado para estados
+        cyan: "#79FFE1", // Tono original si lo necesitas
       },
       spacing: {
         28: "7rem",
       },
       letterSpacing: {
         tighter: "-.04em",
+      },
+      fontFamily: {
+        sans: ['"Exo 2"', "sans-serif"],
+        exo2: ['"Exo 2"', "sans-serif"], // Define la fuente
       },
       fontSize: {
         "5xl": "2.5rem",

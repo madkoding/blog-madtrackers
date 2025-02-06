@@ -9,7 +9,7 @@ import Header from "@/app/_components/header";
 import { PostBody } from "@/app/_components/post-body";
 import { PostHeader } from "@/app/_components/post-header";
 
-export default async function Post({ params }: Params) {
+export default async function Post({ params }: Readonly<Params>) {
   const post = getPostBySlug(params.slug);
 
   if (!post) {
