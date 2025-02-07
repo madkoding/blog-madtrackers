@@ -9,10 +9,60 @@
   @apply my-6;
 }
 
+.markdown blockquote {
+  color: white !important;
+} 
+
 .markdown h2 {
-  @apply text-3xl mt-12 mb-4 leading-snug;
+  @apply text-3xl mt-12 mb-4 leading-snug font-bold text-accent-7;
 }
 
 .markdown h3 {
-  @apply text-2xl mt-8 mb-4 leading-snug;
+  @apply text-2xl mt-8 mb-4 leading-snug font-semibold text-accent-7;
+}
+
+.markdown ul,
+.markdown ol {
+  @apply list-inside list-disc pl-5;
+}
+
+.markdown li {
+  @apply mb-2;
+}
+
+.markdown blockquote {
+  @apply pl-4 border-l-4 border-accent-7 italic text-gray-700;
+}
+
+.markdown code {
+  @apply bg-gray-800 text-white p-1 rounded;
+}
+
+.markdown pre {
+  @apply bg-gray-800 text-white p-4 rounded-lg overflow-auto;
+}
+
+.markdown a {
+  @apply text-cyan hover:underline;
+}
+
+.markdown img {
+  @apply rounded-lg shadow-md my-4;
+}
+
+.markdown hr {
+  @apply border-t-2 border-accent-1 my-8;
+}
+
+.markdown table {
+  @apply table-auto w-full border-collapse my-6;
+}
+
+.markdown th,
+.markdown td {
+  @apply px-4 py-2 border border-accent-1;
+}
+
+.markdown th {
+  @apply bg-accent-2 text-accent-7;
 }
