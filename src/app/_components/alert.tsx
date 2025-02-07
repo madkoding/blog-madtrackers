@@ -9,8 +9,8 @@ const Alert = ({ preview }: Props) => {
   return (
     <div
       className={cn("border-b", {
-        "bg-neutral-800 border-neutral-800 text-white": preview,
-        "bg-neutral-50 border-neutral-200": !preview,
+        "bg-neutral-800 border-neutral-800 text-black": preview,
+        "bg-neutral-50 border-neutral-200 text-black": !preview,
       })}
     >
       <Container>
@@ -30,8 +30,9 @@ const Alert = ({ preview }: Props) => {
             <>
               La fabricación de un SlimeVR toma al rededor de 1 a 2 meses. Se
               debe realizar un abono de 60USD no reembolsable para unirse a la
-              cola de producción, esto le asegurará tener piezas en camino para
-              fabricar.
+              cola de producción. Esto le asegurará tener piezas en camino para
+              poder fabricar los trackers, configurarlos, y probarlos
+              adecuadamente.
             </>
           )}
         </div>
