@@ -1,5 +1,4 @@
 import Container from "@/app/_components/container";
-import { EXAMPLE_PATH } from "@/lib/constants";
 import cn from "classnames";
 
 type Props = {
@@ -29,7 +28,10 @@ const Alert = ({ preview }: Props) => {
             </>
           ) : (
             <>
-              La fabricación de un SlimeVR toma al rededor de 2 meses. Se debe realizar un abono de 50% no reembolsable para unirse a la cola de producción.
+              La fabricación de un SlimeVR toma al rededor de 1 a 2 meses. Se
+              debe realizar un abono de 60USD no reembolsable para unirse a la
+              cola de producción, esto le asegurará tener piezas en camino para
+              fabricar.
             </>
           )}
         </div>

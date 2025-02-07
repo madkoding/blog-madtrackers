@@ -10,6 +10,10 @@ body {
   font-family: "Exo 2", serif !important;
 }
 
+p {
+  text-align: justify;
+}
+
 @layer utilities {
   .img-custom {
     @apply rounded-[20px] shadow-lg;

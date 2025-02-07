@@ -4,7 +4,7 @@ type Props = {
   content: string;
 };
 
-export function PostBody({ content }: Props) {
+export function PostBody({ content }: Readonly<Props>) {
   return (
     <div className="max-w-2xl mx-auto">
       <div
