@@ -8,6 +8,8 @@ body {
   @apply font-exo2;
   @apply bg-accent-1 text-accent-7;
   font-family: "Exo 2", serif !important;
+  font-size: 75%;
+  background-image: linear-gradient(to right top, #2c0e66, #0053b6, #008ccf, #00bfa6, #12eb52);
 }
 
 p {
