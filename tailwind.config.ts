@@ -19,7 +19,7 @@ const config: Config = {
       colors: {
         "accent-1": "#2D004E", // Morado oscuro (fondo principal)
         "accent-2": "#1A002A", // Fondo secundario más oscuro
-        "accent-7": "#00FF85", // Verde flúor para textos destacados
+        "accent-7": "#FFFFFF", // Blanco
         success: "#00FF85", // Verde flúor reutilizado para estados
         cyan: "#79FFE1", // Tono original si lo necesitas
       },
