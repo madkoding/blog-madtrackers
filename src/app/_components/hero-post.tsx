@@ -22,7 +22,7 @@ export function HeroPost({
           {/* Modelo 3D */}
           <div className="w-full md:w-3/5 flex justify-center items-center">
             <div className="w-full max-w-[600px] h-auto aspect-square">
-              <RotatingFBXModel />
+              <RotatingFBXModel color={"#444444"} />
             </div>
           </div>
 

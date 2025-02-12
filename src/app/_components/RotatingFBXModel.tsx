@@ -2,19 +2,21 @@
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useProgress, Html } from "@react-three/drei";
+import { useProgress, Html, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
 interface ModelProps {
   modelPath: string;
+  color: string; // Nuevo prop para el color
 }
 
 /**
  * Carga y renderiza un modelo FBX con texturas.
  * @param {string} modelPath - Ruta del modelo FBX.
+ * @param {string} color - Color que se aplicará al material del modelo.
  */
-const FBXModel: React.FC<ModelProps> = ({ modelPath }) => {
+const FBXModel: React.FC<ModelProps> = ({ modelPath, color = "#FFFFFF" }) => {
   const modelRef = useRef<THREE.Group | null>(null);
   const [isLoaded, setIsLoaded] = useState(false); // Estado de carga del modelo
 
@@ -32,8 +34,8 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath }) => {
             const mesh = child as THREE.Mesh;
             const material = mesh.material as THREE.MeshStandardMaterial;
 
-            // Establecer el color negro
-            material.color.set(0x444444);
+            // Establecer el color que viene como prop
+            material.color.set(color);
 
             // Hacerlo metálico pero con un acabado sutil, no tan brillante
             material.metalness = 0.3; // Valor intermedio para un aspecto metálico sutil
@@ -52,7 +54,20 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath }) => {
         console.error("Error cargando FBX:", error);
       }
     );
-  }, [modelPath]);
+  }, [modelPath]); // No depender de `color` en el `useEffect`
+
+  // Cuando el color cambia, actualizamos el material
+  useEffect(() => {
+    if (modelRef.current) {
+      modelRef.current.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          const material = mesh.material as THREE.MeshStandardMaterial;
+          material.color.set(color); // Actualizamos el color
+        }
+      });
+    }
+  }, [color]); // Solo ejecutamos este `useEffect` cuando cambia el color
 
   // Animación de rotación automática
   useFrame(() => {
@@ -75,7 +90,7 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath }) => {
  */
 const CanvasScene: React.FC = () => {
   // Obtener el tamaño y la actualización de la escena
-  const { gl, scene, camera, size } = useThree();
+  const { gl, scene, size } = useThree();
 
   useEffect(() => {
     if (scene && gl) {
@@ -90,7 +105,7 @@ const CanvasScene: React.FC = () => {
 /**
  * Contenedor principal con el canvas en una caja 3:4 con fondo semitransparente.
  */
-const RotatingFBXModel: React.FC = () => {
+const RotatingFBXModel: React.FC<{ color: string }> = ({ color }) => {
   return (
     <div className="relative w-full max-w-[600px] aspect-square">
       <Canvas
@@ -145,8 +160,9 @@ const RotatingFBXModel: React.FC = () => {
         />
         {/* Carga del modelo */}
         <Suspense fallback={<Loading />}>
-          <FBXModel modelPath="/models/tracker.fbx" />
+          <FBXModel modelPath="/models/tracker.fbx" color={color} />
         </Suspense>
+        <OrbitControls enableZoom={false} />
       </Canvas>
     </div>
   );

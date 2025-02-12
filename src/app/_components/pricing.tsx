@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import RotatingFBXModel from "./RotatingFBXModel";
 
 // Definir un tipo específico para las monedas
 type Currency = "CLP" | "PEN" | "ARS" | "MXN" | "USD";
@@ -23,16 +24,21 @@ const sensors = [
 const quantities = [6, 8, 10, 20];
 
 const colors = [
-  { id: "white", label: "Blanco", color: "bg-white border-gray-400" },
-  { id: "black", label: "Negro", color: "bg-black text-white" },
-  { id: "red", label: "Rojo", color: "bg-red-500" },
-  { id: "blue", label: "Azul", color: "bg-blue-500" },
-  { id: "purple", label: "Morado", color: "bg-purple-500" },
-  { id: "yellow", label: "Amarillo", color: "bg-yellow-500" },
-  { id: "green", label: "Verde", color: "bg-green-500" },
-  { id: "orange", label: "Naranja", color: "bg-orange-500" },
-  { id: "pink", label: "Rosa", color: "bg-pink-500" },
-  { id: "gray", label: "Gris", color: "bg-gray-500" },
+  {
+    id: "white",
+    label: "Blanco",
+    color: "bg-white border-gray-400",
+    hex: "#FFFFFF",
+  },
+  { id: "black", label: "Negro", color: "bg-black text-white", hex: "#444444" },
+  { id: "red", label: "Rojo", color: "bg-red-500", hex: "#F87171" },
+  { id: "blue", label: "Azul", color: "bg-blue-500", hex: "#3B82F6" },
+  { id: "purple", label: "Morado", color: "bg-purple-500", hex: "#A855F7" },
+  { id: "yellow", label: "Amarillo", color: "bg-yellow-500", hex: "#F59E0B" },
+  { id: "green", label: "Verde", color: "bg-green-500", hex: "#10B981" },
+  { id: "orange", label: "Naranja", color: "bg-orange-500", hex: "#FB923C" },
+  { id: "pink", label: "Rosa", color: "bg-pink-500", hex: "#EC4899" },
+  { id: "gray", label: "Gris", color: "bg-gray-500", hex: "#6B7280" },
 ];
 
 // Tasas de cambio ficticias
@@ -179,6 +185,9 @@ export default function Pricing() {
 
           {/* Selección de Color */}
           <div className="mb-4">
+            <div className="w-full max-w-[600px] h-auto aspect-square">
+              <RotatingFBXModel color={selectedColor.hex} />
+            </div>
             <h3 className="font-medium mb-2">Color:</h3>
             <div className="grid grid-cols-5 md:grid-cols-10 gap-2 justify-center">
               {colors.map((color) => (
