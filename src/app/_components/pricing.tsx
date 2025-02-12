@@ -1,17 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+// Definir un tipo específico para las monedas
+type Currency = "CLP" | "PEN" | "ARS" | "MXN" | "USD";
 
 const sensors = [
   {
     id: "sensor1",
     label: "LSM6DSR",
-    price: 40,
+    description: "Buena calidad de seguimiento, drifting a los 30 minutos",
+    price: 40000,
   },
   {
     id: "sensor2",
     label: "ICM45686",
-    price: 80,
+    description: "Excelente calidad de seguimiento, drifting a los 45 minutos",
+    price: 80000,
   },
 ];
 
@@ -28,15 +33,87 @@ const colors = [
   { id: "orange", label: "Naranja", color: "bg-orange-500" },
   { id: "pink", label: "Rosa", color: "bg-pink-500" },
   { id: "gray", label: "Gris", color: "bg-gray-500" },
-  { id: "brown", label: "Marrón", color: "bg-yellow-900" },
 ];
+
+// Tasas de cambio ficticias
+const exchangeRates: Record<Currency, number> = {
+  CLP: 1,
+  PEN: 0.0045,
+  ARS: 0.35,
+  MXN: 0.018,
+  USD: 0.0011,
+};
+
+// Costos de envío en CLP
+const shippingCosts = {
+  national: 5000,
+  international: 60000,
+};
+
+// Símbolos de moneda
+const currencySymbols: Record<Currency, string> = {
+  CLP: "$",
+  PEN: "S/",
+  ARS: "$",
+  MXN: "$",
+  USD: "US$",
+};
 
 export default function Pricing() {
   const [selectedSensor, setSelectedSensor] = useState(sensors[0]);
   const [selectedQuantity, setSelectedQuantity] = useState(quantities[0]);
   const [selectedColor, setSelectedColor] = useState(colors[0]);
+  const [currency, setCurrency] = useState<Currency>("CLP"); // Tipo específico
+  const [exchangeRate, setExchangeRate] = useState(1);
+  const [isNational, setIsNational] = useState(true);
 
-  const totalPrice = selectedSensor.price * selectedQuantity;
+  // Detectar país del usuario
+  useEffect(() => {
+    async function fetchLocation() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        const country = data.country_code;
+
+        let selectedCurrency: Currency = "USD"; // Tipo específico
+        let national = false;
+
+        if (country === "CL") {
+          selectedCurrency = "CLP";
+          national = true;
+        }
+        if (country === "PE") selectedCurrency = "PEN";
+        if (country === "AR") selectedCurrency = "ARS";
+        if (country === "MX") selectedCurrency = "MXN";
+
+        setCurrency(selectedCurrency);
+        setExchangeRate(exchangeRates[selectedCurrency]);
+        setIsNational(national);
+      } catch (error) {
+        console.error("Error obteniendo ubicación:", error);
+      }
+    }
+
+    fetchLocation();
+  }, []);
+
+  // Calcular precio total en la moneda correcta
+  const totalPrice = (
+    selectedSensor.price *
+    selectedQuantity *
+    exchangeRate
+  ).toFixed(0);
+
+  // Calcular costo de envío en la moneda correcta
+  const shippingPrice = (
+    (isNational ? shippingCosts.national : shippingCosts.international) *
+    exchangeRate
+  ).toFixed(0);
+
+  // Formatear número con separador de miles
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("es-ES").format(price);
+  };
 
   return (
     <section className="py-16 bg-white text-black" id="pricing">
@@ -45,9 +122,11 @@ export default function Pricing() {
           <h1 className="text-3xl font-semibold">
             Arma tus trackers según tus necesidades
           </h1>
-          <h3 className="text-1xl font-semibold">
-            Mientras más trackers, es más preciso y estable el movimiento. Todos
-            son de tamaño 4.3 x 4.3 x 1.5 cm
+          <h3 className="text-sm font-semibold">
+            El movimiento es más preciso a mayor cantidad
+          </h3>
+          <h3 className="text-sm font-semibold">
+            Todos son de tamaño 4.3 x 4.3 x 1.5 cm
           </h3>
         </div>
         <div className="bg-gray-100 p-6 rounded-lg shadow-lg max-w-lg mx-auto text-center">
@@ -58,7 +137,7 @@ export default function Pricing() {
               {sensors.map((sensor) => (
                 <button
                   key={sensor.id}
-                  className={`px-4 py-2 rounded-lg border-2 ${
+                  className={`w-full px-4 py-2 rounded-lg border-2 ${
                     selectedSensor.id === sensor.id
                       ? "border-black bg-gray-300"
                       : "border-gray-300"
@@ -67,6 +146,13 @@ export default function Pricing() {
                 >
                   {sensor.label}
                 </button>
+              ))}
+            </div>
+            <div className="flex justify-center gap-4">
+              {sensors.map((sensor) => (
+                <p className="text-center px-4 py-2 text-xs" key={sensor.id}>
+                  {sensor.description}
+                </p>
               ))}
             </div>
           </div>
@@ -94,15 +180,21 @@ export default function Pricing() {
           {/* Selección de Color */}
           <div className="mb-4">
             <h3 className="font-medium mb-2">Color:</h3>
-            <div className="flex justify-center gap-2">
+            <div className="grid grid-cols-5 md:grid-cols-10 gap-2 justify-center">
               {colors.map((color) => (
-                <button
+                <div
                   key={color.id}
-                  className={`w-10 h-10 rounded-full border-2 ${color.color} ${
-                    selectedColor.id === color.id ? "ring-2 ring-black" : ""
-                  }`}
-                  onClick={() => setSelectedColor(color)}
-                ></button>
+                  className="flex justify-center items-center"
+                >
+                  <button
+                    className={`w-10 h-10 rounded-full border-2 ${
+                      color.color
+                    } ${
+                      selectedColor.id === color.id ? "ring-2 ring-black" : ""
+                    }`}
+                    onClick={() => setSelectedColor(color)}
+                  ></button>
+                </div>
               ))}
             </div>
           </div>
@@ -110,22 +202,34 @@ export default function Pricing() {
           {/* Precio Total */}
           <div className="text-center mt-6">
             <h2 className="text-xl font-semibold">
-              Precio Total: ${totalPrice} USD
+              Precio Total: {currencySymbols[currency]}
+              {formatPrice(Number(totalPrice))} {currency}
             </h2>
+            <p className="text-gray-600 text-center">
+              Envío desde: {currencySymbols[currency]}
+              {formatPrice(Number(shippingPrice))} {currency}
+            </p>
+            <br />
+            <p className="text-center">
+              Los trackers se hacen a pedido y toman al rededor de 1 mes en
+              armar
+            </p>
           </div>
 
-          <p className="py-4 text-center">
-            Los trackers se fabrican a pedido, y demora al rededor de 1 mes
-          </p>
-
           <button
-            className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full mt-4 lg:mt-0 py-4 px-8 shadow opacity-75 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+            className="mx-auto hover:underline bg-white text-gray-800 font-bold rounded-full mt-4 py-4 px-8 shadow opacity-75 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
             onClick={() => {
               const message = encodeURIComponent(
                 `Hola, quiero encargar estos trackers. 
 - Sensor: ${selectedSensor.label} 
 - Cantidad: ${selectedQuantity} 
-- Color: ${selectedColor.label}`
+- Color: ${selectedColor.label}
+- Precio Total: ${currencySymbols[currency]}${formatPrice(
+                  Number(totalPrice)
+                )} ${currency}
+- Envío: ${currencySymbols[currency]}${formatPrice(
+                  Number(shippingPrice)
+                )} ${currency}`
               );
 
               window.open(
