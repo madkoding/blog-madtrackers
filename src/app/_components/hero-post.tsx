@@ -28,7 +28,7 @@ export function HeroPost({
 
           {/* Texto */}
           <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
-            <p className="uppercase tracking-loose w-full">
+            <p className="tracking-loose w-full text-center md:text-left">
               Hecho por un fan de VRChat para fans de VRChat
             </p>
             <h1 className="my-4 text-5xl font-bold leading-tight">{title}</h1>
