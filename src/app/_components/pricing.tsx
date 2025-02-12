@@ -123,9 +123,9 @@ export default function Pricing() {
             onClick={() => {
               const message = encodeURIComponent(
                 `Hola, quiero encargar estos trackers. 
-                - Sensor: ${selectedSensor.label} 
-                - Cantidad: ${selectedQuantity} 
-                - Color: ${selectedColor.label}`
+- Sensor: ${selectedSensor.label} 
+- Cantidad: ${selectedQuantity} 
+- Color: ${selectedColor.label}`
               );
 
               window.open(
