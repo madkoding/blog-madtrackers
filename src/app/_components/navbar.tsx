@@ -108,9 +108,9 @@ export function NavBar() {
             <li className="mr-3">
               <a
                 className={`inline-block ${textColorClass} no-underline hover:text-gray-800 hover:text-underline py-2 px-4 transition-all duration-300 ease-in-out`} // Suavizamos transición para los enlaces
-                href="#"
+                href="/posts/Preguntas_Frecuentes"
               >
-                Documentación
+                F.A.Q.
               </a>
             </li>
           </ul>
