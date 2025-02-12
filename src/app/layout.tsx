@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import "./globals.css";
+import { NavBar } from "./_components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -54,9 +55,9 @@ export default function RootLayout({
         <meta name="theme-color" content="#000" />
         <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       </head>
-      <body className={inter.className}>
+      <body className="leading-normal tracking-normal text-white gradient">
+        <NavBar />
         <div className="min-h-screen">{children}</div>
-        <Footer />
       </body>
     </html>
   );

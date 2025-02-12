@@ -1,5 +1,6 @@
 import CoverImage from "@/app/_components/cover-image";
 import Link from "next/link";
+import RotatingFBXModel from "./RotatingFBXModel";
 
 type Props = {
   title: string;
@@ -16,22 +17,25 @@ export function HeroPost({
 }: Readonly<Props>) {
   return (
     <section>
-      <div className="mb-8 md:mb-16">
-        {/* Ajustar el grid para pantallas grandes */}
-        <div className="md:grid md:grid-cols-2 md:gap-x-16 lg:gap-x-8 items-center">
-          {/* Imagen al lado izquierdo */}
-          <div className="mb-8 md:mb-0">
-            <CoverImage title={title} src={coverImage} slug={slug} />
+      <div className="pt-24">
+        <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+          {/* Texto */}
+          <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
+            <p className="uppercase tracking-loose w-full">
+              Por fan de VRChat para fans de VRChat
+            </p>
+            <h1 className="my-4 text-5xl font-bold leading-tight">{title}</h1>
+            <p className="leading-normal text-2l mb-8">{excerpt}</p>
+            <button className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+              Encargar un pack ahora!
+            </button>
           </div>
 
-          {/* Texto al lado derecho */}
-          <div>
-            <h3 className="mb-4 text-4xl lg:text-5xl leading-tight">
-              <Link href={`/posts/${slug}`} className="hover:underline">
-                {title}
-              </Link>
-            </h3>
-            <p className="text-lg leading-relaxed">{excerpt}</p>
+          {/* Modelo 3D */}
+          <div className="w-full md:w-3/5 flex justify-center items-center">
+            <div className="w-full max-w-[600px] h-auto aspect-square">
+              <RotatingFBXModel />
+            </div>
           </div>
         </div>
       </div>

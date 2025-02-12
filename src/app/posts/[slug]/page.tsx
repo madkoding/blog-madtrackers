@@ -3,11 +3,11 @@ import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/api";
 import { CMS_NAME } from "@/lib/constants";
 import markdownToHtml from "@/lib/markdownToHtml";
-import Alert from "@/app/_components/alert";
 import Container from "@/app/_components/container";
-import Header from "@/app/_components/header";
 import { PostBody } from "@/app/_components/post-body";
 import { PostHeader } from "@/app/_components/post-header";
+import Image from "next/image";
+import WaveDivider from "@/app/_components/wave-divider";
 
 export default async function Post({ params }: Readonly<Params>) {
   const post = getPostBySlug(params.slug);
@@ -20,11 +20,20 @@ export default async function Post({ params }: Readonly<Params>) {
 
   return (
     <main>
-      <Alert preview={post.preview} />
+      <section>
+        <div className="pt-24">
+          <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+            <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
+              <h1 className="my-4 text-5xl font-bold leading-tight">
+                {post.title}
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+      <WaveDivider />
       <Container>
-        <Header />
         <article className="mb-32">
-          <PostHeader title={post.title} coverImage={post.coverImage} />
           <PostBody content={content} />
         </article>
       </Container>

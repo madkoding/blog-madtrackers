@@ -1,6 +1,6 @@
 ---
-title: ""
-excerpt: "Los trackers SlimeVR inalámbricos son dispositivos que capturan y transmiten la posición del usuario en tiempo real a un servidor en su PC mediante una conexión WiFi de 2.4 GHz. Estos dispositivos están equipados con tecnología de seguimiento avanzada, incluidos un acelerómetro y un giroscopio, para garantizar una captura precisa de los movimientos en el espacio. Estos trackers utilizan el software de SlimeVR para funcionar."
+title: "¿Qué son los trackers?"
+excerpt: "¿Has visto cuando muestran como hacen animación con actores usando sensores? Bueno cada uno de esos sensores son llamados trackers, que son dispositivos que capturan y transmiten la posición del cuerpo en tiempo real a un servidor en su PC, servidor o celular mediante una conexión WiFi de 2.4 GHz de su router. Estos dispositivos están equipados con tecnología de seguimiento precisa y avanzada, incluidos un acelerómetro, un giroscopio y en algunos casos un magnetómetro, para garantizar una captura de los movimientos en el espacio. Estos trackers utilizan el software de SlimeVR con amplio soporte."
 coverImage: "/assets/blog/preview/cover.jpg"
 date: "2025-07-06T22:20:07.322Z"
 author:

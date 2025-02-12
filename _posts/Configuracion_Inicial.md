@@ -9,8 +9,6 @@ author:
 ogImage:
   url: "/assets/blog/preview/conf-inicial.jpg"
 ---
-# Configuración Inicial
-
 **1. Instalación del Servidor de SlimeVR:**
 
 - **Descarga e Instalación:** Primero, descarga el [último instalador de SlimeVR desde el sitio web oficial](https://slimevr.dev/download). Ejecuta el instalador y sigue las instrucciones. Si solo vas a usar el servidor para uso independiente a través de OSC y no para realidad virtual en PC a través de SteamVR, puedes desmarcar las opciones de "SteamVR Driver", "SlimeVR Feeder App" y "Controladores USB".

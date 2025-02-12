@@ -4,24 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   @apply font-exo2;
   @apply bg-accent-1 text-accent-7;
   font-family: "Exo 2", serif !important;
-  background-image: linear-gradient(to right top, #2c0e66, #0053b6, #008ccf, #00bfa6, #12eb52);
+  background-image: linear-gradient(to right top, #051937, #002667, #0f2e97, #492ec4, #8612eb);
 }
 
 p {
   text-align: justify;
-}
-
-@layer utilities {
-  .img-custom {
-    @apply rounded-[20px] shadow-lg;
-  }
-}
-
-/* Aplica los estilos a todas las imágenes */
-img {
-  @apply img-custom;
 }

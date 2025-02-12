@@ -11,11 +11,6 @@ const config: Config = {
       borderRadius: {
         "20px": "20px",
       },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
       colors: {
         "accent-1": "#2D004E", // Morado oscuro (fondo principal)
         "accent-2": "#1A002A", // Fondo secundario más oscuro
