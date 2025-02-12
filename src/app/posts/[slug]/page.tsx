@@ -19,10 +19,10 @@ export default async function Post({ params }: Readonly<Params>) {
   return (
     <main>
       <section>
-        <div className="pt-24">
+        <div className="pt-8">
           <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
             <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
-              <h1 className="my-4 text-5xl font-bold leading-tight">
+              <h1 className="my-4 text-5xl font-bold leading-tight py-24">
                 {post.title}
               </h1>
             </div>

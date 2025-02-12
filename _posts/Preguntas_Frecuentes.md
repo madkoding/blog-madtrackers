@@ -9,8 +9,23 @@ author:
 ogImage:
   url: "/assets/blog/preview/faq.jpg"
 ---
-¿Por qué necesito más dispositivos de seguimiento con SlimeVR que con los HTC Vive para el seguimiento completo del cuerpo?
+¿Qué son los trackers?
+> Los trackers son dispositivos utilizados en animación con captura de movimiento. Estos dispositivos, equipados con sensores como acelerómetros, giroscopios y, en algunos casos, magnetómetros, permiten seguir con alta precisión la posición del cuerpo en tiempo real. Los trackers transmiten esta información a través de WiFi de 2.4 GHz a un servidor o dispositivo, como un PC o celular. Se utilizan en conjunto con el software SlimeVR, que ofrece un amplio soporte para esta tecnología.
 
+¿Como se calibran los trackers?
+> Los trackers se AUTOCALIBRAN, sin embargo, necesitan grabar una calibración la primera vez que los inicias, esta calibración luego se guarda en memoria para los siguiente usos.
+> - Coloca tus trackers sobre una superficie lisa todos juntos uno al lado del otro
+> - Enciende cada uno
+> - Dejalos quietos por 10 minutos para que la calibración se complete
+> - Luego de esto puedes utilizarlos normalmente
+
+¿Qué es el Drift?
+> Imagina que tienes una brújula digital en tu mano que te indica hacia dónde estás mirando. Con el tiempo, sin que te muevas, empieza a señalar en otra dirección. Esto sucede con ciertos **trackers**, los cuales nos ayudan a saber en qué posición o dirección estamos, pero sin necesitar de cámaras o puntos de referencia externos.
+> A este cambio gradual en la orientación se le llama "**desvío**" (o "**drift**" en inglés). Es como si el dispositivo se "olvidara" de hacia dónde estaba apuntando originalmente. Aunque esto suene preocupante, es un comportamiento esperado debido a la manera en que estos aparatos funcionan, y hay formas de corregirlo temporalmente, como por ejemplo, reiniciándolos (reset) para que "recuerden" su orientación correcta.
+> El tipo de trackers económicos normalmente comienza a desviarse después de unos 20 a 30 minutos de uso continuo. En algunos casos, este período puede extenderse hasta 30 o 45 minutos si las condiciones son ideales. La rapidez con la que se produce este desvío depende de cuánto se mueva el dispositivo: mientras más actividad, más rápido se desvía.
+> ⚠️ Tienes que tener mucho ojo si te intentan ofrecer trackers muy económicos, porque pueden venir con chips donde el desvío puede darse apenas a los 5 minutos o menos!
+
+¿Por qué necesito más dispositivos de seguimiento con SlimeVR que con los HTC Vive para el seguimiento completo del cuerpo?
 > SlimeVR y HTC Vive utilizan tecnologías diferentes para el seguimiento del cuerpo. Para lograr una imitación efectiva de lo que hacen los HTC Vive, SlimeVR necesita más puntos de seguimiento. Esto se debe a cómo SlimeVR procesa la información para determinar tu posición.
 
 ¿Puedo usar estos dispositivos de seguimiento con mi Oculus Quest 2?

@@ -16,13 +16,10 @@ const config: Config = {
         "accent-2": "#1A002A", // Fondo secundario más oscuro
         "accent-7": "#FFFFFF", // Blanco
         success: "#00FF85", // Verde flúor reutilizado para estados
-        cyan: "#79FFE1", // Tono original si lo necesitas
+        cyan: "#2D004E", // Tono original si lo necesitas
       },
       spacing: {
         28: "7rem",
-      },
-      letterSpacing: {
-        tighter: "-.04em",
       },
       fontFamily: {
         sans: ['"Exo 2"', "sans-serif"],

@@ -23,7 +23,7 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath }) => {
     loader.load(
       modelPath,
       (fbx) => {
-        fbx.scale.set(0.05, 0.05, 0.05); // Ajusta la escala para que sea visible
+        fbx.scale.set(0.06, 0.06, 0.06); // Ajusta la escala para que sea visible
         fbx.position.set(0, 0, 0); // Posición para asegurar que el modelo esté centrado
 
         // Modificar los materiales del modelo para hacerlo negro con aspecto metálico y reflejante
@@ -92,7 +92,7 @@ const CanvasScene: React.FC = () => {
  */
 const RotatingFBXModel: React.FC = () => {
   return (
-    <div className="relative w-full max-w-[600px] aspect-[3/4]">
+    <div className="relative w-full max-w-[600px] aspect-square">
       <Canvas
         camera={{ position: [0, 2, 5], fov: 50 }}
         className="!w-full !h-full"

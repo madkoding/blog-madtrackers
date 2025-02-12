@@ -19,6 +19,13 @@ export function HeroPost({
     <section>
       <div className="pt-16">
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+          {/* Modelo 3D */}
+          <div className="w-full md:w-3/5 flex justify-center items-center">
+            <div className="w-full max-w-[600px] h-auto aspect-square">
+              <RotatingFBXModel />
+            </div>
+          </div>
+
           {/* Texto */}
           <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
             <p className="uppercase tracking-loose w-full">
@@ -37,13 +44,6 @@ export function HeroPost({
             >
               Encargar un pack ahora!
             </button>
-          </div>
-
-          {/* Modelo 3D */}
-          <div className="w-full md:w-3/5 flex justify-center items-center">
-            <div className="w-full max-w-[600px] h-auto aspect-square">
-              <RotatingFBXModel />
-            </div>
           </div>
         </div>
       </div>

@@ -9,10 +9,6 @@
   @apply my-6;
 }
 
-.markdown blockquote {
-  color: white !important;
-} 
-
 .markdown h2 {
   @apply text-3xl mt-12 mb-4 leading-snug font-bold text-accent-7;
 }
@@ -31,7 +27,7 @@
 }
 
 .markdown blockquote {
-  @apply pl-4 border-l-4 border-accent-7 italic text-gray-700;
+  @apply pl-4 border-l-4 border-accent-1 mb-16 italic text-gray-700;
 }
 
 .markdown code {
