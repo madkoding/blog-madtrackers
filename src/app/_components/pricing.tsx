@@ -1,268 +1,141 @@
 "use client";
 
-import React from "react";
-import Button from "./button";
+import React, { useState } from "react";
+
+const sensors = [
+  {
+    id: "sensor1",
+    label: "LSM6DSR",
+    price: 40,
+  },
+  {
+    id: "sensor2",
+    label: "ICM45686",
+    price: 80,
+  },
+];
+
+const quantities = [6, 8, 10, 20];
+
+const colors = [
+  { id: "white", label: "Blanco", color: "bg-white border-gray-400" },
+  { id: "black", label: "Negro", color: "bg-black text-white" },
+  { id: "red", label: "Rojo", color: "bg-red-500" },
+  { id: "blue", label: "Azul", color: "bg-blue-500" },
+  { id: "purple", label: "Morado", color: "bg-purple-500" },
+  { id: "yellow", label: "Amarillo", color: "bg-yellow-500" },
+  { id: "green", label: "Verde", color: "bg-green-500" },
+  { id: "orange", label: "Naranja", color: "bg-orange-500" },
+  { id: "pink", label: "Rosa", color: "bg-pink-500" },
+  { id: "gray", label: "Gris", color: "bg-gray-500" },
+  { id: "brown", label: "Marrón", color: "bg-yellow-900" },
+];
 
 export default function Pricing() {
+  const [selectedSensor, setSelectedSensor] = useState(sensors[0]);
+  const [selectedQuantity, setSelectedQuantity] = useState(quantities[0]);
+  const [selectedColor, setSelectedColor] = useState(colors[0]);
+
+  const totalPrice = selectedSensor.price * selectedQuantity;
+
   return (
     <section className="py-16 bg-white text-black" id="pricing">
       <div className="container mx-auto px-6">
-        <div className="text-center py-16">
+        <div className="text-center py-8">
           <h1 className="text-3xl font-semibold">
-            Puedes escoger distintos trackers segun tus necesidades
+            Arma tus trackers según tus necesidades
           </h1>
           <h3 className="text-1xl font-semibold">
-            Mientras mas trackers, es mas preciso y estable el movimiento. Todos
+            Mientras más trackers, es más preciso y estable el movimiento. Todos
             son de tamaño 4.3 x 4.3 x 1.5 cm
           </h3>
         </div>
-        {/* Aquí cambiamos el Flex por un Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Plan 1 */}
-          <div className="bg-white p-8 rounded-lg shadow-lg transform transition hover:scale-105 duration-300 ease-in-out">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Pack Básico
-            </h2>
-            <p className="text-4xl font-bold text-gray-900 mb-4">$240USD</p>
-            <ul className="space-y-4 mb-6 text-black">
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+        <div className="bg-gray-100 p-6 rounded-lg shadow-lg max-w-lg mx-auto text-center">
+          {/* Selección de Sensor */}
+          <div className="mb-4">
+            <h3 className="font-medium mb-2">Tipo de Sensor:</h3>
+            <div className="flex justify-center gap-4">
+              {sensors.map((sensor) => (
+                <button
+                  key={sensor.id}
+                  className={`px-4 py-2 rounded-lg border-2 ${
+                    selectedSensor.id === sensor.id
+                      ? "border-black bg-gray-300"
+                      : "border-gray-300"
+                  }`}
+                  onClick={() => setSelectedSensor(sensor)}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                6 trackers autocalibrados
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Sensor LSM6DSR
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Drifting 30 minutos
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                10 horas de batería
-              </li>
-            </ul>
-            <Button
-              text="Encargar"
-              link="https://wa.me/56975746099?text=Hola, quiero encargar un pack de trackers basicos!"
-            />
+                  {sensor.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Plan 2 */}
-          <div className="bg-white p-8 rounded-lg shadow-lg transform transition hover:scale-105 duration-300 ease-in-out">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Pack Ultimate
-            </h2>
-            <p className="text-4xl font-bold text-gray-900 mb-4">$500USD</p>
-            <ul className="space-y-4 mb-6 text-black">
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+          {/* Selección de Cantidad */}
+          <div className="mb-4">
+            <h3 className="font-medium mb-2">Cantidad:</h3>
+            <div className="flex justify-center gap-2 flex-wrap">
+              {quantities.map((qty) => (
+                <button
+                  key={qty}
+                  className={`px-4 py-2 rounded-lg border-2 ${
+                    selectedQuantity === qty
+                      ? "border-black bg-gray-300"
+                      : "border-gray-300"
+                  }`}
+                  onClick={() => setSelectedQuantity(qty)}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                10 trackers autocalibrados
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Sensor ICM-45686
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Drifting 45 minutos
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                10 horas de batería
-              </li>
-            </ul>
-            <Button
-              text="Encargar"
-              link="https://wa.me/56975746099?text=Hola, quiero encargar un pack de trackers ultimate!"
-            />
+                  {qty}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Plan 3 */}
-          <div className="bg-white p-8 rounded-lg shadow-lg transform transition hover:scale-105 duration-300 ease-in-out">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Pack Custom
-            </h2>
-            <p className="text-4xl font-bold text-gray-900 mb-4">Consulta</p>
-            <ul className="space-y-4 mb-6 text-black">
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Desde 6 hasta 20 trackers autocalibrados
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Sensor LSM6DSR o ICM-45686
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                10 horas de batería
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Colores personalizados
-              </li>
-            </ul>
-            <Button
-              text="Consulta"
-              link="https://wa.me/56975746099?text=Hola, quiero consultar por trackers custom!"
-            />
+          {/* Selección de Color */}
+          <div className="mb-4">
+            <h3 className="font-medium mb-2">Color:</h3>
+            <div className="flex justify-center gap-2">
+              {colors.map((color) => (
+                <button
+                  key={color.id}
+                  className={`w-10 h-10 rounded-full border-2 ${color.color} ${
+                    selectedColor.id === color.id ? "ring-2 ring-black" : ""
+                  }`}
+                  onClick={() => setSelectedColor(color)}
+                ></button>
+              ))}
+            </div>
           </div>
+
+          {/* Precio Total */}
+          <div className="text-center mt-6">
+            <h2 className="text-xl font-semibold">
+              Precio Total: ${totalPrice} USD
+            </h2>
+          </div>
+
+          <p className="py-4 text-center">
+            Los trackers se fabrican a pedido, y demora al rededor de 1 mes
+          </p>
+
+          <button
+            className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full mt-4 lg:mt-0 py-4 px-8 shadow opacity-75 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+            onClick={() => {
+              const message = encodeURIComponent(
+                `Hola, quiero encargar estos trackers. 
+                - Sensor: ${selectedSensor.label} 
+                - Cantidad: ${selectedQuantity} 
+                - Color: ${selectedColor.label}`
+              );
+
+              window.open(
+                `https://wa.me/56975746099?text=${message}`,
+                "_blank"
+              );
+            }}
+          >
+            Encarga los tuyos!
+          </button>
         </div>
       </div>
     </section>

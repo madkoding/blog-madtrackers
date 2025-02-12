@@ -33,17 +33,15 @@ export function HeroPost({
             </p>
             <h1 className="my-4 text-5xl font-bold leading-tight">{title}</h1>
             <p className="leading-normal text-xl mb-8">{excerpt}</p>
-            <button
-              onClick={() =>
-                window.open(
-                  "https://wa.me/56975746099?text=Hola, quiero encargar un pack de trackers!",
-                  "_blank"
-                )
-              }
+            <a
+              href="#pricing"
               className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
             >
               Encargar un pack ahora!
-            </button>
+            </a>
+
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
           </div>
         </div>
       </div>
