@@ -1,6 +1,6 @@
 ---
 title: "¿Qué son los trackers?"
-excerpt: "¿Has visto cuando muestran como hacen animación con actores usando sensores? Bueno cada uno de esos sensores son llamados trackers, que son dispositivos que capturan y transmiten la posición del cuerpo en tiempo real a un servidor en su PC, servidor o celular mediante una conexión WiFi de 2.4 GHz de su router. Estos dispositivos están equipados con tecnología de seguimiento precisa y avanzada, incluidos un acelerómetro, un giroscopio y en algunos casos un magnetómetro, para garantizar una captura de los movimientos en el espacio. Estos trackers utilizan el software de SlimeVR con amplio soporte."
+excerpt: "Los trackers son dispositivos utilizados en animación con captura de movimiento. Estos dispositivos, equipados con sensores como acelerómetros, giroscopios y, en algunos casos, magnetómetros, permiten seguir con alta precisión la posición del cuerpo en tiempo real. Los trackers transmiten esta información a través de WiFi de 2.4 GHz a un servidor o dispositivo, como un PC o celular. Se utilizan en conjunto con el software SlimeVR, que ofrece un amplio soporte para esta tecnología."
 coverImage: "/assets/blog/preview/cover.jpg"
 date: "2025-07-06T22:20:07.322Z"
 author:

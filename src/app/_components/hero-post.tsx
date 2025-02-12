@@ -17,15 +17,15 @@ export function HeroPost({
 }: Readonly<Props>) {
   return (
     <section>
-      <div className="pt-24">
+      <div className="pt-16">
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
           {/* Texto */}
           <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
             <p className="uppercase tracking-loose w-full">
-              Por fan de VRChat para fans de VRChat
+              Hecho por un fan de VRChat para fans de VRChat
             </p>
             <h1 className="my-4 text-5xl font-bold leading-tight">{title}</h1>
-            <p className="leading-normal text-2l mb-8">{excerpt}</p>
+            <p className="leading-normal text-xl mb-8">{excerpt}</p>
             <button
               onClick={() =>
                 window.open(
