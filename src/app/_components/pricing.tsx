@@ -38,9 +38,9 @@ const colors = [
 // Tasas de cambio ficticias
 const exchangeRates: Record<Currency, number> = {
   CLP: 1,
-  PEN: 0.0045,
-  ARS: 0.35,
-  MXN: 0.018,
+  PEN: 0.0038,
+  ARS: 1.1,
+  MXN: 0.022,
   USD: 0.0011,
 };
 
