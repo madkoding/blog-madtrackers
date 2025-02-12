@@ -24,18 +24,28 @@ export function NavBar() {
   }, []);
 
   // Clases dinámicas en base al scroll
-  const headerClass = scrollpos > 10 ? "bg-white shadow" : "";
-  const navContentClass = scrollpos > 10 ? "bg-white" : "";
-  const textColorClass = scrollpos > 10 ? "text-gray-800" : "text-white"; // Cambiar color del texto
-  const svgClass = scrollpos > 10 ? "" : "invert"; // Cambiar la clase del SVG (invertir solo si el scroll es bajo)
+  const headerClass = scrollpos > 10 || isMenuOpen ? "bg-white shadow" : "";
+  const navContentClass = scrollpos > 10 || isMenuOpen ? "bg-white" : "";
+  const textColorClass =
+    scrollpos > 10 || isMenuOpen ? "text-gray-800" : "text-white"; // Cambiar color del texto
+  const svgClass = scrollpos > 10 || isMenuOpen ? "" : "invert"; // Cambiar la clase del SVG (invertir solo si el scroll es bajo)
 
   // Toggle del menú de navegación
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+  // Clases para cuando el menú está abierto
+  // const menuOpenTextClass = "text-gray-800"; // Color de texto blanco cuando el menú está abierto
+  // const navOpenClass = "bg-white"; // Fondo oscuro cuando el menú está abierto
+
+  // Determinar las clases del header en función de si el menú está abierto
+  // const navHeaderClass = isMenuOpen
+  //   ? `${navOpenClass} ${headerClass}`
+  //   : headerClass;
+
   return (
     <nav
       id="header"
-      className={`fixed w-full z-30 top-0 text-white ${headerClass} transition-all duration-300 ease-in-out`} // Añadimos transición suave
+      className={`fixed w-full z-30 top-0 ${headerClass} transition-all duration-300 ease-in-out`} // Cambiar fondo y texto dinámicamente
     >
       <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
         <div className="pl-4 flex items-center space-x-2">
@@ -76,15 +86,9 @@ export function NavBar() {
           } mt-2 lg:mt-0 ${navContentClass} text-black p-4 lg:p-0 z-20 transition-all duration-300 ease-in-out`} // Añadimos transición suave al menú
           id="nav-content"
         >
-          <ul className="list-reset lg:flex justify-end flex-1 items-center">
-            {/* <li className="mr-3">
-              <a
-                className={`inline-block py-2 px-4 font-bold no-underline ${textColorClass} transition-all duration-300 ease-in-out`} // Suavizamos transición para los enlaces
-                href="#"
-              >
-                Active
-              </a>
-            </li> */}
+          <ul
+            className={`list-reset lg:flex justify-end flex-1 items-center ${textColorClass}`}
+          >
             <li className="mr-3">
               <a
                 className={`inline-block ${textColorClass} no-underline hover:text-gray-800 hover:text-underline py-2 px-4 transition-all duration-300 ease-in-out`} // Suavizamos transición para los enlaces

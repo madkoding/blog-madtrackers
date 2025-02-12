@@ -1,5 +1,5 @@
-import CoverImage from "@/app/_components/cover-image";
-import Link from "next/link";
+"use client";
+
 import RotatingFBXModel from "./RotatingFBXModel";
 
 type Props = {

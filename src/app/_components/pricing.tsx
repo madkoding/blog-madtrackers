@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Button from "./button";
 
 export default function Pricing() {
   return (
@@ -93,17 +94,10 @@ export default function Pricing() {
                 10 horas de batería
               </li>
             </ul>
-            <button
-              onClick={() =>
-                window.open(
-                  "https://wa.me/56975746099?text=Hola, quiero encargar un pack de trackers basicos!",
-                  "_blank"
-                )
-              }
-              className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-500 transition-all duration-300 ease-in-out"
-            >
-              Encargar
-            </button>
+            <Button
+              text="Encargar"
+              link="https://wa.me/56975746099?text=Hola, quiero encargar un pack de trackers basicos!"
+            />
           </div>
 
           {/* Plan 2 */}
@@ -182,17 +176,10 @@ export default function Pricing() {
                 10 horas de batería
               </li>
             </ul>
-            <button
-              onClick={() =>
-                window.open(
-                  "https://wa.me/56975746099?text=Hola, quiero encargar un pack de trackers ultimate!",
-                  "_blank"
-                )
-              }
-              className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-500 transition-all duration-300 ease-in-out"
-            >
-              Encargar
-            </button>
+            <Button
+              text="Encargar"
+              link="https://wa.me/56975746099?text=Hola, quiero encargar un pack de trackers ultimate!"
+            />
           </div>
 
           {/* Plan 3 */}
@@ -271,17 +258,10 @@ export default function Pricing() {
                 Colores personalizados
               </li>
             </ul>
-            <button
-              onClick={() =>
-                window.open(
-                  "https://wa.me/56975746099?text=Hola, quiero consultar por trackers custom!",
-                  "_blank"
-                )
-              }
-              className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-500 transition-all duration-300 ease-in-out"
-            >
-              Consulta
-            </button>
+            <Button
+              text="Consulta"
+              link="https://wa.me/56975746099?text=Hola, quiero consultar por trackers custom!"
+            />
           </div>
         </div>
       </div>
