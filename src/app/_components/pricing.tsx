@@ -185,7 +185,7 @@ export default function Pricing() {
 
           {/* Selección de Color */}
           <div className="mb-4">
-            <div className="w-full max-w-[600px] h-auto aspect-square">
+            <div className="h-[300px] w-full flex justify-center">
               <RotatingFBXModel color={selectedColor.hex} />
             </div>
             <h3 className="font-medium mb-2">Color:</h3>

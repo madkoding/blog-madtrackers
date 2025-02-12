@@ -107,7 +107,7 @@ const CanvasScene: React.FC = () => {
  */
 const RotatingFBXModel: React.FC<{ color: string }> = ({ color }) => {
   return (
-    <div className="relative w-full max-w-[600px] aspect-square">
+    <div className="relative w-full aspect-square">
       <Canvas
         camera={{ position: [0, 2, 5], fov: 50 }}
         className="!w-full !h-full"
