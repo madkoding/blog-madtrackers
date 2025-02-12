@@ -63,7 +63,7 @@ export default function Pricing() {
   const [selectedSensor, setSelectedSensor] = useState(sensors[0]);
   const [selectedQuantity, setSelectedQuantity] = useState(quantities[0]);
   const [selectedColor, setSelectedColor] = useState(colors[0]);
-  const [currency, setCurrency] = useState<Currency>("CLP"); // Tipo específico
+  const [currency, setCurrency] = useState<Currency>("USD");
   const [exchangeRate, setExchangeRate] = useState(1);
   const [isNational, setIsNational] = useState(true);
 
@@ -75,7 +75,7 @@ export default function Pricing() {
         const data = await res.json();
         const country = data.country_code;
 
-        let selectedCurrency: Currency = "USD"; // Tipo específico
+        let selectedCurrency: Currency = "USD";
         let national = false;
 
         if (country === "CL") {
