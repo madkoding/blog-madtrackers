@@ -14,3 +14,9 @@ export interface Color {
   color: string;
   hex: string;
 }
+
+export type Point = { x: number; y: number };
+
+export type PointsMap = {
+  [key: number]: Point[];
+};
