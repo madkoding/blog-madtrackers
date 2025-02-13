@@ -158,7 +158,7 @@ const ImageWithPoints: React.FC<ImageWithPointsProps> = ({
           const { scaledX, scaledY } = scalePoints(point);
           return (
             <circle
-              key={index}
+              key={"points-" + index}
               cx={scaledX}
               cy={scaledY}
               r="7"

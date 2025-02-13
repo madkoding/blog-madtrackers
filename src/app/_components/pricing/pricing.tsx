@@ -20,6 +20,10 @@ const Pricing = () => {
   const [currencySymbol, setCurrencySymbol] = useState<string>("US$");
   const [shippingCost, setShippingCost] = useState<number>(60000);
 
+  const formatPrice = (price: string) => {
+    return new Intl.NumberFormat("es-ES").format(Number(price));
+  };
+
   useEffect(() => {
     async function fetchCountryConfig() {
       try {
@@ -122,6 +126,18 @@ const Pricing = () => {
         >
           Encarga los tuyos ahora!
         </button>
+        <h3 className="p-5 text-sm font-semibold">
+          La construcción de un pack de trackers toma al rededor de 1 mes
+        </h3>
+        <h3 className="px-10 text-sm font-semibold">
+          Si no cuentas con el monto total, puedes realizar pagos parciales
+          mientras se preparan los trackers. El primer abono es de{" "}
+          {currencySymbol +
+            formatPrice((parseFloat(totalPrice) / 4).toString()) +
+            " " +
+            currency}
+          , y podrás continuar abonando hasta cubrir el total.
+        </h3>
       </div>
     </section>
   );
