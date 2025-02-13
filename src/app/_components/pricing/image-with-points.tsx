@@ -163,8 +163,8 @@ const ImageWithPoints: React.FC<ImageWithPointsProps> = ({
               cy={scaledY}
               r="7"
               fill="white"
-              stroke="purple"
-              strokeWidth="2"
+              stroke="orange"
+              strokeWidth="3"
             />
           );
         })}
