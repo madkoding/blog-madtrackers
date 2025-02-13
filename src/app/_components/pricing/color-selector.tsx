@@ -16,9 +16,6 @@ const ColorSelector: React.FC<ColorSelectorProps> = ({
 }) => {
   return (
     <div className="mb-4">
-      <div className="h-[250px] w-full flex justify-center">
-        <RotatingFBXModel color={selectedColor.hex} />
-      </div>
       <h3 className="font-medium mb-2">Color:</h3>
       <div className="grid grid-cols-5 md:grid-cols-10 gap-2 justify-center">
         {colors.map((color) => (
@@ -32,6 +29,9 @@ const ColorSelector: React.FC<ColorSelectorProps> = ({
             ></button>
           </div>
         ))}
+      </div>
+      <div className="h-[250px] w-full flex justify-center">
+        <RotatingFBXModel color={selectedColor.hex} />
       </div>
     </div>
   );

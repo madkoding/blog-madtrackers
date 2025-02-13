@@ -17,7 +17,7 @@ export const sensors: Sensor[] = [
   },
 ];
 
-export const quantities: number[] = [6, 8, 10, 20];
+export const quantities: number[] = [6, 7, 8, 9, 10, 11, 20];
 
 export const colors: Color[] = [
   { id: "white", label: "Blanco", color: "bg-white border-gray-400", hex: "#FFFFFF" },

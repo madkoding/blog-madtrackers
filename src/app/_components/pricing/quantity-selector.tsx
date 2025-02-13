@@ -14,7 +14,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
 }) => {
   return (
     <div className="mb-4">
-      <h3 className="font-medium mb-2">Cantidad:</h3>
+      <h3 className="font-medium mb-2">Cantidad de trackers:</h3>
       <div className="flex justify-center gap-2 flex-wrap">
         {quantities.map((qty) => (
           <button

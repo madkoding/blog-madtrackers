@@ -7,6 +7,7 @@ import SensorSelector from "./sensor-selector";
 import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
 import PricingSummary from "./pricing-summary";
+import ImageWithPoints from "./image-with-points";
 
 const Pricing = () => {
   const [selectedSensor, setSelectedSensor] = useState<Sensor>(sensors[0]);
@@ -91,6 +92,7 @@ const Pricing = () => {
           selectedQuantity={selectedQuantity}
           setSelectedQuantity={setSelectedQuantity}
         />
+        <ImageWithPoints selectedQuantity={selectedQuantity} />
         <br />
         <ColorSelector
           colors={colors}
