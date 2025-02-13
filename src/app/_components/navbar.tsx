@@ -102,7 +102,7 @@ export function NavBar() {
                 className={`inline-block ${textColorClass} no-underline hover:text-gray-800 hover:text-underline py-2 px-4 transition-all duration-300 ease-in-out`} // Suavizamos transición para los enlaces
                 href="/#pricing"
               >
-                Precios
+                Arma tus trackers
               </a>
             </li>
             <li className="mr-3">
@@ -110,7 +110,7 @@ export function NavBar() {
                 className={`inline-block ${textColorClass} no-underline hover:text-gray-800 hover:text-underline py-2 px-4 transition-all duration-300 ease-in-out`} // Suavizamos transición para los enlaces
                 href="/posts/Configuracion_Inicial"
               >
-                Configuración
+                Primera configuración
               </a>
             </li>
             <li className="mr-3">
