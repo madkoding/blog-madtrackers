@@ -1,6 +1,6 @@
 "use client";
 
-import RotatingFBXModel from "./RotatingFBXModel";
+import RotatingFBXModel from "../RotatingFBXModel";
 
 type Props = {
   title: string;

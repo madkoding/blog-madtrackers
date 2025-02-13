@@ -1,7 +1,7 @@
-import { HeroPost } from "@/app/_components/hero-post";
+import { HeroPost } from "@/app/_components/common/hero-post";
 import { getAllPosts } from "@/lib/api";
-import WaveDivider from "./_components/wave-divider";
-import Pricing from "./_components/pricing";
+import WaveDivider from "./_components/common/wave-divider";
+import Pricing from "./_components/pricing/pricing";
 
 export default function Index() {
   const allPosts = getAllPosts();

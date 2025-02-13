@@ -1,5 +1,5 @@
-import CoverImage from "./cover-image";
-import { PostTitle } from "@/app/_components/post-title";
+import CoverImage from "../common/cover-image";
+import { PostTitle } from "@/app/_components/post/post-title";
 
 type Props = {
   title: string;

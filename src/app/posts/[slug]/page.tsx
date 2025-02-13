@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/api";
 import { CMS_NAME } from "@/lib/constants";
 import markdownToHtml from "@/lib/markdownToHtml";
-import Container from "@/app/_components/container";
-import { PostBody } from "@/app/_components/post-body";
-import WaveDivider from "@/app/_components/wave-divider";
+import Container from "@/app/_components/common/container";
+import { PostBody } from "@/app/_components/post/post-body";
+import WaveDivider from "@/app/_components/common/wave-divider";
 
 export default async function Post({ params }: Readonly<Params>) {
   const post = getPostBySlug(params.slug);
