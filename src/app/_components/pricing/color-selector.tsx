@@ -30,7 +30,7 @@ const ColorSelector: React.FC<ColorSelectorProps> = ({
           </div>
         ))}
       </div>
-      <div className="h-[250px] w-full flex justify-center">
+      <div className="h-[250px] flex justify-center">
         <RotatingFBXModel color={selectedColor.hex} />
       </div>
     </div>
