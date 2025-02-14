@@ -135,9 +135,7 @@ const Loading: React.FC = () => {
   const { progress } = useProgress();
   return (
     <Html center>
-      <p className="text-white text-lg">{`Cargando modelo... ${Math.round(
-        progress
-      )}%`}</p>
+      <p className="text-lg">{`Cargando modelo... ${Math.round(progress)}%`}</p>
     </Html>
   );
 };
@@ -176,7 +174,7 @@ const ExhibitionLights: React.FC = () => {
  */
 const RotatingFBXModel: React.FC<{ color: string }> = ({ color }) => {
   return (
-    <div className="relative w-full aspect-square">
+    <div className="relative aspect-square">
       <Canvas
         camera={{ position: [0, 2, 5], fov: 50 }}
         className="!w-full !h-full"
