@@ -115,25 +115,13 @@ export function NavBar() {
             </li>
             <li className="mr-3">
               <a
-                className={`inline-block ${textColorClass} no-underline hover:text-gray-800 hover:text-underline py-2 px-4 transition-all duration-300 ease-in-out`} // Suavizamos transición para los enlaces
-                href="/posts/Preguntas_Frecuentes"
+                className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full mt-4 lg:mt-0 py-4 px-8 shadow opacity-75 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                href="/faq"
               >
-                F.A.Q.
+                Realiza tu consulta
               </a>
             </li>
           </ul>
-          <button
-            id="navAction"
-            className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full mt-4 lg:mt-0 py-4 px-8 shadow opacity-75 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
-            onClick={() =>
-              window.open(
-                "https://wa.me/56975746099?text=Hola, quiero más información sobre los trackers",
-                "_blank"
-              )
-            }
-          >
-            Consultar
-          </button>
         </div>
       </div>
       <hr className="border-b border-gray-100 opacity-25 my-0 py-0" />

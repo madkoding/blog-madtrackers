@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Faustina:ital,wght@0,300..800;1,300..800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -18,4 +18,132 @@ body {
 p {
   text-align: justify;
   letter-spacing: -0.03em;
+}
+
+/* Contenedor CRT */
+.crt-screen {
+  background: #000; /* Fondo negro */
+  color: #00ff00; /* Texto verde */
+  padding: 1rem;
+  border: 2px solid #00ff00;
+  border-radius: 5px;
+  text-shadow: 0 0 12px #24cc24, 0 0 8px #24cc24; /* Efecto bloom */
+  position: relative;
+  overflow: hidden;
+  filter: brightness(1.2) contrast(1.3);
+  animation: crtFlicker 2s infinite;
+  /* font-family: "E", serif; */
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  font-variation-settings:
+    "BLED" 0,
+    "SCAN" 1;
+}
+
+/* Pseudo-elemento para scanlines */
+.crt-screen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0,
+    transparent 2px,
+    rgba(0, 0, 0, 0.4) 2px,
+    rgba(0, 0, 0, 0.4) 3px
+  );
+  animation: scanlines 0.1s steps(1) infinite;
+}
+
+@keyframes scanlines {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 3px;
+  }
+}
+
+/* White noise: capa superpuesta */
+.white-noise {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAUVBMVEUAAAD///////////////////////////////////////////////////////////////+rq6v///////8AAAAfHx8AAADs7Ozk5OSfn5/j4+P39/fd3d3i4uK1tbVnZ2e8vLzj4+O+vr6gYGBN/6SAAAAAXRSTlMAQObYZgAAAAdJREFUGNNjYGBgZGJiZmBiYGRgYmBiYGBgZGRmYBggAGgIA9AKPg9JAAAAAElFTkSuQmCC") repeat;
+  background-size: cover;
+  opacity: 0.5;
+  animation: noise 0.2s infinite;
+}
+
+@keyframes noise {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.7;
+  }
+  10% {
+    transform: translate(-5%, -5%);
+    opacity: 0.7;
+  }
+  20% {
+    transform: translate(-10%, 5%);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translate(5%, -10%);
+    opacity: 0.7;
+  }
+  40% {
+    transform: translate(-5%, 15%);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-10%, 5%);
+    opacity: 0.7;
+  }
+  60% {
+    transform: translate(15%, 0);
+    opacity: 0.7;
+  }
+  70% {
+    transform: translate(0, 10%);
+    opacity: 0.7;
+  }
+  80% {
+    transform: translate(-15%, 0);
+    opacity: 0.7;
+  }
+  90% {
+    transform: translate(10%, 5%);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.7;
+  }
+}
+
+/* Efecto de parpadeo sutil (flicker) */
+@keyframes crtFlicker {
+  0%, 100% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Aseguramos que el contenido del texto se muestre por encima */
+.crt-screen .text-content {
+  position: relative;
+  /* z-index: 3; */
 }
