@@ -8,7 +8,6 @@ import { Typewriter } from "react-simple-typewriter";
 const Faq = () => {
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState("");
-  const [faqId, setFaqId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
   /**
@@ -18,7 +17,6 @@ const Faq = () => {
     if (!query) return;
     setLoading(true);
     setAnswer("");
-    setFaqId(null);
 
     const res = await fetch("/api/faq", {
       method: "POST",
@@ -28,8 +26,17 @@ const Faq = () => {
 
     const data = await res.json();
     setAnswer(data.answer || "No se encontró una respuesta.");
-    setFaqId(data.faqId || null);
     setLoading(false);
+  };
+
+  /**
+   * Maneja el evento de tecla para disparar la consulta al presionar Enter.
+   * @param {React.KeyboardEvent<HTMLInputElement>} e - El evento del teclado.
+   */
+  const handleKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      askQuestion();
+    }
   };
 
   return (
@@ -38,6 +45,7 @@ const Faq = () => {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={handleKeyDown}
         className="w-full p-3 border rounded mb-4 text-lg"
         placeholder="Escribe tu pregunta..."
       />
@@ -86,7 +94,6 @@ const Faq = () => {
               delaySpeed={1000}
             />
           </div>
-          {faqId && <FeedbackButtons faqId={faqId} />}
         </div>
       )}
     </div>
@@ -94,45 +101,3 @@ const Faq = () => {
 };
 
 export default Faq;
-
-/**
- * Componente para registrar el feedback del usuario.
- * @param param0 Objeto con la propiedad faqId.
- */
-function FeedbackButtons({ faqId }: { faqId: number }) {
-  const [feedbackSent, setFeedbackSent] = useState(false);
-
-  /**
-   * Envía el feedback a la API.
-   * @param helpful Boolean indicando si la respuesta fue útil.
-   */
-  const sendFeedback = async (helpful: boolean) => {
-    await fetch("/api/faq/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ faqId, helpful }),
-    });
-    setFeedbackSent(true);
-  };
-
-  return feedbackSent ? (
-    <p className="mt-2 text-green-600 font-semibold">
-      ¡Gracias por tu feedback! 😊
-    </p>
-  ) : (
-    <div className="flex gap-4 mt-4">
-      <button
-        onClick={() => sendFeedback(true)}
-        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
-      >
-        👍 Sí
-      </button>
-      <button
-        onClick={() => sendFeedback(false)}
-        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-      >
-        👎 No
-      </button>
-    </div>
-  );
-}

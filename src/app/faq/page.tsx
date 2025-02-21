@@ -1,3 +1,5 @@
+import Container from "../_components/common/container";
+import WaveDivider from "../_components/common/wave-divider";
 import Faq from "../_components/faq";
 
 /**
@@ -5,11 +7,24 @@ import Faq from "../_components/faq";
  */
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-3xl font-bold mb-4">
-        Bienvenido a nuestro FAQ inteligente
-      </h1>
-      <Faq />
+    <main>
+      <section>
+        <div className="pt-4">
+          <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+            <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
+              <h1 className="my-4 text-5xl font-bold leading-tight py-16">
+                Bienvenido al FAQ con Intelencia Artificial
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+      <WaveDivider />
+      <Container>
+        <article className="mb-64">
+          <Faq />
+        </article>
+      </Container>
     </main>
   );
 }
