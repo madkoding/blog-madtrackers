@@ -1,23 +1,11 @@
 [
 	{
-		"question": "¿Qué son los trackers SlimeVR?",
-		"answer": "Los trackers SlimeVR son dispositivos avanzados diseñados para capturar el movimiento del cuerpo con alta precisión. Utilizan sensores inerciales y conexión WiFi de 2.4 GHz para transmitir datos en tiempo real, permitiendo experiencias inmersivas en realidad virtual y aplicaciones de animación."
-	},
-	{
 		"question": "¿Cómo se calibran los trackers?",
 		"answer": "La calibración es automática al encenderlos por primera vez. Para obtener mejores resultados, coloca todos los trackers sobre una superficie plana y estable, en posición cercana, y déjalos quietos durante aproximadamente 10 minutos para que se registren los parámetros óptimos. Una vez calibrados, conservarán estos valores para usos posteriores."
 	},
 	{
 		"question": "¿Qué es el drifting y cómo afecta a los trackers?",
-		"answer": "El drifting se refiere a la pérdida gradual de precisión en la orientación del tracker debido a imprecisiones acumuladas en los sensores. En modelos básicos puede aparecer en 5 minutos, mientras que en modelos avanzados puede tardar 20 a 30 minutos o más. Se corrige reiniciando o recalibrando el sistema."
-	},
-	{
-		"question": "¿Por qué necesito más trackers con SlimeVR que con HTC Vive?",
-		"answer": "A diferencia del HTC Vive, que utiliza cámaras y estaciones base, SlimeVR requiere múltiples trackers para captar de forma precisa todos los movimientos del cuerpo. Cada tracker aporta datos específicos que, combinados, generan una representación completa y realista."
-	},
-	{
-		"question": "¿Puedo usar estos trackers con dispositivos como Oculus Quest 2, Quest 3 o Quest 3s?",
-		"answer": "Sí, los trackers SlimeVR son compatibles con una amplia gama de dispositivos VR, incluidos Oculus Quest 2, Quest 3 y Quest 3s. Se pueden utilizar tanto con un PC (a través de SteamVR) como de forma nativa en algunos headsets."
+		"answer": "El drifting se refiere a la pérdida gradual de precisión en la orientación del tracker debido a imprecisiones acumuladas en los sensores. En modelos básicos puede aparecer en 5 minutos, mientras que en modelos avanzados puede tardar entre 20 y 30 minutos o más. Se corrige reiniciando o recalibrando el sistema."
 	},
 	{
 		"question": "¿Necesito equipos adicionales como Base Stations o cámaras para usar los trackers?",
@@ -32,32 +20,12 @@
 		"answer": "Agregar un tracker extra en la cintura mejora la precisión del seguimiento del torso, lo que es crucial para movimientos complejos como bailar, ya que proporciona datos adicionales para una reconstrucción corporal más realista."
 	},
 	{
-		"question": "¿Son difíciles de configurar los trackers SlimeVR?",
-		"answer": "No, la configuración es sencilla. Basta con conectarlos a tu red WiFi y seguir las instrucciones del software de SlimeVR, que incluye guías y tutoriales para facilitar el proceso."
-	},
-	{
-		"question": "¿Puedo usar los trackers SlimeVR con cualquier juego de realidad virtual?",
-		"answer": "La mayoría de los juegos y aplicaciones que admiten seguimiento de cuerpo completo son compatibles con SlimeVR, aunque se recomienda verificar la compatibilidad para títulos específicos."
-	},
-	{
 		"question": "¿Los trackers requieren baterías y cuánto duran?",
 		"answer": "Sí, funcionan con baterías recargables. La duración varía según el modelo y el uso, pero en general pueden operar durante varias horas de uso continuo, lo que es adecuado para la mayoría de las sesiones de VR."
 	},
 	{
-		"question": "¿Puedo utilizar SlimeVR en un espacio de juego reducido?",
-		"answer": "Sí, una de las ventajas de SlimeVR es que no depende de cámaras o estaciones externas, lo que lo hace ideal para espacios pequeños, siempre que se disponga de un área mínima para moverse."
-	},
-	{
-		"question": "¿SlimeVR es compatible con sistemas de realidad aumentada?",
-		"answer": "Aunque SlimeVR está diseñado principalmente para realidad virtual, su tecnología de seguimiento puede adaptarse a ciertos sistemas de realidad aumentada, según la integración específica de la aplicación."
-	},
-	{
 		"question": "¿Necesito conocimientos técnicos avanzados para utilizar y mantener los trackers?",
 		"answer": "No, la mayoría de los usuarios pueden instalar y utilizar los trackers siguiendo las guías disponibles. Además, existe una comunidad activa y soporte técnico para resolver cualquier duda."
-	},
-	{
-		"question": "¿Qué sensores se utilizan en los trackers SlimeVR y cómo funcionan?",
-		"answer": "Los trackers utilizan dos sensores principales: el LSM6DSR, que capta movimientos sutiles a un costo eficiente, y el ICM45686, que ofrece mediciones más precisas y estables, permitiendo un seguimiento detallado incluso en movimientos rápidos."
 	},
 	{
 		"question": "¿Cuánto tiempo tarda en presentarse el drifting y cómo se corrige?",
@@ -72,10 +40,6 @@
 		"answer": "El envío dentro de Chile se realiza a partir de 5 dólares, mientras que el envío internacional comienza en 60 dólares, con tarifas que pueden variar según la ubicación y el peso del paquete."
 	},
 	{
-		"question": "¿Qué garantía tienen los trackers SlimeVR?",
-		"answer": "Los trackers cuentan con garantía de fábrica que respalda su calidad y funcionamiento. Los términos exactos varían según el distribuidor y la región, por lo que es recomendable consultar la información específica al momento de la compra."
-	},
-	{
 		"question": "¿Cuál es el rango de conexión WiFi de los trackers?",
 		"answer": "Los trackers están diseñados para operar en entornos domésticos o de estudio, ofreciendo un rango aproximado de 30 a 50 metros en condiciones óptimas, aunque obstáculos y interferencias pueden reducir este alcance."
 	},
@@ -84,32 +48,12 @@
 		"answer": "Operan en la banda de 2.4 GHz, la cual ofrece buena cobertura y penetración en interiores, aunque puede estar sujeta a interferencias en áreas con alta densidad de redes."
 	},
 	{
-		"question": "¿Es necesario actualizar el firmware de los trackers?",
-		"answer": "Sí, se recomienda mantener actualizado el firmware para mejorar la precisión, añadir nuevas funciones y corregir posibles errores. Las actualizaciones suelen distribuirse a través del software oficial de SlimeVR."
-	},
-	{
-		"question": "¿Cómo se actualiza el software de SlimeVR?",
-		"answer": "El software se actualiza automáticamente o mediante notificaciones, permitiendo descargar e instalar las últimas versiones desde el sitio web oficial o mediante la propia aplicación."
-	},
-	{
-		"question": "¿Se pueden personalizar los parámetros de seguimiento?",
-		"answer": "Sí, el software de SlimeVR permite ajustar parámetros como la sensibilidad y los umbrales de calibración para adaptarse a las necesidades específicas de cada usuario."
-	},
-	{
-		"question": "¿Qué nivel de precisión ofrecen los trackers SlimeVR?",
-		"answer": "Gracias a la combinación de sensores de alta calidad y algoritmos avanzados, los trackers ofrecen una precisión notable, capturando incluso los movimientos más sutiles con gran exactitud."
-	},
-	{
 		"question": "¿Cómo afectan las interferencias WiFi al rendimiento de los trackers?",
 		"answer": "Las interferencias pueden disminuir la calidad de la señal, afectando la transmisión de datos en tiempo real. Se recomienda utilizar una red WiFi estable y, si es posible, en una banda separada para minimizar estos efectos."
 	},
 	{
 		"question": "¿Puedo utilizar múltiples sets de trackers en una misma sesión?",
 		"answer": "Sí, es posible utilizar varios sets simultáneamente, siempre que la red WiFi y el sistema tengan la capacidad de gestionar el mayor volumen de datos."
-	},
-	{
-		"question": "¿Qué medidas de seguridad se aplican a los datos transmitidos por los trackers?",
-		"answer": "La información se transmite a través de conexiones WiFi seguras y el software de SlimeVR utiliza encriptación para proteger la integridad y privacidad de los datos del usuario."
 	},
 	{
 		"question": "¿Cuál es la latencia típica en la transmisión de datos de los trackers?",
@@ -122,14 +66,6 @@
 	{
 		"question": "¿Son resistentes al agua o a golpes los trackers?",
 		"answer": "Los trackers cuentan con un diseño robusto y son resistentes a golpes; sin embargo, no están diseñados para inmersión en agua, por lo que se debe evitar su exposición prolongada a líquidos."
-	},
-	{
-		"question": "¿Qué aplicaciones se recomiendan para usar junto con SlimeVR?",
-		"answer": "Además de juegos y aplicaciones VR compatibles con SteamVR, existen programas de animación y captura de movimiento que se integran perfectamente con SlimeVR, ampliando su uso en entornos creativos."
-	},
-	{
-		"question": "¿Cómo se integra SlimeVR con SteamVR?",
-		"answer": "El software de SlimeVR se integra de forma nativa con SteamVR, permitiendo que los datos de seguimiento se transmitan en tiempo real a juegos y aplicaciones compatibles sin necesidad de configuraciones complejas."
 	},
 	{
 		"question": "¿Puedo conectar los trackers a dispositivos móviles?",
@@ -152,18 +88,6 @@
 		"answer": "Para el seguimiento en tiempo real, los trackers pueden operar sin conexión; sin embargo, funciones como actualizaciones o sincronización avanzada requieren una conexión WiFi estable."
 	},
 	{
-		"question": "¿Qué requisitos tiene el PC para correr el software de SlimeVR?",
-		"answer": "El PC debe contar con un sistema operativo moderno (Windows, macOS o Linux), un procesador decente y una conexión WiFi estable. No se requieren especificaciones extremas, pero un equipo actualizado garantiza un rendimiento óptimo."
-	},
-	{
-		"question": "¿Cuánto espacio de almacenamiento requiere el software de SlimeVR?",
-		"answer": "El software es bastante ligero, normalmente ocupando solo unos pocos cientos de megabytes, lo que permite su instalación incluso en dispositivos con espacio limitado."
-	},
-	{
-		"question": "¿Existen planes para expandir la compatibilidad a otros sistemas operativos?",
-		"answer": "El equipo de SlimeVR trabaja constantemente en mejoras; actualmente se soportan los principales sistemas operativos, y se evaluarán nuevas plataformas en futuras actualizaciones."
-	},
-	{
 		"question": "¿Cómo afecta la temperatura al rendimiento de los trackers?",
 		"answer": "Condiciones de temperatura extremas pueden afectar la precisión de los sensores. Se recomienda utilizar los trackers en ambientes con temperaturas moderadas para garantizar un rendimiento consistente."
 	},
@@ -172,32 +96,12 @@
 		"answer": "El sistema está diseñado para gestionar breves interrupciones en la transmisión. En caso de pérdida momentánea, se emplea interpolación para mantener una experiencia de seguimiento continua."
 	},
 	{
-		"question": "¿Se pueden recalibrar automáticamente durante el uso?",
-		"answer": "Sí, el software de SlimeVR puede detectar inconsistencias en el seguimiento y ejecutar recalibraciones automáticas en segundo plano para mantener la precisión."
-	},
-	{
-		"question": "¿Cuál es la diferencia entre el sensor LSM6DSR y el ICM45686?",
-		"answer": "El LSM6DSR es ideal para captar movimientos sutiles y ofrece una excelente relación calidad-precio, mientras que el ICM45686 proporciona mediciones más precisas y estables, siendo preferido en aplicaciones de alta precisión."
-	},
-	{
 		"question": "¿Cuál es la precisión de cada sensor?",
 		"answer": "El LSM6DSR es adecuado para la mayoría de aplicaciones cotidianas, mientras que el ICM45686 destaca en escenarios que requieren seguimiento de movimientos rápidos y complejos con gran exactitud."
 	},
 	{
-		"question": "¿Qué soporte ofrece SlimeVR para desarrolladores?",
-		"answer": "SlimeVR ofrece documentación técnica detallada, API abiertas y una comunidad activa que facilita la integración de los trackers en proyectos personalizados. Además, el soporte técnico está disponible para asesorar en desarrollos específicos."
-	},
-	{
-		"question": "¿Hay planes para lanzar nuevos modelos de trackers?",
-		"answer": "El equipo de SlimeVR está en constante investigación y desarrollo, y se esperan futuras versiones con mejoras en precisión, duración de batería y compatibilidad con nuevos dispositivos."
-	},
-	{
-		"question": "¿Cómo puedo contactar al servicio al cliente para soporte técnico?",
-		"answer": "Puedes comunicarte a través del sitio web oficial de SlimeVR, foros de soporte y redes sociales. Además, se recomienda revisar la sección de FAQ y la documentación en línea para resolver dudas comunes."
-	},
-	{
 		"question": "¿Existen descuentos o promociones para la compra de packs de trackers?",
-		"answer": "Con frecuencia se ofrecen promociones y descuentos para la compra de packs, especialmente al adquirir el mínimo de 6 unidades. Se recomienda seguir las redes sociales y el boletín informativo de SlimeVR para estar al tanto de las ofertas."
+		"answer": "Con frecuencia se ofrecen promociones y descuentos para la compra de packs, especialmente al adquirir el mínimo de 6 unidades. Se recomienda seguir las redes sociales y boletines informativos para estar al tanto de las ofertas."
 	},
 	{
 		"question": "¿Cuáles son las opciones de personalización de colores y materiales?",
@@ -212,591 +116,27 @@
 		"answer": "Los trackers cumplen con normativas internacionales de seguridad y calidad, lo que garantiza que han pasado pruebas rigurosas en cuanto a resistencia eléctrica y protección contra interferencias."
 	},
 	{
-		"question": "¿Cómo se integra SlimeVR con aplicaciones de fitness?",
-		"answer": "SlimeVR se integra fácilmente con aplicaciones de fitness que permiten el seguimiento de movimientos, ofreciendo datos en tiempo real que ayudan a mejorar la técnica y evaluar el rendimiento."
-	},
-	{
-		"question": "¿Qué tipo de mantenimiento requieren los trackers?",
-		"answer": "El mantenimiento es mínimo; se recomienda limpiar periódicamente el dispositivo y asegurarse de que la batería se cargue adecuadamente. Actualizaciones de firmware y software también contribuyen a un funcionamiento óptimo."
-	},
-	{
-		"question": "¿Cómo se realiza la sincronización de datos entre trackers y PC?",
-		"answer": "La sincronización se efectúa a través de la red WiFi, donde el software de SlimeVR se encarga de recopilar y alinear los datos de cada tracker en tiempo real para lograr una experiencia fluida."
-	},
-	{
-		"question": "¿Puedo monitorizar el estado de cada tracker individualmente?",
-		"answer": "Sí, el software de SlimeVR permite ver el estado y los niveles de batería de cada tracker, facilitando la detección de problemas o la necesidad de recarga."
-	},
-	{
 		"question": "¿Qué protocolos de seguridad se usan en la transmisión de datos?",
 		"answer": "La transmisión se realiza mediante protocolos encriptados que garantizan la privacidad e integridad de la información, protegiendo los datos de accesos no autorizados."
 	},
 	{
-		"question": "¿Qué herramientas ofrece el software para diagnosticar problemas?",
-		"answer": "El software incluye paneles de diagnóstico y reportes en tiempo real que ayudan a identificar y solucionar problemas de conexión, calibración o rendimiento."
+		"question": "¿Qué garantías ofrecen los trackers?",
+		"answer": "La garantía es de 1 mes, aplicable únicamente en Chile y solo cubre fallas de hardware que no hayan sido ocasionadas por intervención del usuario."
 	},
 	{
-		"question": "¿Es posible ajustar manualmente la sensibilidad de los sensores?",
-		"answer": "Sí, el software permite configurar parámetros de sensibilidad y ajustar los umbrales de calibración para optimizar el rendimiento según las necesidades del usuario."
+		"question": "¿Se pueden usar los trackers sin un dispositivo de realidad virtual?",
+		"answer": "Sí, los trackers pueden utilizarse de manera independiente sin necesidad de un visor VR, lo que permite su uso en aplicaciones como análisis de movimiento, animación o estudios biomecánicos."
 	},
 	{
-		"question": "¿Cómo se actualiza el firmware de los trackers de forma remota?",
-		"answer": "El firmware se puede actualizar a través del software de SlimeVR, que notifica y descarga las últimas versiones automáticamente, permitiendo una actualización sin necesidad de conexión física."
+		"question": "¿Pueden transmitir posiciones a programas externos?",
+		"answer": "Sí, los trackers son capaces de enviar datos de posición a programas externos utilizando protocolos como OSC (Open Sound Control) o VMC (Virtual Motion Capture), facilitando su integración en diversos entornos de trabajo."
 	},
 	{
-		"question": "¿Qué garantías de precisión ofrecen los trackers en movimientos rápidos?",
-		"answer": "Gracias a sus avanzados sensores y algoritmos de procesamiento, los trackers mantienen una alta precisión incluso en movimientos rápidos, garantizando una experiencia de seguimiento fluida."
+		"question": "¿Qué programas, aplicaciones y juegos pueden recibir la posición de los trackers mediante OSC?",
+		"answer": "Con OSC se pueden integrar los trackers con aplicaciones interactivas y de performance como TouchDesigner, Max/MSP, Pure Data, Resolume, Ableton Live, y también con proyectos desarrollados en Unity o Processing que implementen la recepción de mensajes OSC."
 	},
 	{
-		"question": "¿Cómo se comportan los trackers en ambientes con vibraciones intensas?",
-		"answer": "El diseño robusto y los algoritmos de filtrado permiten que los trackers minimicen el impacto de las vibraciones, manteniendo una buena precisión en condiciones adversas."
-	},
-	{
-		"question": "¿Se pueden usar trackers en deportes de alta intensidad?",
-		"answer": "Sí, los trackers están diseñados para soportar movimientos intensos, siendo ideales para deportes y actividades físicas de alta demanda."
-	},
-	{
-		"question": "¿Cómo se gestionan las actualizaciones del software de SlimeVR?",
-		"answer": "El software se actualiza automáticamente o mediante notificaciones, y las actualizaciones pueden incluir mejoras en la precisión, nuevas funcionalidades y correcciones de errores."
-	},
-	{
-		"question": "¿Qué métodos de autenticación se utilizan para acceder al sistema?",
-		"answer": "El sistema utiliza autenticación basada en credenciales y tokens seguros para garantizar que solo usuarios autorizados accedan a la información y configuraciones de los trackers."
-	},
-	{
-		"question": "¿Cuáles son los requerimientos mínimos para el PC que ejecuta SlimeVR?",
-		"answer": "Se recomienda un PC con un procesador moderno, al menos 4 GB de RAM y una conexión WiFi estable. No se requieren especificaciones extremas, pero un equipo actualizado garantiza un mejor rendimiento."
-	},
-	{
-		"question": "¿Cómo se integran los trackers con sistemas de captura de movimiento profesional?",
-		"answer": "Los trackers pueden integrarse con sistemas profesionales mediante la exportación de datos en formatos estándar, lo que permite su uso en entornos de animación y producción cinematográfica."
-	},
-	{
-		"question": "¿Puedo utilizar los trackers para capturar movimientos en 360°?",
-		"answer": "Sí, la tecnología de SlimeVR permite capturar movimientos en 360° combinando los datos de múltiples trackers para recrear la posición y orientación completa del cuerpo."
-	},
-	{
-		"question": "¿Qué precisión tienen los trackers al registrar movimientos sutiles?",
-		"answer": "Los trackers ofrecen alta precisión en la detección de movimientos sutiles gracias a sus sensores avanzados y algoritmos optimizados, lo que resulta en una experiencia de seguimiento detallada."
-	},
-	{
-		"question": "¿Qué diferencia hay en el rendimiento entre el LSM6DSR y el ICM45686?",
-		"answer": "El LSM6DSR ofrece una excelente relación calidad-precio y es ideal para aplicaciones cotidianas, mientras que el ICM45686 destaca por su mayor precisión y estabilidad en entornos de alta demanda."
-	},
-	{
-		"question": "¿Cómo se mide el rendimiento de un tracker en pruebas de laboratorio?",
-		"answer": "El rendimiento se evalúa mediante pruebas de precisión, latencia y estabilidad en entornos controlados, utilizando equipos de medición especializados y comparándolo con estándares de la industria."
-	},
-	{
-		"question": "¿Existen estudios comparativos entre diferentes modelos de trackers?",
-		"answer": "Sí, se han realizado estudios comparativos que evalúan la precisión, durabilidad y respuesta de distintos modelos de trackers, siendo los SlimeVR reconocidos por su buen desempeño en diversas condiciones."
-	},
-	{
-		"question": "¿Qué impacto tiene la ubicación del router en el rendimiento de los trackers?",
-		"answer": "La ubicación del router es crucial; un router central y sin obstáculos mejora la cobertura y reduce la latencia, mientras que un router alejado o con muchas barreras puede afectar negativamente la transmisión de datos."
-	},
-	{
-		"question": "¿Puedo usar un extensor WiFi para mejorar la conexión de los trackers?",
-		"answer": "Sí, utilizar un extensor WiFi o un router dedicado puede ayudar a mejorar la cobertura y estabilidad de la conexión, optimizando el rendimiento del sistema."
-	},
-	{
-		"question": "¿Qué configuración de red se recomienda para un óptimo rendimiento?",
-		"answer": "Se recomienda utilizar una red dedicada o configurar un router con canal poco saturado en la banda de 2.4 GHz, para minimizar interferencias y garantizar una señal estable."
-	},
-	{
-		"question": "¿Los trackers tienen algún modo de ahorro de energía?",
-		"answer": "Sí, el software de SlimeVR incorpora modos de ahorro de energía que reducen el consumo cuando el dispositivo está en reposo, extendiendo la duración de la batería."
-	},
-	{
-		"question": "¿Cómo se gestiona la sobrecarga de datos en una sesión prolongada?",
-		"answer": "El sistema está diseñado para optimizar el flujo de datos y prevenir sobrecargas mediante técnicas de compresión y gestión eficiente de la transmisión en tiempo real."
-	},
-	{
-		"question": "¿Puedo exportar los datos de seguimiento para análisis externos?",
-		"answer": "Sí, el software permite exportar los datos en formatos estándar (como CSV o JSON), facilitando su análisis con herramientas externas o plataformas especializadas."
-	},
-	{
-		"question": "¿Qué formatos de exportación de datos soporta el software de SlimeVR?",
-		"answer": "El software soporta la exportación en formatos comunes como CSV y JSON, lo que facilita la integración con software de análisis y visualización de datos."
-	},
-	{
-		"question": "¿Es posible integrar SlimeVR con software de análisis biomecánico?",
-		"answer": "Sí, gracias a su capacidad de exportar datos en formatos estándar, SlimeVR se puede integrar con plataformas de análisis biomecánico para estudios detallados del movimiento."
-	},
-	{
-		"question": "¿Qué tan rápido se actualizan los datos en la interfaz de usuario de SlimeVR?",
-		"answer": "La interfaz se actualiza en tiempo real, con una latencia generalmente inferior a 50 milisegundos, lo que permite un seguimiento fluido y preciso."
-	},
-	{
-		"question": "¿Cómo se asegura la sincronización en tiempo real entre dispositivos?",
-		"answer": "La sincronización se logra mediante protocolos optimizados de comunicación en red y algoritmos que alinean los datos de cada tracker de forma coherente."
-	},
-	{
-		"question": "¿Qué recomendaciones hay para optimizar la latencia en el seguimiento?",
-		"answer": "Se recomienda utilizar una red WiFi dedicada, minimizar obstáculos y, en la medida de lo posible, emplear routers de alta calidad para reducir la latencia."
-	},
-	{
-		"question": "¿Cómo se gestionan los errores de transmisión de datos?",
-		"answer": "El sistema incluye mecanismos de detección y corrección de errores, reintentando la transmisión de datos en caso de fallos y asegurando la integridad de la información."
-	},
-	{
-		"question": "¿Puedo recibir alertas si un tracker pierde la conexión?",
-		"answer": "Sí, el software de SlimeVR puede configurarse para notificar al usuario si se detecta una pérdida de conexión o problemas en la transmisión de datos."
-	},
-	{
-		"question": "¿Qué soporte se ofrece en caso de fallas en el hardware?",
-		"answer": "Se ofrece soporte técnico a través de canales oficiales, donde se puede gestionar la reparación o el reemplazo del dispositivo según los términos de la garantía."
-	},
-	{
-		"question": "¿Cómo se diagnostica un problema de drifting anormal?",
-		"answer": "El software dispone de herramientas de diagnóstico que analizan el comportamiento del tracker. Si se detecta un drifting fuera de lo normal, se recomienda recalibrar el dispositivo o contactar al soporte técnico."
-	},
-	{
-		"question": "¿Existen herramientas de diagnóstico incluidas en el software?",
-		"answer": "Sí, el software de SlimeVR incluye paneles de control y reportes en tiempo real que facilitan la identificación y solución de problemas."
-	},
-	{
-		"question": "¿Qué información se muestra en el panel de control de SlimeVR?",
-		"answer": "El panel muestra el estado de cada tracker, nivel de batería, datos de calibración y estadísticas en tiempo real, facilitando el monitoreo del sistema."
-	},
-	{
-		"question": "¿Cómo se pueden visualizar los datos de movimiento en tiempo real?",
-		"answer": "La interfaz gráfica del software permite visualizar en vivo los datos de seguimiento, mostrando movimientos y orientaciones de manera clara y detallada."
-	},
-	{
-		"question": "¿Qué niveles de sensibilidad se pueden configurar en el software?",
-		"answer": "El software permite ajustar varios niveles de sensibilidad, lo que ayuda a personalizar la respuesta del tracker según el tipo de actividad o preferencia del usuario."
-	},
-	{
-		"question": "¿Se pueden establecer umbrales de alerta para detectar drift?",
-		"answer": "Sí, es posible configurar umbrales de alerta que notifiquen al usuario cuando el drift supere ciertos límites, permitiendo intervenciones oportunas."
-	},
-	{
-		"question": "¿Cuál es el procedimiento para reiniciar un tracker?",
-		"answer": "El reinicio se realiza presionando un botón físico o a través del software, lo que permite que el tracker se reinicialice y, en su caso, se recalibre automáticamente."
-	},
-	{
-		"question": "¿Es posible configurar reinicios automáticos en caso de error?",
-		"answer": "Sí, el sistema puede programarse para realizar reinicios automáticos si se detectan fallos en la transmisión o errores de calibración, garantizando continuidad en el seguimiento."
-	},
-	{
-		"question": "¿Cómo se protege el sistema contra actualizaciones fallidas?",
-		"answer": "El software incluye mecanismos de verificación y restauración que aseguran que, en caso de una actualización fallida, se pueda volver a una versión estable sin pérdida de datos."
-	},
-	{
-		"question": "¿Qué medidas de redundancia tiene el sistema de seguimiento?",
-		"answer": "El sistema está diseñado con redundancias tanto en hardware como en software para minimizar la pérdida de datos y mantener la continuidad del seguimiento incluso en condiciones adversas."
-	},
-	{
-		"question": "¿Se puede utilizar SlimeVR en entornos profesionales de entrenamiento?",
-		"answer": "Sí, muchos centros deportivos y de entrenamiento utilizan SlimeVR para monitorizar y mejorar el rendimiento de sus atletas, gracias a su alta precisión y facilidad de integración."
-	},
-	{
-		"question": "¿Qué diferencias hay entre el seguimiento en interiores y exteriores?",
-		"answer": "En interiores, el seguimiento suele ser más preciso debido a un ambiente controlado y menor interferencia. En exteriores, factores como interferencias y la calidad de la señal WiFi pueden afectar ligeramente la precisión."
-	},
-	{
-		"question": "¿Cómo afecta la luz ambiental a la precisión del seguimiento?",
-		"answer": "Al no depender de cámaras, los trackers SlimeVR no se ven afectados por la luz ambiental, lo que los hace ideales para diferentes condiciones lumínicas."
-	},
-	{
-		"question": "¿Puedo utilizar trackers en condiciones de humedad alta?",
-		"answer": "Sí, aunque se recomienda evitar exposiciones prolongadas a ambientes extremos, ya que la humedad puede afectar a los componentes electrónicos a largo plazo."
-	},
-	{
-		"question": "¿Qué recomendaciones hay para el uso de trackers en verano?",
-		"answer": "Se recomienda mantener los dispositivos en un lugar fresco y bien ventilado, evitar la exposición directa al sol y asegurarse de que la batería esté en buen estado para evitar sobrecalentamientos."
-	},
-	{
-		"question": "¿Existen accesorios recomendados para proteger los trackers?",
-		"answer": "Sí, se ofrecen fundas protectoras y soportes específicos que ayudan a proteger los dispositivos de golpes, polvo y condiciones adversas, prolongando su vida útil."
-	},
-	{
-		"question": "¿Cómo se limpia y mantiene un tracker para prolongar su vida útil?",
-		"answer": "Se recomienda limpiar suavemente el dispositivo con un paño seco o ligeramente humedecido, evitando el uso de líquidos que puedan dañar los componentes electrónicos."
-	},
-	{
-		"question": "¿Qué garantías ofrece el fabricante en caso de defectos?",
-		"answer": "Los trackers SlimeVR cuentan con garantía de fábrica que varía según la región y el distribuidor. Es importante revisar los términos específicos al momento de la compra."
-	},
-	{
-		"question": "¿Cómo se gestiona la reparación de un tracker averiado?",
-		"answer": "En caso de avería, se recomienda contactar al servicio de soporte técnico autorizado, el cual gestionará la reparación o el reemplazo del dispositivo según la garantía vigente."
-	},
-	{
-		"question": "¿Qué políticas de devolución se aplican en la compra de trackers?",
-		"answer": "Las políticas de devolución varían según el distribuidor, pero generalmente se permite la devolución o cambio dentro de un período establecido si se presenta un defecto de fabricación."
-	},
-	{
-		"question": "¿Puedo solicitar soporte técnico a través del sitio web oficial?",
-		"answer": "Sí, el sitio web oficial de SlimeVR ofrece formularios de contacto, chats en vivo y direcciones de correo electrónico para solicitar asistencia técnica."
-	},
-	{
-		"question": "¿Existen foros o comunidades en línea para usuarios de SlimeVR?",
-		"answer": "Sí, existen varios foros y comunidades en línea donde los usuarios comparten experiencias, solucionan dudas y colaboran en proyectos relacionados con SlimeVR."
-	},
-	{
-		"question": "¿Qué tipo de documentación técnica se ofrece para desarrolladores?",
-		"answer": "SlimeVR proporciona documentación detallada, API abiertas y ejemplos de código que facilitan la integración de los trackers en aplicaciones y proyectos personalizados."
-	},
-	{
-		"question": "¿Cómo se integran los trackers con motores de juego como Unity?",
-		"answer": "Existen paquetes y ejemplos de integración para Unity que permiten conectar los datos de SlimeVR a proyectos de juego, facilitando el desarrollo de experiencias inmersivas."
-	},
-	{
-		"question": "¿Puedo encontrar ejemplos de código para la integración de SlimeVR?",
-		"answer": "Sí, en la documentación oficial y en repositorios de la comunidad se pueden encontrar ejemplos de código para integrar los trackers en diferentes plataformas y motores de juego."
-	},
-	{
-		"question": "¿Qué tipo de API ofrece SlimeVR para personalización?",
-		"answer": "SlimeVR cuenta con una API abierta que permite personalizar la configuración, exportar datos y ajustar parámetros de seguimiento, facilitando su adaptación a proyectos específicos."
-	},
-	{
-		"question": "¿Es posible modificar el software de SlimeVR para proyectos personalizados?",
-		"answer": "Sí, el software está diseñado para ser flexible y adaptable, permitiendo modificaciones y personalizaciones a través de su API y documentación técnica."
-	},
-	{
-		"question": "¿Qué licencias de software acompañan a SlimeVR?",
-		"answer": "El software se distribuye bajo licencias comerciales y, en algunos casos, de código abierto, lo que permite su integración en proyectos tanto personales como comerciales."
-	},
-	{
-		"question": "¿Existen versiones de código abierto del software de SlimeVR?",
-		"answer": "Algunos componentes y herramientas del ecosistema SlimeVR son de código abierto, lo que permite a la comunidad contribuir y adaptar el software según sus necesidades."
-	},
-	{
-		"question": "¿Cómo se protege la propiedad intelectual de las soluciones de SlimeVR?",
-		"answer": "La empresa utiliza medidas legales y técnicas para proteger su propiedad intelectual, garantizando que las innovaciones y diseños sean propiedad exclusiva de SlimeVR."
-	},
-	{
-		"question": "¿Qué tipo de actualizaciones se esperan en el futuro cercano?",
-		"answer": "Se esperan actualizaciones que incluyan mejoras en la precisión, nuevas funcionalidades y mayor compatibilidad con dispositivos y plataformas emergentes."
-	},
-	{
-		"question": "¿Cuál es la hoja de ruta de desarrollo para SlimeVR?",
-		"answer": "La hoja de ruta incluye mejoras en el hardware, integración con más plataformas de VR y actualizaciones en el software para optimizar el rendimiento y ampliar las funcionalidades."
-	},
-	{
-		"question": "¿Cómo se comunica el equipo de desarrollo con la comunidad de usuarios?",
-		"answer": "El equipo mantiene canales de comunicación a través de redes sociales, foros oficiales y boletines informativos, asegurando que los usuarios estén al tanto de las últimas novedades."
-	},
-	{
-		"question": "¿Qué canales oficiales se utilizan para anunciar actualizaciones?",
-		"answer": "Las actualizaciones se anuncian en el sitio web oficial, redes sociales y a través de newsletters enviados a los suscriptores."
-	},
-	{
-		"question": "¿Puedo suscribirme a un boletín informativo de SlimeVR?",
-		"answer": "Sí, se recomienda suscribirse al boletín informativo para recibir noticias, actualizaciones y ofertas especiales directamente en tu correo electrónico."
-	},
-	{
-		"question": "¿Existen webinars o tutoriales en línea sobre el uso de SlimeVR?",
-		"answer": "La empresa organiza webinars y publica tutoriales en línea que explican la instalación, configuración y optimización de los trackers para sacar el máximo provecho de la tecnología."
-	},
-	{
-		"question": "¿Cómo se capacita a nuevos usuarios en el uso de trackers?",
-		"answer": "Además de la documentación en línea, SlimeVR ofrece cursos, tutoriales y soporte en vivo para capacitar a los nuevos usuarios y facilitar la integración en sus proyectos."
-	},
-	{
-		"question": "¿Qué recursos educativos ofrece la empresa para principiantes?",
-		"answer": "Se ofrecen guías, videos tutoriales y documentación detallada que explican desde lo básico hasta configuraciones avanzadas, ayudando a los usuarios a comenzar rápidamente."
-	},
-	{
-		"question": "¿Se ofrecen cursos o certificaciones en el uso de SlimeVR?",
-		"answer": "En algunos casos se ofrecen cursos y certificaciones para profesionales interesados en el uso avanzado de la tecnología, facilitando la integración en entornos comerciales y educativos."
-	},
-	{
-		"question": "¿Qué soporte postventa está disponible para los usuarios?",
-		"answer": "Se ofrece soporte postventa a través de canales oficiales, incluyendo asistencia técnica, foros de usuarios y actualizaciones constantes del software."
-	},
-	{
-		"question": "¿Cómo se gestionan las incidencias en el servicio de atención al cliente?",
-		"answer": "Las incidencias se gestionan a través de un sistema de tickets y soporte en vivo, con tiempos de respuesta establecidos para resolver problemas de forma eficaz."
-	},
-	{
-		"question": "¿Cuánto tiempo se tarda en resolver un problema técnico?",
-		"answer": "El tiempo de resolución varía según la complejidad del problema, pero en general se busca ofrecer soluciones en pocas horas o, en casos complejos, en un máximo de 24-48 horas."
-	},
-	{
-		"question": "¿Qué métodos de contacto están disponibles para soporte?",
-		"answer": "Se puede contactar al soporte a través de correo electrónico, chat en vivo, foros oficiales y formularios de contacto en el sitio web."
-	},
-	{
-		"question": "¿Se ofrece asistencia técnica 24/7?",
-		"answer": "El soporte técnico está disponible en horarios extendidos, aunque la asistencia 24/7 puede depender del plan de servicio adquirido o del distribuidor."
-	},
-	{
-		"question": "¿Cuál es el tiempo de respuesta promedio del soporte técnico?",
-		"answer": "El tiempo de respuesta promedio suele ser de pocas horas, dependiendo de la carga de trabajo del servicio y la complejidad de la incidencia."
-	},
-	{
-		"question": "¿Puedo obtener soporte personalizado para proyectos comerciales?",
-		"answer": "Sí, para proyectos comerciales se ofrece soporte personalizado y consultoría para la integración y optimización de la tecnología en entornos específicos."
-	},
-	{
-		"question": "¿Qué testimonios existen de otros usuarios de SlimeVR?",
-		"answer": "Existen numerosos testimonios en foros, redes sociales y sitios especializados que destacan la eficacia y facilidad de uso de los trackers SlimeVR en distintos entornos."
-	},
-	{
-		"question": "¿Existen estudios de caso sobre la implementación de SlimeVR en empresas?",
-		"answer": "Sí, se han publicado estudios de caso que demuestran cómo SlimeVR ha mejorado el rendimiento y la seguridad en instalaciones deportivas, centros de entrenamiento y estudios de animación."
-	},
-	{
-		"question": "¿Qué opinan los expertos en VR sobre los trackers SlimeVR?",
-		"answer": "Los expertos destacan la precisión, robustez y facilidad de integración de los trackers SlimeVR, considerándolos una solución innovadora en el campo del seguimiento de movimiento."
-	},
-	{
-		"question": "¿Cómo se compara SlimeVR con otras soluciones de seguimiento de movimiento?",
-		"answer": "SlimeVR se diferencia por su independencia de cámaras y estaciones base, su conectividad WiFi y la integración de sensores avanzados, ofreciendo una solución más flexible y asequible."
-	},
-	{
-		"question": "¿Qué ventajas competitivas ofrece SlimeVR en el mercado actual?",
-		"answer": "Entre sus ventajas se encuentran la facilidad de instalación, compatibilidad con múltiples dispositivos VR, precisión en el seguimiento y un precio competitivo en comparación con sistemas tradicionales."
-	},
-	{
-		"question": "¿Existen reseñas independientes sobre el rendimiento de SlimeVR?",
-		"answer": "Sí, diversas publicaciones y usuarios independientes han reseñado positivamente el rendimiento, destacando su precisión, facilidad de uso y robustez en diferentes entornos."
-	},
-	{
-		"question": "¿Cómo se mide el retorno de inversión al utilizar SlimeVR en producción?",
-		"answer": "El ROI se mide en términos de mejora en la eficiencia del seguimiento, reducción de costos de instalación y mantenimiento, y la posibilidad de obtener datos precisos para optimizar el rendimiento en diversas aplicaciones."
-	},
-	{
-		"question": "¿Qué impacto tienen los trackers en el rendimiento deportivo de los usuarios?",
-		"answer": "Los trackers permiten analizar y mejorar la técnica, ofreciendo datos precisos que ayudan a optimizar el entrenamiento y prevenir lesiones, lo que se traduce en un mejor rendimiento deportivo."
-	},
-	{
-		"question": "¿Puedo utilizar SlimeVR en la rehabilitación física?",
-		"answer": "Sí, los datos precisos y en tiempo real que ofrecen los trackers pueden utilizarse para monitorizar y ajustar programas de rehabilitación, ayudando a evaluar el progreso y mejorar la recuperación."
-	},
-	{
-		"question": "¿Qué estudios respaldan la eficacia de SlimeVR en terapias de rehabilitación?",
-		"answer": "Existen investigaciones y casos de éxito que demuestran cómo el seguimiento preciso y la retroalimentación en tiempo real han contribuido a mejorar los resultados en terapias de rehabilitación física."
-	},
-	{
-		"question": "¿Cómo se adapta el sistema a diferentes tamaños y formas corporales?",
-		"answer": "El sistema es flexible y se adapta a diferentes morfologías gracias a la posibilidad de ajustar la posición de cada tracker y calibrar individualmente según las características del usuario."
-	},
-	{
-		"question": "¿Qué configuraciones se recomiendan para usuarios de baja estatura?",
-		"answer": "Para usuarios de baja estatura se recomienda ajustar la posición de los trackers para asegurar que capten correctamente los movimientos, lo que se puede lograr mediante recalibraciones específicas."
-	},
-	{
-		"question": "¿Cómo se gestionan los datos de seguimiento para usuarios de talla grande?",
-		"answer": "El sistema permite calibraciones personalizadas para adaptarse a diferentes tamaños corporales, asegurando que los datos se recojan de forma precisa sin importar la complexión del usuario."
-	},
-	{
-		"question": "¿Puedo calibrar los trackers individualmente para cada usuario?",
-		"answer": "Sí, el sistema permite realizar calibraciones individuales, lo que garantiza que cada tracker se ajuste a las características y movimientos específicos del usuario."
-	},
-	{
-		"question": "¿Qué papel juegan los algoritmos en la mejora del seguimiento?",
-		"answer": "Los algoritmos procesan los datos de los sensores para corregir errores, filtrar interferencias y optimizar la precisión del seguimiento, mejorando la experiencia general."
-	},
-	{
-		"question": "¿Cómo se optimizan los algoritmos de SlimeVR para reducir el drift?",
-		"answer": "Se utilizan técnicas de filtrado y calibración en tiempo real que minimizan las imprecisiones acumulativas, reduciendo significativamente el drift a lo largo del tiempo."
-	},
-	{
-		"question": "¿Existen configuraciones avanzadas para usuarios expertos?",
-		"answer": "Sí, el software permite ajustes avanzados en parámetros de sensibilidad, filtrado y calibración, ideales para usuarios que requieren un control fino del seguimiento."
-	},
-	{
-		"question": "¿Qué diferencias hay entre la versión para consumidores y la profesional?",
-		"answer": "La versión profesional suele incluir características adicionales, mayor capacidad de personalización y soporte extendido, mientras que la versión para consumidores está optimizada para facilidad de uso y precio accesible."
-	},
-	{
-		"question": "¿Cómo se evalúa la precisión de los trackers en entornos controlados?",
-		"answer": "La precisión se evalúa mediante pruebas de laboratorio que comparan los datos de los trackers con sistemas de referencia, midiendo la desviación y latencia en diferentes condiciones."
-	},
-	{
-		"question": "¿Puedo utilizar SlimeVR en combinación con otros sistemas de seguimiento?",
-		"answer": "Sí, SlimeVR puede integrarse con otros sistemas mediante la exportación de datos y la sincronización en tiempo real, ampliando las capacidades de seguimiento."
-	},
-	{
-		"question": "¿Qué protocolos de comunicación se utilizan para la sincronización?",
-		"answer": "Se utilizan protocolos de comunicación optimizados para redes WiFi que aseguran la sincronización en tiempo real y la coherencia de los datos entre dispositivos."
-	},
-	{
-		"question": "¿Cómo se garantiza la coherencia de los datos en sesiones prolongadas?",
-		"answer": "Mediante algoritmos de corrección y sincronización continua, el sistema mantiene la coherencia y precisión de los datos incluso durante sesiones largas."
-	},
-	{
-		"question": "¿Existen herramientas de análisis en tiempo real integradas en el software?",
-		"answer": "Sí, el software de SlimeVR incluye paneles de control y herramientas analíticas que permiten monitorizar y analizar los datos de seguimiento en tiempo real."
-	},
-	{
-		"question": "¿Puedo exportar informes detallados de las sesiones de seguimiento?",
-		"answer": "Sí, es posible exportar informes en formatos comunes como CSV o JSON para un análisis más profundo utilizando herramientas externas."
-	},
-	{
-		"question": "¿Qué formatos de exportación se soportan para análisis externo?",
-		"answer": "El sistema soporta exportaciones en CSV, JSON y, en algunos casos, formatos compatibles con software especializado en análisis biomecánico."
-	},
-	{
-		"question": "¿Es posible integrar SlimeVR con plataformas de streaming en vivo?",
-		"answer": "Sí, mediante la exportación de datos en tiempo real y APIs abiertas, es posible integrar SlimeVR con plataformas de streaming para compartir sesiones en vivo."
-	},
-	{
-		"question": "¿Cómo se gestiona la privacidad de los datos del usuario?",
-		"answer": "La privacidad se garantiza mediante encriptación durante la transmisión y almacenamiento seguro, cumpliendo con normativas internacionales de protección de datos."
-	},
-	{
-		"question": "¿Qué normativas de protección de datos cumple SlimeVR?",
-		"answer": "SlimeVR cumple con normativas como GDPR y otras leyes locales de protección de datos, asegurando la privacidad e integridad de la información del usuario."
-	},
-	{
-		"question": "¿Se pueden configurar ajustes de privacidad en el software?",
-		"answer": "Sí, el software permite configurar opciones de privacidad para controlar qué datos se recopilan y cómo se utilizan, brindando mayor control al usuario."
-	},
-	{
-		"question": "¿Qué medidas se toman para prevenir el acceso no autorizado?",
-		"answer": "Se emplean autenticaciones robustas y encriptación en la transmisión de datos, asegurando que solo usuarios autorizados puedan acceder a la información."
-	},
-	{
-		"question": "¿Puedo controlar quién accede a los datos de seguimiento?",
-		"answer": "Sí, el sistema permite configurar niveles de acceso y permisos para diferentes usuarios o aplicaciones que interactúan con los datos."
-	},
-	{
-		"question": "¿Qué recomendaciones hay para la seguridad en redes WiFi al usar trackers?",
-		"answer": "Se recomienda utilizar redes WiFi seguras, cambiar contraseñas periódicamente y, de ser posible, emplear una red dedicada para los trackers."
-	},
-	{
-		"question": "¿Cómo se protegen los trackers contra ataques cibernéticos?",
-		"answer": "El software incorpora medidas de seguridad, como encriptación y autenticación, para prevenir ataques y garantizar que solo usuarios autorizados puedan interactuar con el sistema."
-	},
-	{
-		"question": "¿Qué tipo de encriptación se utiliza en la transmisión de datos?",
-		"answer": "Se utilizan protocolos de encriptación modernos, como TLS, para asegurar la transmisión de datos entre los trackers y el software de SlimeVR."
-	},
-	{
-		"question": "¿Puedo auditar el flujo de datos de mis trackers?",
-		"answer": "Sí, el sistema permite registrar y auditar la transmisión de datos, lo que facilita el análisis y la detección de posibles anomalías en la red."
-	},
-	{
-		"question": "¿Qué controles de seguridad ofrece el panel de administración de SlimeVR?",
-		"answer": "El panel incluye controles para gestionar accesos, configurar encriptación y monitorizar la actividad de la red, asegurando una administración segura del sistema."
-	},
-	{
-		"question": "¿Existen integraciones con soluciones de seguridad informática?",
-		"answer": "En algunos casos, SlimeVR se puede integrar con soluciones de seguridad informática para una mayor protección de los datos y el control del sistema."
-	},
-	{
-		"question": "¿Cómo se gestionan las copias de seguridad de los datos de seguimiento?",
-		"answer": "El sistema permite programar copias de seguridad automáticas de los datos de seguimiento, asegurando que la información se respalde de forma regular."
-	},
-	{
-		"question": "¿Puedo recuperar datos en caso de una falla del sistema?",
-		"answer": "Sí, en caso de fallas se pueden restaurar los datos a partir de las copias de seguridad programadas, minimizando la pérdida de información."
-	},
-	{
-		"question": "¿Qué procedimientos se siguen en caso de pérdida de datos?",
-		"answer": "Se aplican protocolos de recuperación que implican el uso de copias de seguridad y verificación de integridad para restaurar los datos en el menor tiempo posible."
-	},
-	{
-		"question": "¿Cómo se asegura la integridad de los datos durante la transmisión?",
-		"answer": "Mediante algoritmos de verificación y encriptación, se garantiza que los datos transmitidos no se alteren y se mantenga su integridad."
-	},
-	{
-		"question": "¿Qué impacto tiene el uso prolongado de trackers en la salud del usuario?",
-		"answer": "El uso prolongado es seguro, aunque se recomienda pausas periódicas para evitar fatiga o molestias, especialmente en sesiones de entrenamiento intensas."
-	},
-	{
-		"question": "¿Existen estudios sobre la ergonomía de los trackers SlimeVR?",
-		"answer": "Sí, se han realizado estudios ergonómicos que demuestran la comodidad y el diseño optimizado de los trackers, adaptados para un uso prolongado sin causar molestias."
-	},
-	{
-		"question": "¿Qué recomendaciones hay para evitar la fatiga en el uso de trackers?",
-		"answer": "Se recomienda ajustar correctamente las correas o soportes, tomar descansos regulares y asegurarse de que el dispositivo esté bien calibrado para evitar esfuerzos innecesarios."
-	},
-	{
-		"question": "¿Puedo ajustar la ergonomía del dispositivo a mis necesidades?",
-		"answer": "Sí, muchos modelos permiten ajustes en las correas y accesorios para adaptarse a las preferencias y morfología del usuario."
-	},
-	{
-		"question": "¿Cómo se gestionan las incidencias relacionadas con molestias físicas?",
-		"answer": "El soporte técnico y la comunidad ofrecen asesoramiento sobre ajustes y configuraciones para minimizar molestias y mejorar la comodidad durante el uso prolongado."
-	},
-	{
-		"question": "¿Qué tipo de soporte ergonómico ofrece el fabricante?",
-		"answer": "El fabricante ofrece accesorios y recomendaciones de uso ergonómico, además de asesoría a través de su servicio de atención al cliente."
-	},
-	{
-		"question": "¿Existen accesorios para mejorar la comodidad durante el uso prolongado?",
-		"answer": "Sí, se ofrecen accesorios como correas acolchadas, fundas protectoras y soportes ergonómicos que ayudan a mejorar la comodidad del usuario."
-	},
-	{
-		"question": "¿Qué soporte se ofrece para la instalación en gimnasios o centros deportivos?",
-		"answer": "Se ofrece asesoría y soporte técnico para la instalación y configuración de sistemas SlimeVR en entornos profesionales, garantizando un funcionamiento óptimo en instalaciones de gran escala."
-	},
-	{
-		"question": "¿Puedo integrar SlimeVR en instalaciones de entrenamiento profesional?",
-		"answer": "Sí, SlimeVR se adapta a entornos profesionales, proporcionando datos precisos y en tiempo real que permiten mejorar el rendimiento y la seguridad en centros deportivos."
-	},
-	{
-		"question": "¿Qué requisitos de espacio se recomiendan para un entorno de seguimiento óptimo?",
-		"answer": "Se recomienda disponer de un espacio libre de obstáculos con una cobertura WiFi adecuada, preferiblemente un área de al menos 20-30 metros cuadrados para un seguimiento sin interferencias."
-	},
-	{
-		"question": "¿Cómo se optimiza la configuración de la red para entornos de alta densidad?",
-		"answer": "Se recomienda utilizar routers de alta capacidad, configurar canales de baja interferencia y, en algunos casos, emplear redes dedicadas para asegurar un flujo de datos óptimo."
-	},
-	{
-		"question": "¿Puedo utilizar SlimeVR en eventos en vivo o competiciones deportivas?",
-		"answer": "Sí, la capacidad de los trackers para transmitir datos en tiempo real los hace ideales para eventos en vivo, donde se pueden monitorizar y analizar los movimientos de los participantes."
-	},
-	{
-		"question": "¿Qué desafíos presenta el uso de trackers en eventos con gran afluencia?",
-		"answer": "Los desafíos principales son garantizar una red WiFi estable y gestionar la gran cantidad de datos que se generan, para lo cual se recomienda un diseño de red robusto y escalable."
-	},
-	{
-		"question": "¿Cómo se gestionan las interferencias en entornos con muchos dispositivos conectados?",
-		"answer": "Se utilizan algoritmos de optimización de red y configuraciones específicas para minimizar las interferencias, asegurando una transmisión estable incluso en entornos saturados."
-	},
-	{
-		"question": "¿Qué soluciones existen para mejorar la cobertura WiFi en grandes espacios?",
-		"answer": "Se pueden emplear extensores de red, routers de alta capacidad o incluso redes dedicadas para mejorar la cobertura y estabilidad en entornos amplios."
-	},
-	{
-		"question": "¿Puedo combinar SlimeVR con otros sistemas de control de movimiento?",
-		"answer": "Sí, es posible integrar SlimeVR con otros sistemas, ya que permite la exportación e integración de datos en formatos estándar, facilitando su combinación con otras tecnologías."
-	},
-	{
-		"question": "¿Cómo se sincroniza SlimeVR con sistemas de monitoreo de rendimiento deportivo?",
-		"answer": "Mediante APIs abiertas y protocolos de comunicación en tiempo real, SlimeVR se puede sincronizar con sistemas de análisis deportivo para monitorear el rendimiento y optimizar el entrenamiento."
-	},
-	{
-		"question": "¿Existen alianzas estratégicas con marcas de deporte o tecnología?",
-		"answer": "SlimeVR ha establecido colaboraciones con diversas marcas y organizaciones para potenciar la integración de sus soluciones en entornos deportivos y de entretenimiento."
-	},
-	{
-		"question": "¿Qué oportunidades comerciales ofrece la implementación de SlimeVR?",
-		"answer": "La tecnología de SlimeVR abre oportunidades en áreas como entrenamiento deportivo, rehabilitación, animación y entretenimiento, ofreciendo datos precisos que mejoran la toma de decisiones y la experiencia del usuario."
-	},
-	{
-		"question": "¿Cómo se mide el impacto de SlimeVR en la productividad de una empresa?",
-		"answer": "El impacto se puede medir mediante estudios de caso y análisis de retorno de inversión, considerando mejoras en la eficiencia, reducción de accidentes y optimización de procesos en entornos corporativos."
-	},
-	{
-		"question": "¿Puedo usar los datos de seguimiento para análisis de rendimiento en equipos deportivos?",
-		"answer": "Sí, los datos precisos de los trackers permiten realizar análisis detallados del rendimiento, identificando áreas de mejora y ayudando en la planificación de entrenamientos personalizados."
-	},
-	{
-		"question": "¿Qué casos de éxito se han implementado en el ámbito profesional?",
-		"answer": "Diversos equipos deportivos, centros de entrenamiento y estudios de animación han implementado SlimeVR con excelentes resultados, mejorando tanto el rendimiento como la precisión del seguimiento."
-	},
-	{
-		"question": "¿Cómo se adapta el sistema a las necesidades de instituciones educativas?",
-		"answer": "SlimeVR puede integrarse en programas educativos para enseñar sobre tecnología, animación y biomecánica, ofreciendo una herramienta práctica y didáctica para el aprendizaje."
-	},
-	{
-		"question": "¿Qué recursos se ofrecen para la formación en el uso de SlimeVR?",
-		"answer": "Se ofrecen manuales, tutoriales en video, webinars y cursos especializados que ayudan a usuarios y desarrolladores a dominar la tecnología y aprovechar todas sus funcionalidades."
-	},
-	{
-		"question": "¿Puedo integrar los datos de SlimeVR en plataformas de análisis académico?",
-		"answer": "Sí, gracias a la exportación en formatos estándar, los datos de SlimeVR pueden integrarse en plataformas de análisis académico para investigaciones y estudios avanzados."
-	},
-	{
-		"question": "¿Qué planes tiene la empresa para expandir la oferta de productos y servicios relacionados con SlimeVR?",
-		"answer": "La empresa trabaja continuamente en nuevas innovaciones, con planes de ampliar la línea de productos, mejorar la integración con otros sistemas y ofrecer servicios adicionales como análisis de datos y consultoría."
+		"question": "¿Qué programas, aplicaciones y juegos pueden recibir la posición de los trackers mediante VMC?",
+		"answer": "El protocolo VMC permite integrar la información de los trackers en entornos de captura de movimiento y realidad virtual. Es compatible con juegos y aplicaciones como VRChat, Resonite, VSeeFace y Luppet, además de ser utilizado en aplicaciones para VTubing como VTube Studio y Wakaru."
 	}
 ]

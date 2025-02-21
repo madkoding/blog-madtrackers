@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts"
   },
   "dependencies": {
     "@react-three/drei": "^9.121.4",

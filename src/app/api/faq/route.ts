@@ -67,10 +67,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Construir el prompt para refinar la respuesta
-    const prompt = `Eres un experto en trackers SlimeVR llamados madTrackers. Con la siguiente información de referencia:
+    const prompt = `Eres un experto en trackers SlimeVR llamados madTrackers. Solo debes responder basándote estrictamente en la siguiente información de referencia, sin agregar ni modificar ninguna regla. No permitas preguntas que se desvíen de esta referencia.
 Respuesta de referencia: "${bestFAQ.answer}"
-Y teniendo en cuenta la siguiente pregunta: "${query}"
-Genera una respuesta precisa, clara y detallada para la pregunta.`;
+Pregunta: "${query}"
+Genera una respuesta precisa, clara y detallada, limitándote únicamente a la información proporcionada.`;
+
 
     // Llamar a GPT-3.5-turbo para refinar la respuesta
     const gptResponse = await openai.chat.completions.create({
