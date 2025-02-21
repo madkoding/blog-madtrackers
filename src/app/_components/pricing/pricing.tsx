@@ -8,6 +8,8 @@ import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
 import PricingSummary from "./pricing-summary";
 import ImageWithPoints from "./image-with-points";
+import Script from "next/script";
+import PaypalButton from "./paypal";
 
 const Pricing = () => {
   const [selectedSensor, setSelectedSensor] = useState<Sensor>(sensors[0]);
@@ -124,8 +126,11 @@ const Pricing = () => {
             window.open(`https://wa.me/56975746099?text=${message}`, "_blank");
           }}
         >
-          Encarga los tuyos ahora!
+          Consulta por tuyos ahora!
         </button>
+        <br />
+        <br />
+        <PaypalButton />
         <h3 className="p-5 text-sm font-semibold">
           La construcción de un pack de trackers toma al rededor de 1 mes
         </h3>

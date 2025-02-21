@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 
 import "./globals.css";
 import { NavBar } from "./_components/navbar";
@@ -14,14 +15,31 @@ export const metadata: Metadata = {
   },
 };
 
+declare global {
+  interface Window {
+    paypal: any;
+  }
+}
+
+/**
+ * Layout raíz de la aplicación
+ *
+ * @param {React.ReactNode} children - Contenido de la aplicación
+ * @returns {JSX.Element} Elemento raíz con scripts de PayPal y demás configuraciones
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>): JSX.Element {
   return (
     <html lang="en">
       <head>
+        <Script
+          src="https://www.paypal.com/sdk/js?client-id=BAAeh6JHd00AdVhZOeXQzNBTbUJsl6pydxlxpvSOvzq4RdlRi4nwtYpYUS_DFVur0iBvF9U6vXkTIPEd7Y&components=hosted-buttons&disable-funding=venmo&currency=USD"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
         <link
           rel="icon"
           type="image/png"
