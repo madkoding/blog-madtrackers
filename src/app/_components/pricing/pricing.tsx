@@ -8,7 +8,6 @@ import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
 import PricingSummary from "./pricing-summary";
 import ImageWithPoints from "./image-with-points";
-import Script from "next/script";
 import PaypalButton from "./paypal";
 
 const Pricing = () => {
@@ -87,6 +86,11 @@ const Pricing = () => {
           Todos son de tamaño 4.3 x 4.3 x 1.5 cm
         </h3>
         <br />
+        <h2 className="text-m font-semibold text-red-600">
+          La nueva version de madTrackers de 70 Horas aun no esta disponible,
+          solo estan disponibles las versiones de 10 Horas de bateria
+        </h2>
+        <br />
         <SensorSelector
           sensors={sensors}
           selectedSensor={selectedSensor}
@@ -128,9 +132,6 @@ const Pricing = () => {
         >
           Consulta por tuyos ahora!
         </button>
-        <br />
-        <br />
-        <PaypalButton />
         <h3 className="p-5 text-sm font-semibold">
           La construcción de un pack de trackers toma al rededor de 1 mes
         </h3>
@@ -143,6 +144,8 @@ const Pricing = () => {
             currency}
           , y podrás continuar abonando hasta cubrir el total.
         </h3>
+        <br />
+        <PaypalButton />
       </div>
     </section>
   );
