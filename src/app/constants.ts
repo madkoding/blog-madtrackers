@@ -5,16 +5,51 @@ export const sensors: Sensor[] = [
     id: "sensor1",
     label: "LSM6DSR",
     description: "Buena calidad de seguimiento",
-    drifting: "30 min",
-    price: 40000,
+    drifting: "20 min",
+    price: 1,
+    available: ['rf','wifi']
   },
   {
     id: "sensor2",
+    label: "LSM6DSR + IST8306",
+    description: "Buena calidad de seguimiento con magnetómetro",
+    drifting: "30 min",
+    price: 1.25,
+    available: ['rf']
+  },
+  {
+    id: "sensor3",
     label: "ICM45686",
     description: "Excelente calidad de seguimiento",
     drifting: "45 min",
-    price: 80000,
+    price: 1.375,
+    available: ['rf','wifi']
   },
+  {
+    id: "sensor4",
+    label: "ICM45686 + IST8306",
+    description: "Excelente calidad de seguimiento con magnetómetro",
+    drifting: "60 min",
+    price: 1.5,
+    available: ['rf']
+  },
+];
+
+export const trackers: any[] = [
+  {
+    id: "rf",
+    label: "RF",
+    description: "50 horas de batería / Utiliza receptor USB",
+    size: "3.8 x 3.8 x 1.0 cm",
+    price: 40,
+  },
+  {
+    id: "wifi",
+    label: "WiFi",
+    description: "10 horas de batería / Conecta directo al router WiFi",
+    size: "4.5 x 4.5 x 1.5 cm",
+    price: 30,
+  }
 ];
 
 export const quantities: number[] = [6, 7, 8, 9, 10, 11, 20];
@@ -32,17 +67,29 @@ export const colors: Color[] = [
   { id: "gray", label: "Gris", color: "bg-gray-500", hex: "#6B7280" },
 ];
 
-export const countries: Record<string, { 
-  currency: Currency; 
-  exchangeRate: number; 
-  currencySymbol: string; 
-  shippingCost: number; 
-}> = {
-  CL: { currency: "CLP", exchangeRate: 1, currencySymbol: "$", shippingCost: 5000 },
-  PE: { currency: "PEN", exchangeRate: 0.0038, currencySymbol: "S/", shippingCost: 60000 },
-  AR: { currency: "ARS", exchangeRate: 1.1, currencySymbol: "$", shippingCost: 60000 },
-  MX: { currency: "MXN", exchangeRate: 0.022, currencySymbol: "$", shippingCost: 60000 },
-  US: { currency: "USD", exchangeRate: 0.0011, currencySymbol: "US$", shippingCost: 60000 },
+/**
+ * Configuración de precios por país basada en USD.
+ */
+export interface CountryConfig {
+  /** Código ISO de la moneda local */
+  currency: Currency;
+  /** Tasa de conversión: moneda local por 1 USD */
+  exchangeRate: number;
+  /** Símbolo de la moneda local */
+  currencySymbol: string;
+  /** Costo de envío base en USD */
+  shippingCostUsd: number;
+}
+
+/**
+ * Mapeo de países a su configuración de moneda y envío.
+ */
+export const countries: Record<string, CountryConfig> = {
+  CL: { currency: "CLP", exchangeRate: 1000, currencySymbol: "$", shippingCostUsd: 0 },
+  PE: { currency: "PEN", exchangeRate: 3.8, currencySymbol: "S/", shippingCostUsd: 65 },
+  AR: { currency: "ARS", exchangeRate: 350, currencySymbol: "$", shippingCostUsd: 65 },
+  MX: { currency: "MXN", exchangeRate: 18.2, currencySymbol: "$", shippingCostUsd: 65 },
+  US: { currency: "USD", exchangeRate: 1, currencySymbol: "US$", shippingCostUsd: 65 },
 };
 
 export const points: PointsMap = {

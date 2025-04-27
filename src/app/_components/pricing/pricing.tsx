@@ -1,58 +1,91 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { sensors, quantities, colors, countries } from "../../constants";
-import { Sensor, Color, Currency } from "../../types";
+import {
+  sensors,
+  quantities,
+  colors,
+  countries,
+  trackers,
+} from "../../constants";
+import { Sensor, Color, Currency, TrackerType } from "../../types";
 import SensorSelector from "./sensor-selector";
 import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
 import PricingSummary from "./pricing-summary";
 import ImageWithPoints from "./image-with-points";
 import PaypalButton from "./paypal";
+import TrackerTypeSelector from "./tracker-type";
 
 const Pricing = () => {
   const [selectedSensor, setSelectedSensor] = useState<Sensor>(sensors[0]);
+  const [selectedTrackerType, setSelectedTrackerType] = useState<TrackerType>(
+    trackers[0]
+  );
   const [selectedQuantity, setSelectedQuantity] = useState<number>(
     quantities[0]
   );
   const [selectedColor, setSelectedColor] = useState<Color>(colors[0]);
-  const [currency, setCurrency] = useState<Currency>("USD");
-  const [exchangeRate, setExchangeRate] = useState<number>(1);
-  const [currencySymbol, setCurrencySymbol] = useState<string>("US$");
-  const [shippingCost, setShippingCost] = useState<number>(60000);
+
+  /** Moneda local (ej: "USD", "CLP", etc.) */
+  const [currency, setCurrency] = useState<Currency>(countries.US.currency);
+  /** Tasa USD→moneda local */
+  const [exchangeRate, setExchangeRate] = useState<number>(
+    countries.US.exchangeRate
+  );
+  /** Símbolo de la moneda local */
+  const [currencySymbol, setCurrencySymbol] = useState<string>(
+    countries.US.currencySymbol
+  );
+  /** Costo de envío base en USD */
+  const [shippingCostUsd, setShippingCostUsd] = useState<number>(
+    countries.US.shippingCostUsd
+  );
 
   const formatPrice = (price: string) => {
     return new Intl.NumberFormat("es-ES").format(Number(price));
   };
 
   useEffect(() => {
+    const TTL = 2 * 60 * 1000; // 2 minutos en milisegundos
+
     async function fetchCountryConfig() {
       try {
-        // Intentar cargar desde localStorage
-        const storedCurrency = localStorage.getItem("currency");
-        if (storedCurrency) {
-          const storedData = JSON.parse(storedCurrency);
-          setCurrency(storedData.currency);
-          setExchangeRate(storedData.exchangeRate);
-          setCurrencySymbol(storedData.currencySymbol);
-          setShippingCost(storedData.shippingCost);
-          return;
+        const stored = localStorage.getItem("currency");
+        if (stored) {
+          const data = JSON.parse(stored) as {
+            currency: Currency;
+            exchangeRate: number;
+            currencySymbol: string;
+            shippingCostUsd: number;
+            cachedAt: number;
+          };
+
+          // Si el cache no ha expirado, úsalo
+          if (Date.now() - data.cachedAt < TTL) {
+            setCurrency(data.currency);
+            setExchangeRate(data.exchangeRate);
+            setCurrencySymbol(data.currencySymbol);
+            setShippingCostUsd(data.shippingCostUsd);
+            return;
+          }
         }
 
-        // Obtener la IP del usuario
+        // Cache expirado o no existe, volver a fetch
         const res = await fetch("https://ipapi.co/json/");
-        const data = await res.json();
-        const countryCode = data.country_code;
+        const { country_code: countryCode } = await res.json();
+        const cfg = countries[countryCode];
+        if (cfg) {
+          setCurrency(cfg.currency);
+          setExchangeRate(cfg.exchangeRate);
+          setCurrencySymbol(cfg.currencySymbol);
+          setShippingCostUsd(cfg.shippingCostUsd);
 
-        const countryData = countries[countryCode];
-        if (countryData) {
-          setCurrency(countryData.currency);
-          setExchangeRate(countryData.exchangeRate);
-          setCurrencySymbol(countryData.currencySymbol);
-          setShippingCost(countryData.shippingCost);
-
-          // Guardar en localStorage para futuras visitas
-          localStorage.setItem("currency", JSON.stringify(countryData));
+          // Guardar con timestamp
+          localStorage.setItem(
+            "currency",
+            JSON.stringify({ ...cfg, cachedAt: Date.now() })
+          );
         }
       } catch (error) {
         console.error("Error obteniendo configuración de país:", error);
@@ -62,15 +95,32 @@ const Pricing = () => {
     fetchCountryConfig();
   }, []);
 
-  // Calcular precios solo cuando cambian dependencias
+  useEffect(() => {
+    // Si seleeciona el tracker pero el sensor no está disponible, selecciona el primero
+    if (
+      !selectedSensor.available?.includes(selectedTrackerType.id) &&
+      selectedTrackerType.id !== "none"
+    ) {
+      setSelectedSensor(sensors[0]);
+    }
+  }, [selectedTrackerType]);
+
+  // Precio total (USD→local)
   const totalPrice = useMemo(
-    () => (selectedSensor.price * selectedQuantity * exchangeRate).toFixed(0),
-    [selectedSensor, selectedQuantity, exchangeRate]
+    () =>
+      (
+        selectedTrackerType.price *
+        selectedSensor.price *
+        selectedQuantity *
+        exchangeRate
+      ).toFixed(0),
+    [selectedTrackerType, selectedSensor, selectedQuantity, exchangeRate]
   );
 
+  // Costo de envío (USD→local)
   const shippingPrice = useMemo(
-    () => (shippingCost * exchangeRate).toFixed(0),
-    [shippingCost, exchangeRate]
+    () => (shippingCostUsd * exchangeRate).toFixed(0),
+    [shippingCostUsd, exchangeRate]
   );
 
   return (
@@ -80,19 +130,20 @@ const Pricing = () => {
           Arma tus trackers según tus necesidades
         </h1>
         <h3 className="text-sm font-semibold">
-          El movimiento es más preciso a mayor cantidad
-        </h3>
-        <h3 className="text-sm font-semibold">
-          Todos son de tamaño 4.3 x 4.3 x 1.5 cm
+          El movimiento es más preciso a mayor cantidad de trackers
         </h3>
         <br />
-        <h2 className="text-m font-semibold text-red-600">
-          La nueva version de madTrackers de 70 Horas aun no esta disponible,
-          solo estan disponibles las versiones de 10 Horas de bateria
-        </h2>
+        <TrackerTypeSelector
+          trackerTypes={trackers}
+          selectedTrackerType={selectedTrackerType}
+          setSelectedTrackerType={setSelectedTrackerType}
+        />
         <br />
         <SensorSelector
-          sensors={sensors}
+          sensors={sensors.filter(
+            (sensor) =>
+              sensor.available?.includes(selectedTrackerType.id) ?? false
+          )}
           selectedSensor={selectedSensor}
           setSelectedSensor={setSelectedSensor}
         />
@@ -115,13 +166,16 @@ const Pricing = () => {
           shippingPrice={shippingPrice}
           currency={currency}
           currencySymbol={currencySymbol}
+          exchangeRate={exchangeRate}
         />
 
         <button
           className="mx-auto hover:underline bg-purple-900 text-white font-bold rounded-full mt-4 py-4 px-8 shadow opacity-100 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
           onClick={() => {
             const message = encodeURIComponent(
-              `Hola, quiero encargar estos trackers. 
+              `Hola, quiero encargar estos trackers.
+- País: ${currency}
+- Tipo de tracker: ${selectedTrackerType.label}
 - Sensor: ${selectedSensor.label} 
 - Cantidad: ${selectedQuantity} 
 - Color: ${selectedColor.label}`
@@ -135,7 +189,10 @@ const Pricing = () => {
         <h3 className="p-5 text-sm font-semibold">
           La construcción de un pack de trackers toma al rededor de 1 mes
         </h3>
-        <h3 className="px-10 text-sm font-semibold">
+        <h3 className="p-3 text-sm font-semibold">
+          Todos los trackers incluen straps con silicona y baterías
+        </h3>
+        <h3 className="p-3 text-sm font-semibold">
           Si no cuentas con el monto total, puedes realizar pagos parciales
           mientras se preparan los trackers. El primer abono es de{" "}
           {currencySymbol +

@@ -6,8 +6,15 @@ export interface Sensor {
   description: string;
   drifting: string;
   price: number;
+  available: string[];
 }
-
+export interface TrackerType {
+  id: string;
+  label: string;
+  description: string;
+  size: string;
+  price: number;
+}
 export interface Color {
   id: string;
   label: string;

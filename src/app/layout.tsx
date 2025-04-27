@@ -4,6 +4,7 @@ import Script from "next/script";
 
 import "./globals.css";
 import { NavBar } from "./_components/navbar";
+import Footer from "./_components/common/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -60,6 +61,7 @@ export default function RootLayout({
         <NavBar />
         <div className="min-h-screen">{children}</div>
       </body>
+      <Footer />
     </html>
   );
 }

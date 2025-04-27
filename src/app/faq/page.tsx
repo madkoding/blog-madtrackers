@@ -13,7 +13,7 @@ export default function Home() {
           <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
             <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
               <h1 className="my-4 text-5xl font-bold leading-tight py-16">
-                Bienvenido al FAQ con Intelencia Artificial
+                Bienvenido al FAQ con Inteligencia Artificial
               </h1>
             </div>
           </div>
