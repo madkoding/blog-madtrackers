@@ -15,28 +15,29 @@ const SensorSelector: React.FC<SensorSelectorProps> = ({
   return (
     <div className="mb-4">
       <h3 className="font-medium mb-2">Tipo de Sensor:</h3>
-      <div className="flex justify-center gap-4">
+      <div className="flex justify-center flex-wrap">
         {sensors.map((sensor) => (
-          <button
+          <div
+            className="w-1/2 px-1 pb-4 flex-col items-center"
             key={sensor.id}
-            className={`w-full px-4 py-6 rounded-lg border-2 ${
-              selectedSensor.id === sensor.id
-                ? "border-black bg-purple-900 text-white"
-                : "border-gray-300"
-            }`}
-            onClick={() => setSelectedSensor(sensor)}
           >
-            {sensor.label}
-          </button>
-        ))}
-      </div>
-      <div className="flex justify-center gap-4">
-        {sensors.map((sensor) => (
-          <p className="w-full text-center px-2 py-2 text-xs" key={sensor.id}>
-            {sensor.description}
-            <br />
-            Drifting: {sensor.drifting}
-          </p>
+            <button
+              key={sensor.id}
+              className={`w-full px-1 py-4 text-xs font-bold rounded-lg border-2 ${
+                selectedSensor.id === sensor.id
+                  ? "border-black bg-purple-900 text-white"
+                  : "border-gray-300"
+              }`}
+              onClick={() => setSelectedSensor(sensor)}
+            >
+              {sensor.label}
+            </button>
+            <p className="w-full text-center px-2 py-2 text-xs" key={sensor.id}>
+              {sensor.description}
+              <br />
+              Drifting: {sensor.drifting}
+            </p>
+          </div>
         ))}
       </div>
     </div>

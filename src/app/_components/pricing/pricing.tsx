@@ -133,34 +133,33 @@ const Pricing = () => {
           El movimiento es más preciso a mayor cantidad de trackers
         </h3>
         <br />
-        <TrackerTypeSelector
-          trackerTypes={trackers}
-          selectedTrackerType={selectedTrackerType}
-          setSelectedTrackerType={setSelectedTrackerType}
-        />
-        <br />
-        <SensorSelector
-          sensors={sensors.filter(
-            (sensor) =>
-              sensor.available?.includes(selectedTrackerType.id) ?? false
-          )}
-          selectedSensor={selectedSensor}
-          setSelectedSensor={setSelectedSensor}
-        />
-        <br />
-        <QuantitySelector
-          quantities={quantities}
-          selectedQuantity={selectedQuantity}
-          setSelectedQuantity={setSelectedQuantity}
-        />
-        <ImageWithPoints selectedQuantity={selectedQuantity} />
-        <br />
-        <ColorSelector
-          colors={colors}
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-        />
-        <br />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center">
+          <TrackerTypeSelector
+            trackerTypes={trackers}
+            selectedTrackerType={selectedTrackerType}
+            setSelectedTrackerType={setSelectedTrackerType}
+          />
+          <SensorSelector
+            sensors={sensors.filter(
+              (sensor) =>
+                sensor.available?.includes(selectedTrackerType.id) ?? false
+            )}
+            selectedSensor={selectedSensor}
+            setSelectedSensor={setSelectedSensor}
+          />
+          <QuantitySelector
+            quantities={quantities}
+            selectedQuantity={selectedQuantity}
+            setSelectedQuantity={setSelectedQuantity}
+          />
+          <ImageWithPoints selectedQuantity={selectedQuantity} />
+          <ColorSelector
+            colors={colors}
+            selectedColor={selectedColor}
+            setSelectedColor={setSelectedColor}
+          />
+        </div>
+
         <PricingSummary
           totalPrice={totalPrice}
           shippingPrice={shippingPrice}

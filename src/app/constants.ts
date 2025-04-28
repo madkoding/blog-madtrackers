@@ -39,14 +39,14 @@ export const trackers: any[] = [
   {
     id: "rf",
     label: "RF",
-    description: "50 horas de batería / Utiliza receptor USB",
+    description: "50 horas de batería. Utiliza receptor USB",
     size: "3.8 x 3.8 x 1.0 cm",
     price: 40,
   },
   {
     id: "wifi",
     label: "WiFi",
-    description: "10 horas de batería / Conecta directo al router WiFi",
+    description: "10 horas de batería. Conecta a router WiFi",
     size: "4.5 x 4.5 x 1.5 cm",
     price: 30,
   }

@@ -15,25 +15,27 @@ const ColorSelector: React.FC<ColorSelectorProps> = ({
   setSelectedColor,
 }) => {
   return (
-    <div className="mb-4">
-      <h3 className="font-medium mb-2">Color:</h3>
-      <div className="grid grid-cols-5 md:grid-cols-10 gap-2 justify-center">
-        {colors.map((color) => (
-          <div key={color.id} className="flex justify-center items-center">
-            <button
-              key={color.id}
-              className={`w-14 h-14 rounded-full border-2 ${color.color} ${
-                selectedColor.id === color.id ? "ring-2 ring-black" : ""
-              }`}
-              onClick={() => setSelectedColor(color)}
-            ></button>
-          </div>
-        ))}
+    <>
+      <div className="mb-4">
+        <h3 className="font-medium mb-2">Color:</h3>
+        <div className="grid grid-cols-5 gap-2 justify-center">
+          {colors.map((color) => (
+            <div key={color.id} className="flex justify-center items-center">
+              <button
+                key={color.id}
+                className={`w-14 h-14 rounded-full border-2 ${color.color} ${
+                  selectedColor.id === color.id ? "ring-2 ring-black" : ""
+                }`}
+                onClick={() => setSelectedColor(color)}
+              ></button>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="h-[250px] flex justify-center">
         <RotatingFBXModel color={selectedColor.hex} />
       </div>
-    </div>
+    </>
   );
 };
 

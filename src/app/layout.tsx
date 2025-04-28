@@ -60,8 +60,8 @@ export default function RootLayout({
       <body className="leading-normal tracking-normal text-white gradient">
         <NavBar />
         <div className="min-h-screen">{children}</div>
+        <Footer />
       </body>
-      <Footer />
     </html>
   );
 }

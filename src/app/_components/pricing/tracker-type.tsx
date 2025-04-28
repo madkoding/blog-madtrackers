@@ -24,7 +24,7 @@ const TrackerTypeSelector: React.FC<TrackerTypeSelectorProps> = ({
   setSelectedTrackerType,
 }) => {
   return (
-    <div className="mb-4">
+    <div className="mb-2">
       <h3 className="font-medium mb-2">Tipo de Tracker:</h3>
       <div className="flex justify-center gap-4">
         {trackerTypes.map((tracker) => (
@@ -49,7 +49,7 @@ const TrackerTypeSelector: React.FC<TrackerTypeSelectorProps> = ({
           >
             {tracker.description}
             <br />
-            Tamaño: {tracker.size}
+            {tracker.size}
           </p>
         ))}
       </div>
