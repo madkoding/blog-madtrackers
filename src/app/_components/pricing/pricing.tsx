@@ -133,20 +133,21 @@ const Pricing = () => {
           El movimiento es más preciso a mayor cantidad de trackers
         </h3>
         <br />
+        <SensorSelector
+          sensors={sensors.filter(
+            (sensor) =>
+              sensor.available?.includes(selectedTrackerType.id) ?? false
+          )}
+          selectedSensor={selectedSensor}
+          setSelectedSensor={setSelectedSensor}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center">
-          <TrackerTypeSelector
+          {/* <TrackerTypeSelector
             trackerTypes={trackers}
             selectedTrackerType={selectedTrackerType}
             setSelectedTrackerType={setSelectedTrackerType}
-          />
-          <SensorSelector
-            sensors={sensors.filter(
-              (sensor) =>
-                sensor.available?.includes(selectedTrackerType.id) ?? false
-            )}
-            selectedSensor={selectedSensor}
-            setSelectedSensor={setSelectedSensor}
-          />
+          /> */}
+
           <QuantitySelector
             quantities={quantities}
             selectedQuantity={selectedQuantity}

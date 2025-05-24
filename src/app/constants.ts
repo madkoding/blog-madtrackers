@@ -11,7 +11,7 @@ export const sensors: Sensor[] = [
   },
   {
     id: "sensor2",
-    label: "LSM6DSR + IST8306",
+    label: "LSM6DSR + MMC5983MA",
     description: "Buena calidad de seguimiento con magnetómetro",
     drifting: "30 min",
     price: 1.25,
@@ -27,7 +27,7 @@ export const sensors: Sensor[] = [
   },
   {
     id: "sensor4",
-    label: "ICM45686 + IST8306",
+    label: "ICM45686 + MMC5983MA",
     description: "Excelente calidad de seguimiento con magnetómetro",
     drifting: "60 min",
     price: 1.5,
@@ -43,13 +43,13 @@ export const trackers: any[] = [
     size: "3.8 x 3.8 x 1.0 cm",
     price: 40,
   },
-  {
-    id: "wifi",
-    label: "WiFi",
-    description: "10 horas de batería. Conecta a router WiFi",
-    size: "4.5 x 4.5 x 1.5 cm",
-    price: 30,
-  }
+  // {
+  //   id: "wifi",
+  //   label: "WiFi",
+  //   description: "10 horas de batería. Conecta a router WiFi",
+  //   size: "4.5 x 4.5 x 1.5 cm",
+  //   price: 30,
+  // }
 ];
 
 export const quantities: number[] = [6, 7, 8, 9, 10, 11, 20];

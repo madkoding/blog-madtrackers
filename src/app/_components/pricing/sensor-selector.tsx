@@ -22,7 +22,6 @@ const SensorSelector: React.FC<SensorSelectorProps> = ({
             key={sensor.id}
           >
             <button
-              key={sensor.id}
               className={`w-full px-1 py-4 text-xs font-bold rounded-lg border-2 ${
                 selectedSensor.id === sensor.id
                   ? "border-black bg-purple-900 text-white"
@@ -32,7 +31,7 @@ const SensorSelector: React.FC<SensorSelectorProps> = ({
             >
               {sensor.label}
             </button>
-            <p className="w-full text-center px-2 py-2 text-xs" key={sensor.id}>
+            <p className="w-full text-center px-2 py-2 text-xs">
               {sensor.description}
               <br />
               Drifting: {sensor.drifting}
