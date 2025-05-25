@@ -27,28 +27,30 @@ export function HeroPost({ title, subtitle }: Readonly<Props>) {
           </div>
 
           {/* Texto */}
-          <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
+          <div className="flex flex-col w-full md:w-2/5 justify-center items-center md:items-start text-center md:text-left">
             <p className="tracking-loose w-full text-center md:text-left">
               {t.heroSlogan}
             </p>
 
-            <div className="flex flex-col w-full md:w-2/5 justify-center items-center text-center">
+            <div className="flex flex-col w-full">
               <h1 className="my-0 text-5xl font-bold leading-tight">{title}</h1>
               <h3 className="my-0 text-2xl font-bold leading-tight">
                 {subtitle}
               </h3>
             </div>
 
-            <p className="my-4 leading-normal text-xl mb-8">{t.heroExcerpt}</p>
+            <p className="w-full my-4 leading-normal text-xs mb-8 text-center md:text-left">
+              {t.heroExcerpt}
+            </p>
+
             <a
               href="#pricing"
-              className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+              className="hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
             >
               {t.heroButton}
             </a>
 
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
+            <div className="h-8" />
           </div>
         </div>
       </div>
