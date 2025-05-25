@@ -59,7 +59,7 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath, colors }) => {
   // El modelo 3D y el grupo solo se crean una vez
   const [clonedModel] = useState(() => {
     const model = fbxOriginal.clone();
-    model.scale.set(0.6, 0.6, 0.6);
+    model.scale.set(0.7, 0.7, 0.7);
     const box = new THREE.Box3().setFromObject(model);
     const center = new THREE.Vector3();
     box.getCenter(center);
@@ -79,10 +79,10 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath, colors }) => {
               color: colors && colors[matIndex] ? colors[matIndex] : 0x800080,
               metalness: 1,
               roughness: 0.5,
-              envMapIntensity: 1,
+              envMapIntensity: 0.7,
               emissive: 0x000000,
               normalMap: normalMap,
-              normalScale: new THREE.Vector2(1.0, 1.0), // Fuerza máxima
+              normalScale: new THREE.Vector2(0.5, 0.5), // Fuerza máxima
             });
           } else if (matIndex === 2) {
             // ABS blanco: opaco, blanco puro
