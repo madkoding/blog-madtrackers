@@ -1,5 +1,8 @@
+"use client";
 import Image from "next/image";
 import React from "react";
+import { translations } from "../../i18n";
+import { useLang } from "../../lang-context";
 
 /**
  * Props para el componente Footer de MadTrackers.
@@ -12,6 +15,12 @@ export interface FooterProps {}
  * Incluye logo, navegación, información de contacto y redes sociales.
  */
 const Footer: React.FC<FooterProps> = () => {
+  const { lang } = useLang();
+  const t = translations[lang];
+
+  // Forzar re-render en textos que dependan del idioma y la fecha
+  React.useEffect(() => {}, [lang]);
+
   return (
     <footer className="bg-gray-900 text-white py-10">
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -26,24 +35,21 @@ const Footer: React.FC<FooterProps> = () => {
           />
           <p className="text-lg text-white font-bold">madTrackers</p>
           <br />
-          <p className="text-sm text-gray-400">
-            En madTrackers construimos dispositivos de seguimiento de alta
-            precisión, calidad, innovación y servicio personalizado.
-          </p>
+          <p className="text-sm text-gray-400">{t.footerDescription}</p>
         </div>
 
         {/* Links de navegación */}
         <div>
-          <h4 className="text-lg font-semibold mb-4">Navegación</h4>
+          <h4 className="text-lg font-semibold mb-4">{t.navigation}</h4>
           <ul className="space-y-2 text-gray-300">
             <li>
               <a href="/" className="hover:text-white">
-                Inicio
+                {t.home}
               </a>
             </li>
             <li>
               <a href="/contacto" className="hover:text-white">
-                Contacto
+                {t.contact}
               </a>
             </li>
           </ul>
@@ -51,9 +57,9 @@ const Footer: React.FC<FooterProps> = () => {
 
         {/* Redes sociales y contacto */}
         <div>
-          <h4 className="text-lg font-semibold mb-4">Contáctanos</h4>
-          <p className="text-gray-300 text-sm">madkoding@gmail.com</p>
-          <p className="text-gray-300 text-sm">+56 9 7574 6099</p>
+          <h4 className="text-lg font-semibold mb-4">{t.contactUs}</h4>
+          <p className="text-gray-300 text-sm">{t.email}</p>
+          <p className="text-gray-300 text-sm">{t.phone}</p>
 
           <div className="flex items-center space-x-4 mt-4">
             <a
@@ -92,9 +98,8 @@ const Footer: React.FC<FooterProps> = () => {
           </div>
         </div>
       </div>
-
       <div className="mt-8 text-center text-gray-500 text-sm">
-        © {new Date().getFullYear()} MadTrackers. Todos los derechos reservados.
+        {t.rights.replace("{year}", String(new Date().getFullYear()))}
       </div>
     </footer>
   );

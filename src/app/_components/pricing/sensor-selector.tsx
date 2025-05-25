@@ -1,5 +1,7 @@
 import React from "react";
 import { Sensor } from "../../types";
+import { useLang } from "../../lang-context";
+import { translations } from "../../i18n";
 
 type SensorSelectorProps = {
   sensors: Sensor[];
@@ -12,9 +14,12 @@ const SensorSelector: React.FC<SensorSelectorProps> = ({
   selectedSensor,
   setSelectedSensor,
 }) => {
+  const { lang } = useLang();
+  const t = translations[lang];
+
   return (
     <div className="mb-4">
-      <h3 className="font-medium mb-2">Tipo de Sensor:</h3>
+      <h3 className="font-medium mb-2">{t.sensor}</h3>
       <div className="flex justify-center flex-wrap">
         {sensors.map((sensor) => (
           <div

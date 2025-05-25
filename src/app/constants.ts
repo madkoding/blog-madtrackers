@@ -1,4 +1,26 @@
 import { Color, Currency, PointsMap, Sensor } from "./types";
+import { useLang } from "./lang-context";
+import { translations } from "./i18n";
+import { useMemo } from "react";
+
+// Constantes para FBXModel y materiales
+
+export const FBX_MODEL_SCALE = 0.7;
+export const FBX_MODEL_ROTATION_SPEED_X = 0.005;
+export const FBX_MODEL_ROTATION_SPEED_Y = 0.005;
+export const FBX_MODEL_ROTATION_SPEED_Z = 0.005;
+
+export const FBX_MODEL_METALNESS_MAIN = 0.2;
+export const FBX_MODEL_ROUGHNESS_MAIN = 0.3;
+export const FBX_MODEL_METALNESS_SECONDARY = 1;
+export const FBX_MODEL_ROUGHNESS_SECONDARY = 1;
+export const FBX_MODEL_METALNESS_DEFAULT = 1;
+export const FBX_MODEL_ROUGHNESS_DEFAULT = 1;
+export const FBX_MODEL_ENV_INTENSITY = 1.0;
+export const FBX_MODEL_NORMAL_SCALE = new (require('three').Vector2)(0.1, 0.1);
+export const FBX_MODEL_DEFAULT_COLOR = 0xffffff;
+export const FBX_MODEL_PURPLE_COLOR = 0x800080;
+export const FBX_MODEL_NORMAL_REPEAT = 0.1;
 
 export const sensors: Sensor[] = [
   {
@@ -180,3 +202,40 @@ export const points: PointsMap = {
     { x: 315, y: 100 },
   ],
 };
+
+// Hook para obtener sensores, trackers y colores traducidos
+export function useTranslatedConstants() {
+  const { lang } = useLang();
+  const t = translations[lang] as Record<string, string>;
+
+  const translatedSensors = useMemo(
+    () =>
+      sensors.map((sensor) => ({
+        ...sensor,
+        label: t[sensor.id + "_label"] || sensor.label,
+        description: t[sensor.id + "_desc"] || sensor.description,
+      })),
+    [t, lang]
+  );
+
+  const translatedTrackers = useMemo(
+    () =>
+      trackers.map((tracker) => ({
+        ...tracker,
+        label: t[tracker.id + "_label"] || tracker.label,
+        description: t[tracker.id + "_desc"] || tracker.description,
+      })),
+    [t, lang]
+  );
+
+  const translatedColors = useMemo(
+    () =>
+      colors.map((color) => ({
+        ...color,
+        label: t["color_" + color.id] || color.label,
+      })),
+    [t, lang]
+  );
+
+  return { sensors: translatedSensors, trackers: translatedTrackers, colors: translatedColors };
+}

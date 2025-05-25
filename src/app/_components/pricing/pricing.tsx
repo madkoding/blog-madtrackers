@@ -1,13 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  sensors,
-  quantities,
-  colors,
-  countries,
-  trackers,
-} from "../../constants";
+import { quantities, countries, useTranslatedConstants } from "../../constants";
+import { translations } from "../../i18n";
+import { useLang } from "../../lang-context";
 import { Sensor, Color, Currency, TrackerType } from "../../types";
 import SensorSelector from "./sensor-selector";
 import QuantitySelector from "./quantity-selector";
@@ -15,17 +11,22 @@ import ColorSelector from "./color-selector";
 import PricingSummary from "./pricing-summary";
 import ImageWithPoints from "./image-with-points";
 import PaypalButton from "./paypal";
-import TrackerTypeSelector from "./tracker-type";
 
 const Pricing = () => {
-  const [selectedSensor, setSelectedSensor] = useState<Sensor>(sensors[0]);
+  const {
+    sensors: sensorsT,
+    trackers: trackersT,
+    colors: colorsT,
+  } = useTranslatedConstants();
+
+  const [selectedSensor, setSelectedSensor] = useState<Sensor>(sensorsT[0]);
   const [selectedTrackerType, setSelectedTrackerType] = useState<TrackerType>(
-    trackers[0]
+    trackersT[0]
   );
   const [selectedQuantity, setSelectedQuantity] = useState<number>(
     quantities[0]
   );
-  const [selectedColor, setSelectedColor] = useState<Color>(colors[0]);
+  const [selectedColor, setSelectedColor] = useState<Color>(colorsT[0]);
 
   /** Moneda local (ej: "USD", "CLP", etc.) */
   const [currency, setCurrency] = useState<Currency>(countries.US.currency);
@@ -41,6 +42,9 @@ const Pricing = () => {
   const [shippingCostUsd, setShippingCostUsd] = useState<number>(
     countries.US.shippingCostUsd
   );
+
+  const { lang } = useLang();
+  const t = translations[lang];
 
   const formatPrice = (price: string) => {
     return new Intl.NumberFormat("es-ES").format(Number(price));
@@ -101,9 +105,15 @@ const Pricing = () => {
       !selectedSensor.available?.includes(selectedTrackerType.id) &&
       selectedTrackerType.id !== "none"
     ) {
-      setSelectedSensor(sensors[0]);
+      setSelectedSensor(sensorsT[0]);
     }
   }, [selectedTrackerType]);
+
+  useEffect(() => {
+    setSelectedSensor(sensorsT[0]);
+    setSelectedTrackerType(trackersT[0]);
+    setSelectedColor(colorsT[0]);
+  }, [sensorsT, trackersT, colorsT]);
 
   // Precio total (USD→local)
   const totalPrice = useMemo(
@@ -127,21 +137,19 @@ const Pricing = () => {
     <section className="py-16 px-4 bg-white text-black" id="pricing">
       <div className="bg-gray-100 p-4 rounded-lg shadow-lg max-w-2xl mx-auto text-center">
         <h1 className="text-3xl font-semibold">
-          Arma tus trackers según tus necesidades
+          {t.buildYourTrackers} {t.pricing ? t.pricing : ""}
         </h1>
-        <h3 className="text-sm font-semibold">
-          El movimiento es más preciso a mayor cantidad de trackers
-        </h3>
+        <h3 className="text-sm font-semibold">{t.precisionWithTrackers}</h3>
         <br />
         <SensorSelector
-          sensors={sensors.filter(
+          sensors={sensorsT.filter(
             (sensor) =>
               sensor.available?.includes(selectedTrackerType.id) ?? false
           )}
           selectedSensor={selectedSensor}
           setSelectedSensor={setSelectedSensor}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center items-center">
           {/* <TrackerTypeSelector
             trackerTypes={trackers}
             selectedTrackerType={selectedTrackerType}
@@ -155,7 +163,7 @@ const Pricing = () => {
           />
           <ImageWithPoints selectedQuantity={selectedQuantity} />
           <ColorSelector
-            colors={colors}
+            colors={colorsT}
             selectedColor={selectedColor}
             setSelectedColor={setSelectedColor}
           />
@@ -184,22 +192,17 @@ const Pricing = () => {
             window.open(`https://wa.me/56975746099?text=${message}`, "_blank");
           }}
         >
-          Consulta por tuyos ahora!
+          {t.askNow}
         </button>
-        <h3 className="p-5 text-sm font-semibold">
-          La construcción de un pack de trackers toma al rededor de 1 mes
-        </h3>
+        <h3 className="p-5 text-sm font-semibold">{t.buildTime}</h3>
+        <h3 className="p-3 text-sm font-semibold">{t.includes}</h3>
         <h3 className="p-3 text-sm font-semibold">
-          Todos los trackers incluen straps con silicona y baterías
-        </h3>
-        <h3 className="p-3 text-sm font-semibold">
-          Si no cuentas con el monto total, puedes realizar pagos parciales
-          mientras se preparan los trackers. El primer abono es de{" "}
+          {t.partialPayment}
           {currencySymbol +
             formatPrice((parseFloat(totalPrice) / 4).toString()) +
             " " +
             currency}
-          , y podrás continuar abonando hasta cubrir el total.
+          , {t.continuePayment}.
         </h3>
         <br />
         <PaypalButton />

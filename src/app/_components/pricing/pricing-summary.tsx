@@ -1,5 +1,7 @@
 import React from "react";
 import { Currency } from "../../types";
+import { useLang } from "../../lang-context";
+import { translations } from "../../i18n";
 
 /**
  * Props para el componente PricingSummary.
@@ -55,6 +57,9 @@ const PricingSummary: React.FC<PricingSummaryProps> = ({
   currencySymbol,
   exchangeRate,
 }) => {
+  const { lang } = useLang();
+  const t = translations[lang];
+
   const totalLocal = Number(totalPrice);
   const shippingLocal = Number(shippingPrice);
   const showUsdEquivalent = currency !== "USD";
@@ -68,17 +73,18 @@ const PricingSummary: React.FC<PricingSummaryProps> = ({
   return (
     <div className="text-center mt-6">
       <h2 className="text-xl font-semibold">
-        Precio Total: {currencySymbol}
+        {t.total}: {currencySymbol}
         {formatPrice(totalPrice)} {currency}
       </h2>
       <p className="text-center text-gray-600">
-        Costo de envío: {currencySymbol}
+        {t.shipping}: {currencySymbol}
         {formatPrice(shippingPrice)} {currency}
       </p>
       {showUsdEquivalent && (
         <div className="mt-2">
           <p className="text-center text-gray-500">
-            Equivalente en USD: {formatUsd(totalUsd! + shippingUsd!)}
+            {t.usdEquivalent || "Equivalente en USD"}:{" "}
+            {formatUsd(totalUsd! + shippingUsd!)}
           </p>
         </div>
       )}

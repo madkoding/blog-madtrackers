@@ -1,5 +1,7 @@
 import { TrackerType } from "@/app/types";
 import React from "react";
+import { useLang } from "../../lang-context";
+import { translations } from "../../i18n";
 
 /**
  * Props para el componente TrackerTypeSelector.
@@ -23,9 +25,12 @@ const TrackerTypeSelector: React.FC<TrackerTypeSelectorProps> = ({
   selectedTrackerType,
   setSelectedTrackerType,
 }) => {
+  const { lang } = useLang();
+  const t = translations[lang];
+
   return (
     <div className="mb-2">
-      <h3 className="font-medium mb-2">Tipo de Tracker:</h3>
+      <h3 className="font-medium mb-2">{t.trackerType}</h3>
       <div className="flex justify-center gap-4">
         {trackerTypes.map((tracker) => (
           <button

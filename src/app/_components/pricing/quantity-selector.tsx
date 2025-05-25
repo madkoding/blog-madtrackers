@@ -1,5 +1,10 @@
 // QuantitySelector.tsx
+"use client";
+
 import React from "react";
+import { useLang } from "../../lang-context";
+import { translations } from "../../i18n";
+import { useTranslatedConstants } from "../../constants";
 
 type QuantitySelectorProps = {
   quantities: number[];
@@ -12,9 +17,12 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
   selectedQuantity,
   setSelectedQuantity,
 }) => {
+  const { lang } = useLang();
+  const t = translations[lang];
+
   return (
-    <div className="mb-4">
-      <h3 className="font-medium mb-2">Cantidad de trackers:</h3>
+    <div className="mb-4 flex flex-col items-center gap-2">
+      <h3 className="font-medium mb-2">{t.quantitySelectorLabel}</h3>
       <div className="flex justify-center gap-2 flex-wrap">
         {quantities.map((qty) => (
           <button

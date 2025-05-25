@@ -5,6 +5,7 @@ import Script from "next/script";
 import "./globals.css";
 import { NavBar } from "./_components/navbar";
 import Footer from "./_components/common/footer";
+import { LangProvider } from "./lang-context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -58,9 +59,11 @@ export default function RootLayout({
         <link rel="manifest" href="/favicon/site.webmanifest" />
       </head>
       <body className="leading-normal tracking-normal text-white gradient">
-        <NavBar />
-        <div className="min-h-screen">{children}</div>
-        <Footer />
+        <LangProvider>
+          <NavBar />
+          <div className="min-h-screen">{children}</div>
+          <Footer />
+        </LangProvider>
       </body>
     </html>
   );

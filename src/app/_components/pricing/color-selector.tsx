@@ -2,35 +2,31 @@
 import React, { useState } from "react";
 import RotatingFBXModel from "../RotatingFBXModel";
 import { Color } from "../../types";
+import { useLang } from "../../lang-context";
+import { translations } from "../../i18n";
 
-type ColorSelectorProps = {
+interface ColorSelectorProps {
   colors: Color[];
   selectedColor: Color;
   setSelectedColor: (color: Color) => void;
-};
+}
 
 const ColorSelector: React.FC<ColorSelectorProps> = ({
   colors,
   selectedColor,
   setSelectedColor,
 }) => {
-  // El color de tapa y case se controlan con los selectores de botones
-  // Los ABS White siempre serán blancos
-  const absWhite1 = "#ffffff";
-  const absWhite2 = "#ffffff";
+  const { lang } = useLang();
+  const t = translations[lang];
 
-  // El color de tapa y case se toma del color seleccionado en cada grupo
-  // selectedColorTapa y selectedColorCase
   const [selectedColorTapa, setSelectedColorTapa] = useState(colors[0]);
   const [selectedColorCase, setSelectedColorCase] = useState(colors[0]);
 
-  // Si la tapa seleccionada es blanca, el ABS White se ve negro
   const isTapaBlanca =
     selectedColorTapa.hex.toLowerCase() === "#ffffff" ||
     selectedColorTapa.hex.toLowerCase() === "ffffff";
   const absWhiteColor = isTapaBlanca ? "#000000" : "#ffffff";
 
-  // Memo para evitar que RotatingFBXModel se reinicie al cambiar color
   const modelColors = React.useMemo(
     () => [
       selectedColorCase.hex,
@@ -44,9 +40,7 @@ const ColorSelector: React.FC<ColorSelectorProps> = ({
   return (
     <>
       <div className="mb-4">
-        <h3 className="font-medium mb-2">
-          Selecciona el color de la cubierta:
-        </h3>
+        <h3 className="font-medium mb-2">{t.colorCover}</h3>
         <div className="grid grid-cols-5 gap-2 justify-center">
           {colors.map((color) => (
             <div key={color.id} className="flex justify-center items-center">
@@ -63,7 +57,7 @@ const ColorSelector: React.FC<ColorSelectorProps> = ({
         <br />
         <hr />
         <br />
-        <h3 className="font-medium mb-2">Selecciona el color del case:</h3>
+        <h3 className="font-medium mb-2">{t.colorCase}</h3>
         <div className="grid grid-cols-5 gap-2 justify-center">
           {colors.map((color) => (
             <div key={color.id} className="flex justify-center items-center">
