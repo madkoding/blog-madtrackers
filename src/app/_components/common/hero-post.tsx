@@ -6,17 +6,10 @@ import { translations } from "../../i18n";
 
 type Props = {
   title: string;
-  coverImage: string;
-  excerpt: string;
-  slug: string;
+  subtitle: string;
 };
 
-export function HeroPost({
-  title,
-  coverImage,
-  excerpt,
-  slug,
-}: Readonly<Props>) {
+export function HeroPost({ title, subtitle }: Readonly<Props>) {
   const { lang } = useLang();
   const t = translations[lang];
 
@@ -38,8 +31,15 @@ export function HeroPost({
             <p className="tracking-loose w-full text-center md:text-left">
               {t.heroSlogan}
             </p>
-            <h1 className="my-4 text-5xl font-bold leading-tight">{title}</h1>
-            <p className="leading-normal text-xl mb-8">{t.heroExcerpt}</p>
+
+            <div className="flex flex-col w-full md:w-2/5 justify-center items-center text-center">
+              <h1 className="my-0 text-5xl font-bold leading-tight">{title}</h1>
+              <h3 className="my-0 text-2xl font-bold leading-tight">
+                {subtitle}
+              </h3>
+            </div>
+
+            <p className="my-4 leading-normal text-xl mb-8">{t.heroExcerpt}</p>
             <a
               href="#pricing"
               className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"

@@ -1,5 +1,6 @@
 ---
-title: "madTrackers SlimeVR"
+title: "madTrackers"
+subtitle: "SlimeVR-compatible"
 excerpt: "Sensores de captura de movimiento inalámbricos para animación en tiempo real"
 coverImage: "/assets/blog/preview/cover.jpg"
 date: "2025-07-06T22:20:07.322Z"

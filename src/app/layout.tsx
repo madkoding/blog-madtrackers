@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: `madTrackers`,
-  description: `Trackers SlimeVR por fan de VRChat para fans de VRChat.`,
+  description: `Trackers Slime por fan de VRChat para fans de VRChat.`,
   openGraph: {
     images: ["https://www.madtrackers.com/assets/blog/preview/cover.jpg"],
   },

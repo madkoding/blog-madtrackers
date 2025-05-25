@@ -10,12 +10,7 @@ export default function Index() {
 
   return (
     <main>
-      <HeroPost
-        title={heroPost.title}
-        coverImage={heroPost.coverImage}
-        slug={heroPost.slug}
-        excerpt={heroPost.excerpt}
-      />
+      <HeroPost title={heroPost.title} subtitle={heroPost.subtitle} />
       <WaveDivider />
       <Pricing />
     </main>

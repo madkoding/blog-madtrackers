@@ -3,6 +3,7 @@ import { type Author } from "./author";
 export type Post = {
   slug: string;
   title: string;
+  subtitle: string;
   date: string;
   coverImage: string;
   author: Author;
