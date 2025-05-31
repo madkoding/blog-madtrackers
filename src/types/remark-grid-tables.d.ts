@@ -1,4 +1,4 @@
 declare module 'remark-grid-tables' {
-  const gridTables: any;
+  const gridTables: unknown;
   export default gridTables;
 }

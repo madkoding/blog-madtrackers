@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { translations } from "../i18n";
 import { useLang } from "../lang-context";
 
@@ -108,7 +109,7 @@ export function NavBar() {
     >
       <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
         <div className="pl-4 flex items-center space-x-2">
-          <a
+          <Link
             className={`toggleColour no-underline hover:no-underline font-bold text-2xl lg:text-4xl flex items-center ${textColorClass} transition-all duration-300 ease-in-out`}
             href="/"
           >
@@ -120,7 +121,7 @@ export function NavBar() {
               className={svgClass}
             />
             <span className="ml-2">madTrackers</span>
-          </a>
+          </Link>
         </div>
         <div className="block lg:hidden pr-4">
           <button

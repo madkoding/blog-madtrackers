@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { quantities, countries, useTranslatedConstants } from "../../constants";
 import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
-import { Sensor, Color, Currency, TrackerType } from "../../types";
+import { Sensor, Currency, TrackerType } from "../../types";
 import SensorSelector from "./sensor-selector";
 import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
@@ -26,7 +26,6 @@ const Pricing = () => {
   const [selectedQuantity, setSelectedQuantity] = useState<number>(
     quantities[0]
   );
-  const [selectedColor, setSelectedColor] = useState<Color>(colorsT[0]);
 
   /** Moneda local (ej: "USD", "CLP", etc.) */
   const [currency, setCurrency] = useState<Currency>(countries.US.currency);
@@ -112,7 +111,6 @@ const Pricing = () => {
   useEffect(() => {
     setSelectedSensor(sensorsT[0]);
     setSelectedTrackerType(trackersT[0]);
-    setSelectedColor(colorsT[0]);
   }, [sensorsT, trackersT, colorsT]);
 
   // Precio total en USD (sin conversión de moneda)
@@ -168,8 +166,6 @@ const Pricing = () => {
           <ImageWithPoints selectedQuantity={selectedQuantity} />
           <ColorSelector
             colors={colorsT}
-            selectedColor={selectedColor}
-            setSelectedColor={setSelectedColor}
           />
         </div>
 
@@ -189,8 +185,7 @@ const Pricing = () => {
 - País: ${currency}
 - Tipo de tracker: ${selectedTrackerType.label}
 - Sensor: ${selectedSensor.label} 
-- Cantidad: ${selectedQuantity} 
-- Color: ${selectedColor.label}`
+- Cantidad: ${selectedQuantity}`
             );
 
             window.open(`https://wa.me/56975746099?text=${message}`, "_blank");

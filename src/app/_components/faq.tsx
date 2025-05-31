@@ -33,7 +33,7 @@ const Faq = () => {
    * Maneja el evento de tecla para disparar la consulta al presionar Enter.
    * @param {React.KeyboardEvent<HTMLInputElement>} e - El evento del teclado.
    */
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       askQuestion();
     }

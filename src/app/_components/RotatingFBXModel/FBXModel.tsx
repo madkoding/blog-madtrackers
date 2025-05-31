@@ -86,34 +86,35 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath, colors }) => {
   const modelRef = useRef<THREE.Group>(null);
   const materials = useRef<THREE.Material[]>([]);
 
-  // Defino assignMaterial ANTES de useMemo
-  const assignMaterial = (
-    mat: THREE.Material | undefined,
-    globalMatIndex: number
-  ) => {
-    const colorValue =
-      colors?.[globalMatIndex] ??
-      (globalMatIndex === 0 || globalMatIndex === 1
-        ? FBX_MODEL_PURPLE_COLOR
-        : FBX_MODEL_DEFAULT_COLOR);
-    const newMat = createStandardMaterial({
-      mat,
-      colorValue,
-      normalMap,
-      globalMatIndex,
-      colors,
-    });
-    newMat.map = null;
-    newMat.roughnessMap = null;
-    newMat.metalnessMap = null;
-    newMat.aoMap = null;
-    newMat.alphaMap = null;
-    materials.current.push(newMat);
-    return newMat;
-  };
-
   const clonedModel = React.useMemo(() => {
     if (!fbxOriginal) return null;
+    
+    // Defino assignMaterial DENTRO de useMemo para evitar dependencias cambiantes
+    const assignMaterial = (
+      mat: THREE.Material | undefined,
+      globalMatIndex: number
+    ) => {
+      const colorValue =
+        colors?.[globalMatIndex] ??
+        (globalMatIndex === 0 || globalMatIndex === 1
+          ? FBX_MODEL_PURPLE_COLOR
+          : FBX_MODEL_DEFAULT_COLOR);
+      const newMat = createStandardMaterial({
+        mat,
+        colorValue,
+        normalMap,
+        globalMatIndex,
+        colors,
+      });
+      newMat.map = null;
+      newMat.roughnessMap = null;
+      newMat.metalnessMap = null;
+      newMat.aoMap = null;
+      newMat.alphaMap = null;
+      materials.current.push(newMat);
+      return newMat;
+    };
+
     const model = fbxOriginal.clone();
     model.scale.set(FBX_MODEL_SCALE, FBX_MODEL_SCALE, FBX_MODEL_SCALE);
     const box = new THREE.Box3().setFromObject(model);
@@ -140,7 +141,7 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath, colors }) => {
       }
     });
     return group;
-  }, [fbxOriginal, normalMap]);
+  }, [fbxOriginal, normalMap, colors]);
 
   useEffect(() => {
     if (!clonedModel || !colors || colors.length === 0) return;
@@ -165,7 +166,7 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath, colors }) => {
 
   useEffect(() => {
     if (!clonedModel || !envMap || !("texture" in envMap)) return;
-    const cubeTexture = (envMap as any).texture;
+    const cubeTexture = (envMap as { texture: THREE.CubeTexture }).texture;
     materials.current.forEach((mat, i) => {
       if ((i === 0 || i === 1) && mat instanceof THREE.MeshStandardMaterial) {
         mat.envMap = cubeTexture;
@@ -204,7 +205,6 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath, colors }) => {
 
   if (!clonedModel) return null;
 
-  // @ts-ignore
   return <primitive object={clonedModel} ref={modelRef} />;
 };
 

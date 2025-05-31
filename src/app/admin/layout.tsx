@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -8,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function AdminLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <div className="admin-layout">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-red-600 border-b border-red-700 shadow-lg">
@@ -24,24 +25,24 @@ export default function AdminLayout({
             </div>
             
             <div className="flex items-center gap-4">
-              <a
+              <Link
                 href="/admin"
                 className="text-red-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 📋 Buscar Usuario
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/seguimiento"
                 className="text-red-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 👁️ Vista Pública
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/"
                 className="text-red-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 🏠 Inicio
-              </a>
+              </Link>
             </div>
           </div>
         </div>

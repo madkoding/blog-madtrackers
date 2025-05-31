@@ -8,5 +8,5 @@ export interface ModelProps {
 export const hasColorProperty = (
   material: THREE.Material
 ): material is THREE.Material & { color: THREE.Color } => {
-  return "color" in material && (material as any).color instanceof THREE.Color;
+  return "color" in material && (material as THREE.Material & { color: THREE.Color }).color instanceof THREE.Color;
 };

@@ -15,6 +15,7 @@ async function testFirebaseService() {
       nombreUsuario: 'test_firebase_user',
       contacto: 'test@firebase.com',
       fechaLimite: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 días
+      fechaEntrega: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(), // 45 días
       totalUsd: 175.00,
       abonadoUsd: 50.00,
       envioPagado: false,

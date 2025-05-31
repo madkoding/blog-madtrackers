@@ -40,6 +40,7 @@ async function migrateTestData() {
       const tracking: UserTracking = {
         nombreUsuario: data.nombreUsuario,
         contacto: data.contacto,
+        fechaEntrega: data.fechaLimite,
         fechaLimite: data.fechaLimite,
         totalUsd: data.totalUsd,
         abonadoUsd: data.abonadoUsd,

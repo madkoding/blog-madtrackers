@@ -173,7 +173,6 @@ export default function UserTrackingPage() {
             {/* Información del Usuario */}
             <InfoCard title={t.userInfo}>
               <InfoRow label={t.username} value={tracking.nombreUsuario} />
-              <InfoRow label={t.contactInfo} value={tracking.contacto} />
               <InfoRow label={t.deliveryDate} value={formatDate(tracking.fechaEntrega)} />
               <InfoRow label={t.shippingCountry} value={tracking.paisEnvio} />
             </InfoCard>

@@ -2,12 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// import { translations } from "../i18n";
-// import { useLang } from "../lang-context";
+import Link from "next/link";
 
 export default function AdminIndexPage() {
-  // const { lang } = useLang();
-  // const t = translations[lang];
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
@@ -115,12 +112,12 @@ export default function AdminIndexPage() {
             </div>
 
             <div className="mt-6 text-center">
-              <a
+              <Link
                 href="/seguimiento"
                 className="text-blue-600 hover:text-blue-800 text-sm"
               >
                 ← Volver a la página de seguimiento pública
-              </a>
+              </Link>
             </div>
           </div>
         </div>

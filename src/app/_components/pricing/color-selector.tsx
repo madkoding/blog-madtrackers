@@ -7,14 +7,10 @@ import { translations } from "../../i18n";
 
 interface ColorSelectorProps {
   colors: Color[];
-  selectedColor: Color;
-  setSelectedColor: (color: Color) => void;
 }
 
 const ColorSelector: React.FC<ColorSelectorProps> = ({
   colors,
-  selectedColor,
-  setSelectedColor,
 }) => {
   const { lang } = useLang();
   const t = translations[lang];

@@ -5,9 +5,9 @@ import OpenAI from 'openai';
 import { cosineSimilarity } from '@/lib/vectorUtils';
 
 /** Configuración de OpenAI */
-const openai = new OpenAI({
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-});
+}) : null;
 
 /** Interfaz para las FAQ con embedding */
 interface FAQWithEmbedding {
@@ -35,6 +35,10 @@ export async function POST(req: NextRequest) {
     const { query } = await req.json();
     if (!query) {
       return NextResponse.json({ error: 'Falta la pregunta' }, { status: 400 });
+    }
+
+    if (!openai) {
+      return NextResponse.json({ error: 'OpenAI API no configurada' }, { status: 503 });
     }
 
     // Generar el embedding para la consulta
@@ -72,6 +76,14 @@ Respuesta de referencia: "${bestFAQ.answer}"
 Pregunta: "${query}"
 Genera una respuesta precisa, clara y detallada, limitándote únicamente a la información proporcionada.`;
 
+
+    if (!openai) {
+      // Si no hay OpenAI disponible, devolver la respuesta básica
+      return NextResponse.json({ 
+        answer: bestFAQ.answer,
+        score: bestScore 
+      });
+    }
 
     // Llamar a GPT-3.5-turbo para refinar la respuesta
     const gptResponse = await openai.chat.completions.create({

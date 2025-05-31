@@ -10,7 +10,7 @@ import { useState } from "react";
  * Página principal que integra el componente FAQ.
  */
 export default function Home() {
-  const [lang, setLang] = useState<"en" | "es">("en");
+  const [lang] = useState<"en" | "es">("en");
   const t = translations[lang];
 
   return (

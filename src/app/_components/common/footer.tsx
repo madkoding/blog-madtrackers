@@ -1,14 +1,14 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
 
 /**
  * Props para el componente Footer de MadTrackers.
- * Actualmente no requiere propiedades.
  */
-export interface FooterProps {}
+export type FooterProps = Record<string, never>;
 
 /**
  * Footer corporativo para MadTrackers.
@@ -43,14 +43,14 @@ const Footer: React.FC<FooterProps> = () => {
           <h4 className="text-lg font-semibold mb-4">{t.navigation}</h4>
           <ul className="space-y-2 text-gray-300">
             <li>
-              <a href="/" className="hover:text-white">
+              <Link href="/" className="hover:text-white">
                 {t.home}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/contacto" className="hover:text-white">
+              <Link href="/contacto" className="hover:text-white">
                 {t.contact}
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
