@@ -10,7 +10,7 @@ import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
 import PricingSummary from "./pricing-summary";
 import ImageWithPoints from "./image-with-points";
-// import PaypalButton from "./paypal";
+import PaypalButton from "./paypal";
 
 const Pricing = () => {
   const {
@@ -107,7 +107,7 @@ const Pricing = () => {
     ) {
       setSelectedSensor(sensorsT[0]);
     }
-  }, [selectedTrackerType]);
+  }, [selectedTrackerType, selectedSensor.available, sensorsT]);
 
   useEffect(() => {
     setSelectedSensor(sensorsT[0]);
@@ -115,16 +115,20 @@ const Pricing = () => {
     setSelectedColor(colorsT[0]);
   }, [sensorsT, trackersT, colorsT]);
 
+  // Precio total en USD (sin conversión de moneda)
+  const totalPriceUsd = useMemo(
+    () =>
+      selectedTrackerType.price *
+      selectedSensor.price *
+      selectedQuantity,
+    [selectedTrackerType, selectedSensor, selectedQuantity]
+  );
+
   // Precio total (USD→local)
   const totalPrice = useMemo(
     () =>
-      (
-        selectedTrackerType.price *
-        selectedSensor.price *
-        selectedQuantity *
-        exchangeRate
-      ).toFixed(0),
-    [selectedTrackerType, selectedSensor, selectedQuantity, exchangeRate]
+      (totalPriceUsd * exchangeRate).toFixed(0),
+    [totalPriceUsd, exchangeRate]
   );
 
   // Costo de envío (USD→local)
@@ -205,7 +209,10 @@ const Pricing = () => {
           , {t.continuePayment}.
         </h3>
         <br />
-        {/* <PaypalButton /> */}
+        <PaypalButton 
+          amount={totalPriceUsd / 4} // Pago del 25% como anticipo
+          description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity} (Anticipo 25%)`}
+        />
       </div>
     </section>
   );
