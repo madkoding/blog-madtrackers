@@ -147,3 +147,85 @@ p {
   position: relative;
   /* z-index: 3; */
 }
+
+/* Admin Panel Styles */
+.admin-layout {
+  @apply bg-gray-50;
+}
+
+.admin-layout .admin-card {
+  @apply bg-white rounded-lg shadow-lg p-6 border border-gray-200;
+  transition: all 0.2s ease-in-out;
+}
+
+.admin-layout .admin-card:hover {
+  @apply shadow-xl border-blue-200;
+}
+
+.admin-layout .edit-button {
+  @apply text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors;
+}
+
+.admin-layout .save-button {
+  @apply text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition-colors;
+}
+
+.admin-layout .cancel-button {
+  @apply text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors;
+}
+
+.admin-layout .field-group {
+  @apply flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0;
+}
+
+.admin-layout .field-label {
+  @apply text-gray-600 font-medium;
+}
+
+.admin-layout .field-value {
+  @apply text-gray-800 font-semibold;
+}
+
+.admin-layout .edit-input {
+  @apply px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none;
+}
+
+.admin-layout .color-selector {
+  @apply flex items-center gap-2 px-3 py-2 bg-white border rounded-lg shadow-sm hover:bg-gray-50 cursor-pointer transition-colors;
+}
+
+.admin-layout .color-preview {
+  @apply w-6 h-6 rounded-full border border-gray-300 shadow-sm;
+}
+
+.admin-layout .progress-bar-container {
+  @apply mb-4;
+}
+
+.admin-layout .progress-bar {
+  @apply w-full bg-gray-200 rounded-full h-2;
+}
+
+.admin-layout .progress-fill {
+  @apply h-2 rounded-full transition-all duration-500 ease-out;
+}
+
+.admin-layout .status-indicator {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.admin-layout .status-success {
+  @apply bg-green-100 text-green-800;
+}
+
+.admin-layout .status-error {
+  @apply bg-red-100 text-red-800;
+}
+
+.admin-layout .status-warning {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.admin-layout .spinner {
+  @apply animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full;
+}

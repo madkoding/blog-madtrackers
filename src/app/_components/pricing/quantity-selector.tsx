@@ -4,7 +4,6 @@
 import React from "react";
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
-import { useTranslatedConstants } from "../../constants";
 
 type QuantitySelectorProps = {
   quantities: number[];

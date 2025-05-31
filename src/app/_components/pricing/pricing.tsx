@@ -10,7 +10,7 @@ import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
 import PricingSummary from "./pricing-summary";
 import ImageWithPoints from "./image-with-points";
-import PaypalButton from "./paypal";
+// import PaypalButton from "./paypal";
 
 const Pricing = () => {
   const {
@@ -137,7 +137,7 @@ const Pricing = () => {
     <section className="py-16 px-4 bg-white text-black" id="pricing">
       <div className="bg-gray-100 p-4 rounded-lg shadow-lg max-w-2xl mx-auto text-center">
         <h1 className="text-3xl font-semibold">
-          {t.buildYourTrackers} {t.pricing ? t.pricing : ""}
+          {t.buildYourTrackers}
         </h1>
         <h3 className="text-sm font-semibold">{t.precisionWithTrackers}</h3>
         <br />
@@ -205,7 +205,7 @@ const Pricing = () => {
           , {t.continuePayment}.
         </h3>
         <br />
-        <PaypalButton />
+        {/* <PaypalButton /> */}
       </div>
     </section>
   );

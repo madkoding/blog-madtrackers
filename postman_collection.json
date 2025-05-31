@@ -1,0 +1,620 @@
+{
+	"info": {
+		"name": "MadTrackers CRUD API",
+		"description": "Colección completa para gestionar trackings de usuarios en Firebase Firestore - Actualizada con nuevos parámetros y ejemplos mejorados",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3001/api/tracking",
+			"type": "string"
+		},
+		{
+			"key": "production_url",
+			"value": "https://tu-dominio.vercel.app/api/tracking",
+			"type": "string"
+		},
+		{
+			"key": "public_url",
+			"value": "http://localhost:3001/api/public/tracking",
+			"type": "string"
+		},
+		{
+			"key": "tracking_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "api_key",
+			"value": "your-api-key-here",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "🔍 Endpoints de Consulta",
+			"item": [
+				{
+					"name": "Test Connection",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/../../test-firestore",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"../../test-firestore"
+							]
+						},
+						"description": "Probar conexión básica con Firestore"
+					}
+				},
+				{
+					"name": "Get All Trackings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						},
+						"description": "Obtener todos los trackings"
+					}
+				},
+				{
+					"name": "Get Tracking by ID (Query Param)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}?id={{tracking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{tracking_id}}"
+								}
+							]
+						},
+						"description": "Obtener tracking específico por ID usando query parameter"
+					}
+				},
+				{
+					"name": "Get Tracking by ID (Path Param)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{tracking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{tracking_id}}"
+							]
+						},
+						"description": "Obtener tracking específico por ID en el path"
+					}
+				},
+				{
+					"name": "Get Tracking by Username",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}?username=test_chile",
+							"host": [
+								"{{base_url}}"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "test_chile"
+								}
+							]
+						},
+						"description": "Buscar tracking por nombre de usuario"
+					}
+				},
+				{
+					"name": "Get Tracking by Username (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{public_url}}/test_peru",
+							"host": [
+								"{{public_url}}"
+							],
+							"path": [
+								"test_peru"
+							]
+						},
+						"description": "Endpoint público para obtener tracking por username (no requiere API key)"
+					}
+				},
+				{
+					"name": "Get Trackings by Shipping Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}?shippingStatus=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"query": [
+								{
+									"key": "shippingStatus",
+									"value": "false",
+									"description": "true o false"
+								}
+							]
+						},
+						"description": "Filtrar por estado de envío pagado/no pagado"
+					}
+				},
+				{
+					"name": "Get Trackings Near Deadline",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}?nearDeadline=7",
+							"host": [
+								"{{base_url}}"
+							],
+							"query": [
+								{
+									"key": "nearDeadline",
+									"value": "7",
+									"description": "Días hasta la fecha límite"
+								}
+							]
+						},
+						"description": "Trackings con fecha límite próxima (en los próximos X días)"
+					}
+				}
+			]
+		},
+		{
+			"name": "➕ Crear Tracking",
+			"item": [
+				{
+					"name": "Create Basic Tracking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('tracking_id', responseJson.id);",
+									"    console.log('Tracking ID guardado:', responseJson.id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombreUsuario\": \"usuario_basico_{{$randomInt}}\",\n  \"contacto\": \"usuario{{$randomInt}}@madtrackers.com\",\n  \"fechaLimite\": \"2025-12-31T23:59:59.000Z\",\n  \"totalUsd\": 240.00,\n  \"abonadoUsd\": 0,\n  \"envioPagado\": false,\n  \"numeroTrackers\": 6,\n  \"sensor\": \"LSM6DSR\",\n  \"magneto\": false,\n  \"porcentajes\": {\n    \"placa\": 0,\n    \"straps\": 0,\n    \"cases\": 0,\n    \"baterias\": 0\n  },\n  \"colorCase\": \"black\",\n  \"colorTapa\": \"white\",\n  \"paisEnvio\": \"Chile\",\n  \"estadoPedido\": \"waiting\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						},
+						"description": "Crear tracking básico con sensor LSM6DSR"
+					}
+				},
+				{
+					"name": "Create Premium Tracking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('tracking_id', responseJson.id);",
+									"    console.log('Tracking ID guardado:', responseJson.id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombreUsuario\": \"premium_user_{{$randomInt}}\",\n  \"contacto\": \"premium{{$randomInt}}@madtrackers.com\",\n  \"fechaLimite\": \"2025-08-15T23:59:59.000Z\",\n  \"totalUsd\": 420.00,\n  \"abonadoUsd\": 100.00,\n  \"envioPagado\": false,\n  \"numeroTrackers\": 8,\n  \"sensor\": \"ICM45686 + MMC5983MA\",\n  \"magneto\": true,\n  \"porcentajes\": {\n    \"placa\": 25,\n    \"straps\": 0,\n    \"cases\": 0,\n    \"baterias\": 0\n  },\n  \"colorCase\": \"blue\",\n  \"colorTapa\": \"red\",\n  \"paisEnvio\": \"México\",\n  \"estadoPedido\": \"waiting\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						},
+						"description": "Crear tracking premium con sensor ICM45686 + magnetómetro"
+					}
+				},
+				{
+					"name": "Create Large Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('tracking_id', responseJson.id);",
+									"    console.log('Tracking ID guardado:', responseJson.id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombreUsuario\": \"large_order_{{$randomInt}}\",\n  \"contacto\": \"largeorder{{$randomInt}}@empresa.com\",\n  \"fechaLimite\": \"2025-09-30T23:59:59.000Z\",\n  \"totalUsd\": 1200.00,\n  \"abonadoUsd\": 600.00,\n  \"envioPagado\": false,\n  \"numeroTrackers\": 20,\n  \"sensor\": \"ICM45686\",\n  \"magneto\": false,\n  \"porcentajes\": {\n    \"placa\": 50,\n    \"straps\": 25,\n    \"cases\": 10,\n    \"baterias\": 75\n  },\n  \"colorCase\": \"purple\",\n  \"colorTapa\": \"yellow\",\n  \"paisEnvio\": \"Argentina\",\n  \"estadoPedido\": \"manufacturing\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						},
+						"description": "Crear pedido grande de 20 trackers para empresa"
+					}
+				}
+			]
+		},
+		{
+			"name": "✏️ Actualizar Tracking",
+			"item": [
+				{
+					"name": "Update Progress (Query Param)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"abonadoUsd\": 150.00,\n  \"porcentajes\": {\n    \"placa\": 75,\n    \"straps\": 50,\n    \"cases\": 25,\n    \"baterias\": 100\n  },\n  \"estadoPedido\": \"manufacturing\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}?id={{tracking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{tracking_id}}"
+								}
+							]
+						},
+						"description": "Actualizar progreso del tracking usando query parameter"
+					}
+				},
+				{
+					"name": "Update Progress (Path Param)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"abonadoUsd\": 200.00,\n  \"porcentajes\": {\n    \"placa\": 90,\n    \"straps\": 80,\n    \"cases\": 60,\n    \"baterias\": 100\n  },\n  \"estadoPedido\": \"testing\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/{{tracking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{tracking_id}}"
+							]
+						},
+						"description": "Actualizar progreso del tracking usando path parameter"
+					}
+				},
+				{
+					"name": "Mark Shipping as Paid",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"envioPagado\": true,\n  \"estadoPedido\": \"shipping\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/{{tracking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{tracking_id}}"
+							]
+						},
+						"description": "Marcar envío como pagado y cambiar estado a shipping"
+					}
+				},
+				{
+					"name": "Complete Order",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"abonadoUsd\": 420.00,\n  \"porcentajes\": {\n    \"placa\": 100,\n    \"straps\": 100,\n    \"cases\": 100,\n    \"baterias\": 100\n  },\n  \"envioPagado\": true,\n  \"estadoPedido\": \"received\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/{{tracking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{tracking_id}}"
+							]
+						},
+						"description": "Completar pedido - marcar como recibido con pago total"
+					}
+				},
+				{
+					"name": "Update Order Status Only",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"estadoPedido\": \"manufacturing\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/{{tracking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{tracking_id}}"
+							]
+						},
+						"description": "Actualizar solo el estado del pedido. Estados disponibles: waiting, manufacturing, testing, shipping, received"
+					}
+				}
+			]
+		},
+		{
+			"name": "🗑️ Eliminar Tracking",
+			"item": [
+				{
+					"name": "Delete Tracking (Query Param)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}?id={{tracking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{tracking_id}}"
+								}
+							]
+						},
+						"description": "Eliminar tracking usando query parameter (usar con cuidado)"
+					}
+				},
+				{
+					"name": "Delete Tracking (Path Param)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{tracking_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{tracking_id}}"
+							]
+						},
+						"description": "Eliminar tracking usando path parameter (usar con cuidado)"
+					}
+				}
+			]
+		},
+		{
+			"name": "📝 Ejemplos de Referencia",
+			"item": [
+				{
+					"name": "Example - All Sensor Types",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombreUsuario\": \"sensor_examples\",\n  \"contacto\": \"examples@madtrackers.com\",\n  \"fechaLimite\": \"2025-12-31T23:59:59.000Z\",\n  \"totalUsd\": 350.00,\n  \"abonadoUsd\": 0,\n  \"envioPagado\": false,\n  \"numeroTrackers\": 6,\n  \"sensor\": \"LSM6DSR\",\n  \"magneto\": false,\n  \"porcentajes\": {\n    \"placa\": 0,\n    \"straps\": 0,\n    \"cases\": 0,\n    \"baterias\": 0\n  },\n  \"colorCase\": \"black\",\n  \"colorTapa\": \"white\",\n  \"paisEnvio\": \"Chile\",\n  \"estadoPedido\": \"waiting\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						},
+						"description": "Ejemplo con todos los tipos de sensores disponibles:\n\n• LSM6DSR - Sensor básico\n• LSM6DSR + MMC5983MA - Sensor básico con magnetómetro\n• ICM45686 - Sensor premium\n• ICM45686 + MMC5983MA - Sensor premium con magnetómetro\n\nColores disponibles:\n• Case: white, black, red, blue, purple, yellow, green, orange, pink, gray\n• Tapa: white, black, red, blue, purple, yellow, green, orange, pink, gray\n\nEstados de pedido:\n• waiting - En espera\n• manufacturing - En fabricación\n• testing - En prueba\n• shipping - En envío\n• received - Recibido"
+					}
+				},
+				{
+					"name": "Example - Color Combinations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombreUsuario\": \"color_example\",\n  \"contacto\": \"colors@madtrackers.com\",\n  \"fechaLimite\": \"2025-12-31T23:59:59.000Z\",\n  \"totalUsd\": 280.00,\n  \"abonadoUsd\": 0,\n  \"envioPagado\": false,\n  \"numeroTrackers\": 6,\n  \"sensor\": \"LSM6DSR + MMC5983MA\",\n  \"magneto\": true,\n  \"porcentajes\": {\n    \"placa\": 0,\n    \"straps\": 0,\n    \"cases\": 0,\n    \"baterias\": 0\n  },\n  \"colorCase\": \"purple\",\n  \"colorTapa\": \"yellow\",\n  \"paisEnvio\": \"Perú\",\n  \"estadoPedido\": \"waiting\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						},
+						"description": "Ejemplo mostrando combinaciones de colores populares:\n\n• Case morado + Tapa amarilla\n• Case azul + Tapa blanca\n• Case negro + Tapa roja\n• Case verde + Tapa blanca\n• Case naranja + Tapa negro"
+					}
+				}
+			]
+		}
+	]
+}

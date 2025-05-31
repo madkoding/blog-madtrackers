@@ -1,6 +1,7 @@
 import { points } from "@/app/constants";
 import { Point } from "@/app/types";
 import React, { useState, useLayoutEffect, useRef } from "react";
+import Image from "next/image";
 
 type ImageWithPointsProps = {
   selectedQuantity: number;
@@ -17,7 +18,7 @@ const ImageWithPoints: React.FC<ImageWithPointsProps> = ({
   );
   const imgRef = useRef<HTMLImageElement | null>(null);
 
-  const selectedPoints = points[selectedQuantity] || [];
+  const selectedPoints = points[selectedQuantity] ?? [];
 
   // Escala los puntos según el tamaño actual de la imagen
   const scalePoints = (point: Point) => {
@@ -50,13 +51,15 @@ const ImageWithPoints: React.FC<ImageWithPointsProps> = ({
 
   return (
     <div className="relative w-full max-w-lg mx-auto">
-      {/* Imagen SVG de fondo */}
-      <img
+      <Image
         ref={imgRef}
         src="/assets/human_body_female.svg"
         alt="Fondo"
         className="w-full h-auto"
         onLoad={updateImageSize}
+        width={500}
+        height={200}
+        priority
       />
 
       {/* Puntos sobre la imagen */}

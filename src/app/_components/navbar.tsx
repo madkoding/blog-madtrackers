@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { translations } from "../i18n";
 import { useLang } from "../lang-context";
@@ -64,6 +65,7 @@ function LanguageSelector({
 export function NavBar() {
   const [scrollpos, setScrollpos] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const { lang, setLang } = useLang();
   const t = translations[lang];
@@ -81,7 +83,17 @@ export function NavBar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const headerClass = scrollpos > 10 || isMenuOpen ? "bg-white shadow" : "";
+  // Detectar si no estamos en la página de inicio
+  const isNotHomePage = pathname !== "/";
+
+  // Lógica de estilos del header
+  let headerClass = "";
+  if (scrollpos > 10 || isMenuOpen) {
+    headerClass = "bg-white shadow";
+  } else if (isNotHomePage) {
+    headerClass = "bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 shadow-lg";
+  }
+
   const navContentClass = scrollpos > 10 || isMenuOpen ? "bg-white" : "";
   const textColorClass =
     scrollpos > 10 || isMenuOpen ? "text-gray-800" : "text-white";
@@ -137,8 +149,8 @@ export function NavBar() {
           >
             <NavButton href="/" label={t.home} className={textColorClass} />
             <NavButton
-              href="/#pricing"
-              label={t.pricing}
+              href="/seguimiento"
+              label={t.tracking}
               className={textColorClass}
             />
             <NavButton

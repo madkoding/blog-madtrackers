@@ -1,0 +1,15 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Solo permitir acceso a la colección user_tracking
+    match /user_tracking/{document} {
+      allow read, write: if true;
+    }
+    
+    // Denegar acceso a otras colecciones
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

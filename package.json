@@ -4,7 +4,11 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts"
+    "security-check": "bash scripts/security-check.sh",
+    "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts",
+    "migrate:firestore": "npx ts-node --project tsconfig.scripts.json scripts/migrateToFirestore.ts",
+    "migrate:test-data": "npx ts-node --project tsconfig.scripts.json scripts/migrateTestData.ts",
+    "test:firebase": "npx ts-node --project tsconfig.scripts.json scripts/testFirebaseService.ts"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",
@@ -15,6 +19,7 @@
     "classnames": "^2.5.1",
     "date-fns": "^3.3.1",
     "dotenv": "^16.4.7",
+    "firebase": "^11.8.1",
     "gray-matter": "^4.0.3",
     "next": "^14.2.24",
     "openai": "^4.85.1",
@@ -32,6 +37,8 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "eslint": "8.57.1",
+    "eslint-config-next": "15.3.3",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",
