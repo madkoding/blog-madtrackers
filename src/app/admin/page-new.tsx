@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TokenAuthModal from "../_components/auth/TokenAuthModal";
-import { UserTracking } from "../../interfaces/tracking";
+import { UserTracking, OrderStatus } from "../../interfaces/tracking";
 
 export default function AdminIndexPage() {
   const router = useRouter();
@@ -111,6 +111,18 @@ export default function AdminIndexPage() {
     user.nombreUsuario.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.contacto.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const getOrderStatusClass = (estadoPedido: OrderStatus | undefined) => {
+    if (estadoPedido === OrderStatus.DELIVERED) {
+      return 'bg-green-100 text-green-800';
+    } else if (estadoPedido === OrderStatus.PRODUCTION) {
+      return 'bg-blue-100 text-blue-800';
+    } else if (estadoPedido === OrderStatus.SHIPPING) {
+      return 'bg-yellow-100 text-yellow-800';
+    } else {
+      return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   // Mostrar carga inicial de autenticación
   if (checkingAuth) {
@@ -247,7 +259,7 @@ export default function AdminIndexPage() {
                   <div>
                     <p className="text-sm text-gray-600">Pedidos Activos</p>
                     <p className="text-2xl font-bold text-gray-800">
-                      {users.filter(u => u.estadoPedido !== 'DELIVERED').length}
+                      {users.filter(u => u.estadoPedido !== OrderStatus.RECEIVED).length}
                     </p>
                   </div>
                 </div>
@@ -258,7 +270,7 @@ export default function AdminIndexPage() {
                   <div>
                     <p className="text-sm text-gray-600">Entregados</p>
                     <p className="text-2xl font-bold text-gray-800">
-                      {users.filter(u => u.estadoPedido === 'DELIVERED').length}
+                      {users.filter(u => u.estadoPedido === OrderStatus.DELIVERED).length}
                     </p>
                   </div>
                 </div>
@@ -354,15 +366,7 @@ export default function AdminIndexPage() {
                               <div className="text-xs text-gray-500">{user.paisEnvio}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                user.estadoPedido === 'DELIVERED' 
-                                  ? 'bg-green-100 text-green-800'
-                                  : user.estadoPedido === 'PRODUCTION'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : user.estadoPedido === 'SHIPPING'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-gray-100 text-gray-800'
-                              }`}>
+                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getOrderStatusClass(user.estadoPedido)}`}>
                                 {user.estadoPedido || 'WAITING'}
                               </span>
                             </td>
@@ -379,18 +383,18 @@ export default function AdminIndexPage() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-900">
-                                ${user.totalUsd || (user.total ? (user.total / 1000).toFixed(2) : '0.00')}
+                                ${user.totalUsd ?? (user.total ? (user.total / 1000).toFixed(2) : '0.00')}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <button
-                                onClick={() => handleEditUser(user.userHash || user.id)}
+                                onClick={() => handleEditUser((user.userHash ?? user.id) as string)}
                                 className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors mr-2"
                               >
                                 ✏️ Editar
                               </button>
                               <a
-                                href={`/seguimiento/${user.userHash || user.id}`}
+                                href={`/seguimiento/${user.userHash ?? user.id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors"

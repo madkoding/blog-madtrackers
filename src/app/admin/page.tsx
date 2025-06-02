@@ -75,7 +75,7 @@ export default function AdminPage() {
     }
   }, [searchTerm, users]);
 
-  const handleAuthSuccess = (jwtToken: string) => {
+  const handleAuthSuccess = () => {
     setIsAuthenticated(true);
     setShowAuthModal(false);
     

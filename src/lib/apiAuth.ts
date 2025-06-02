@@ -1,6 +1,15 @@
 import { NextRequest } from 'next/server';
 import { JWTAuthService } from './jwtAuthService';
 
+// Interfaz para el payload del JWT
+interface JWTPayload {
+  username: string;
+  type: 'user' | 'admin';
+  email?: string;
+  iat: number;
+  exp: number;
+}
+
 /**
  * Middleware para validar API Key en requests
  */
@@ -58,7 +67,7 @@ export function unauthorizedResponse() {
  */
 export function validateJWT(request: NextRequest, requiredType?: 'user' | 'admin'): { 
   valid: boolean; 
-  user?: any; 
+  user?: JWTPayload; 
   message: string 
 } {
   const authHeader = request.headers.get('authorization');
@@ -99,7 +108,7 @@ export function validateJWT(request: NextRequest, requiredType?: 'user' | 'admin
  */
 export function validateApiKeyOrJWT(request: NextRequest, requiredType?: 'user' | 'admin'): {
   valid: boolean;
-  user?: any;
+  user?: JWTPayload;
   message: string;
   authType: 'apikey' | 'jwt' | 'none';
 } {

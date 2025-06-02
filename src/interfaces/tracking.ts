@@ -6,7 +6,9 @@ export enum OrderStatus {
   MANUFACTURING = "manufacturing", // En fabricación
   TESTING = "testing",           // En prueba
   SHIPPING = "shipping",         // En envío
-  RECEIVED = "received"          // Recibido
+  RECEIVED = "received",         // Recibido
+  DELIVERED = "DELIVERED",       // Entregado
+  PRODUCTION = "PRODUCTION",
 }
 
 export interface UserTracking {
