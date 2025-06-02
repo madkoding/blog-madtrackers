@@ -11,7 +11,7 @@ export default function ShareableLink({ username, userHash, className = "" }: Sh
   
   // SIEMPRE usar el hash del servidor que está en userHash 
   // NO generar hash del lado del cliente para evitar inconsistencias
-  const safeHash = userHash || username; // Si no hay hash, usar username como fallback temporal
+  const safeHash = userHash ?? username; // Si no hay hash, usar username como fallback temporal
   const trackingUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/seguimiento/${safeHash}`;
   
   const copyToClipboard = async () => {

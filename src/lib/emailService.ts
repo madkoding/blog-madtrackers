@@ -14,7 +14,7 @@ export interface EmailOptions {
  * Servicio de email usando Resend
  */
 export class EmailService {
-  private static readonly FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'noreply@madtrackers.com';
+  private static readonly FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'noreply@madtrackers.com';
   
   /**
    * Envía un email usando Resend
@@ -27,7 +27,7 @@ export class EmailService {
       }
 
       const result = await resend.emails.send({
-        from: from || this.FROM_EMAIL,
+        from: from ?? this.FROM_EMAIL,
         to,
         subject,
         html,
@@ -107,7 +107,7 @@ export class EmailService {
    * Envía email con token de acceso para administrador
    */
   static async sendAdminAccessToken(username: string, token: string): Promise<boolean> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'madkoding@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL ?? 'madkoding@gmail.com';
     const subject = `🔧 Código de acceso ADMIN - ${username}`;
     const html = `
       <!DOCTYPE html>
@@ -146,7 +146,7 @@ export class EmailService {
                 </ul>
               </div>
               
-              <p><strong>URL de acceso:</strong> <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/admin/seguimiento/${username}">Panel Admin</a></p>
+              <p><strong>URL de acceso:</strong> <a href="${process.env.NEXTAUTH_URL ?? 'http://localhost:3000'}/admin/seguimiento/${username}">Panel Admin</a></p>
             </div>
             <div class="footer">
               <p>© 2025 MadTrackers - Panel Administrativo</p>

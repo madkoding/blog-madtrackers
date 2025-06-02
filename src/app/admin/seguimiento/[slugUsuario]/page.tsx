@@ -16,6 +16,7 @@ import {
   CountrySelector,
   InfoCard
 } from "../../../_components/admin";
+import { isValidHash } from "../../../../utils/hashUtils";
 
 export default function AdminTrackingPage() {
   const { lang } = useLang();
@@ -29,30 +30,30 @@ export default function AdminTrackingPage() {
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const loadTrackingData = useCallback(async (username: string) => {
+  const loadTrackingData = useCallback(async (hash: string) => {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await fetch(`/api/tracking?username=${encodeURIComponent(username)}`, {
+
+      const response = await fetch(`/api/tracking?hash=${encodeURIComponent(hash)}`, {
         headers: {
           'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'madtrackers_2025_secure_api_key_dev_only'
         }
       });
-      
+
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error(t.trackingNotFound);
         } else if (response.status === 400) {
-          throw new Error('Formato de nombre de usuario inválido');
+          throw new Error('Formato de hash inválido');
         } else {
           throw new Error(t.trackingError);
         }
       }
-      
+
       const responseData = await response.json();
       const data: UserTracking = Array.isArray(responseData) ? responseData[0] : responseData;
-      
+
       if (data) {
         if (!data.estadoPedido) {
           data.estadoPedido = OrderStatus.WAITING;
@@ -71,17 +72,28 @@ export default function AdminTrackingPage() {
 
   useEffect(() => {
     if (slugUsuario) {
+      console.log("Debug: slugUsuario recibido:", slugUsuario);
+
+      if (!isValidHash(slugUsuario)) {
+        console.error("Error: El slugUsuario no tiene un formato válido de hash.");
+        setError("El identificador proporcionado no es válido.");
+        setLoading(false);
+        return;
+      }
+
       loadTrackingData(slugUsuario);
     }
   }, [slugUsuario, loadTrackingData]);
 
   const saveTrackingData = async (updatedTracking: UserTracking) => {
     if (!tracking?.id) return;
-    
+
     try {
       setSaving(true);
       setSaveStatus('idle');
-      
+
+      console.log("Debug: Datos antes de guardar:", updatedTracking);
+
       const response = await fetch(`/api/tracking?id=${encodeURIComponent(tracking.id)}`, {
         method: 'PUT',
         headers: {
@@ -90,11 +102,14 @@ export default function AdminTrackingPage() {
         },
         body: JSON.stringify(updatedTracking)
       });
-      
+
       if (!response.ok) {
         throw new Error('Error al guardar los cambios');
       }
-      
+
+      const responseData = await response.json();
+      console.log("Debug: Respuesta de la API después de guardar:", responseData);
+
       setSaveStatus('success');
       setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (err) {

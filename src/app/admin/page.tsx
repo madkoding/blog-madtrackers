@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { UserTracking } from "../../interfaces/tracking";
+import { UserTracking, OrderStatus } from "../../interfaces/tracking";
 import TokenAuthModal from "../_components/auth/TokenAuthModal";
 import { generateUserHash } from "../../utils/hashUtils";
 
@@ -43,7 +43,7 @@ export default function AdminPage() {
             localStorage.removeItem('madtrackers_jwt');
           }
         } catch (error) {
-          // Token inválido
+          console.error('Error al verificar el token:', error);
           localStorage.removeItem('madtrackers_jwt');
         }
       }
@@ -67,7 +67,7 @@ export default function AdminPage() {
       const filtered = users.filter(user => 
         user.nombreUsuario.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.contacto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.estadoPedido && user.estadoPedido.toLowerCase().includes(searchTerm.toLowerCase()))
+        (user.estadoPedido?.toLowerCase().includes(searchTerm.toLowerCase()))
       );
       setFilteredUsers(filtered);
     } else {
@@ -275,7 +275,13 @@ export default function AdminPage() {
 
         <TokenAuthModal
           isOpen={showAuthModal}
-          onClose={() => router.push('/')}
+          onClose={() => {
+            // Si el usuario no está autenticado, mostrar un mensaje en lugar de redirigir
+            if (!isAuthenticated) {
+              console.log('🔒 Modal cerrado sin autenticación');
+              setError('Se requiere autenticación para acceder al panel administrativo.');
+            }
+          }}
           onSuccess={handleAuthSuccess}
           username="Administrador"
           type="admin"
@@ -291,13 +297,25 @@ export default function AdminPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              🔧 Panel Administrativo
-            </h1>
-            <p className="text-gray-600">
-              Gestión y seguimiento de todos los pedidos de MadTrackers
-            </p>
+          <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                🔧 Panel Administrativo
+              </h1>
+              <p className="text-gray-600">
+                Gestión y seguimiento de todos los pedidos de MadTrackers
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                localStorage.removeItem('madtrackers_jwt');
+                setIsAuthenticated(false);
+                setShowAuthModal(true);
+              }}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+            >
+              🚪 Cerrar Sesión
+            </button>
           </div>
 
           {/* Estadísticas rápidas */}
@@ -350,7 +368,7 @@ export default function AdminPage() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Enviados</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {users.filter(u => u.estadoPedido === 'shipped').length}
+                    {users.filter(u => u.estadoPedido === OrderStatus.SHIPPING).length}
                   </p>
                 </div>
               </div>
@@ -362,7 +380,7 @@ export default function AdminPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div className="flex-1 max-w-md">
                 <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
-                  Buscar usuarios
+                  Listado de clientes
                 </label>
                 <input
                   id="search"
@@ -469,7 +487,7 @@ export default function AdminPage() {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredUsers.map((user) => (
-                      <tr key={user.id || user.nombreUsuario} className="hover:bg-gray-50">
+                      <tr key={user.id ?? user.nombreUsuario} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
@@ -533,7 +551,7 @@ export default function AdminPage() {
                             </button>
                             <button
                               onClick={() => {
-                                const identifier = user.userHash || encodeURIComponent(user.nombreUsuario);
+                                const identifier = user.userHash ?? encodeURIComponent(user.nombreUsuario);
                                 window.open(`/seguimiento/${identifier}`, '_blank');
                               }}
                               className="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1 rounded text-xs transition-colors"

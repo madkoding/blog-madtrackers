@@ -20,7 +20,7 @@ interface GeneratedToken {
  * Servicio de autenticación JWT para admin y usuarios
  */
 export class JWTAuthService {
-  private static readonly JWT_SECRET = process.env.JWT_SECRET || 'madtrackers_jwt_secret_2025_change_in_production';
+  private static readonly JWT_SECRET = process.env.JWT_SECRET ?? 'madtrackers_jwt_secret_2025_change_in_production';
   private static readonly TOKEN_EXPIRY_MINUTES = 15;
   private static readonly EMAIL_TOKEN_LENGTH = 6;
 
