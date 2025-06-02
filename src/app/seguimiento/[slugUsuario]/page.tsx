@@ -52,24 +52,27 @@ export default function UserTrackingPage() {
         throw new Error('Acceso no autorizado. Solo se permite acceso mediante URL segura.');
       }
       
-      // Solo usar el endpoint de hash para mayor seguridad
+      // Ahora REQUIERE autenticación JWT para acceder
+      const currentToken = token || jwtToken || undefined;
+      if (!currentToken) {
+        throw new Error('Se requiere autenticación para ver el seguimiento');
+      }
+      
+      // Solo usar el endpoint de hash con autenticación obligatoria
       const endpoint = `/api/public/tracking/hash/${encodeURIComponent(identifier)}`;
       
-      // Preparar headers para la solicitud
+      // Preparar headers con JWT obligatorio
       const headers: HeadersInit = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentToken}`
       };
-      
-      // Si tenemos un token JWT, incluirlo en los headers
-      const currentToken = token || jwtToken;
-      if (currentToken) {
-        headers.Authorization = `Bearer ${currentToken}`;
-      }
       
       const response = await fetch(endpoint, { headers });
       
       if (!response.ok) {
-        if (response.status === 404) {
+        if (response.status === 401) {
+          throw new Error('Token de acceso inválido o expirado. Solicita un nuevo código.');
+        } else if (response.status === 404) {
           throw new Error(t.trackingNotFound);
         } else if (response.status === 400) {
           throw new Error('Formato de identificador inválido');
@@ -97,14 +100,17 @@ export default function UserTrackingPage() {
 
   useEffect(() => {
     if (slugUsuario) {
-      // Primero intentar cargar los datos sin autenticación (acceso público por hash)
-      loadTrackingData(slugUsuario);
-      
-      // Verificar si hay un JWT válido para funciones adicionales
+      // Verificar si hay un JWT válido
       const storedJWT = localStorage.getItem('madtrackers_jwt');
       if (storedJWT && isJWTValid(storedJWT)) {
         setJwtToken(storedJWT);
         setIsAuthenticated(true);
+        // Solo cargar datos si hay JWT válido
+        loadTrackingData(slugUsuario, storedJWT);
+      } else {
+        // No hay JWT válido, mostrar modal de autenticación
+        setShowAuthModal(true);
+        setLoading(false);
       }
     }
   }, [slugUsuario, loadTrackingData]);
@@ -179,46 +185,8 @@ export default function UserTrackingPage() {
     );
   }
 
-  // Mostrar error si no se pueden cargar los datos
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 pt-32">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white rounded-lg shadow-lg p-8">
-              <div className="mb-6">
-                <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl">❌</span>
-                </div>
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                  Error de Acceso
-                </h1>
-                <p className="text-gray-600 mb-4">
-                  {error}
-                </p>
-                {!isAuthenticated && (
-                  <p className="text-sm text-blue-600">
-                    ¿Necesitas acceso? Puedes solicitar verificación.
-                  </p>
-                )}
-              </div>
-              
-              {!isAuthenticated && (
-                <button
-                  onClick={handleRequestAuth}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Solicitar Acceso Verificado
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!tracking) {
+  // Mostrar modal de autenticación si no está autenticado
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 pt-32">
         <div className="container mx-auto px-4 py-8">
@@ -229,18 +197,29 @@ export default function UserTrackingPage() {
                   <span className="text-2xl">🔐</span>
                 </div>
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                  Acceso Requerido
+                  Acceso Seguro Requerido
                 </h1>
-                <p className="text-gray-600">
-                  Para acceder al seguimiento de tu pedido, necesitas verificar tu identidad.
+                <p className="text-gray-600 mb-4">
+                  Para proteger tu información personal, necesitas verificar tu identidad antes de acceder al seguimiento de tu pedido.
                 </p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center justify-center">
+                    <span className="text-blue-600 mr-2">📧</span>
+                    <div className="text-left">
+                      <p className="font-medium text-blue-800">Verificación por Email</p>
+                      <p className="text-sm text-blue-600">
+                        Se enviará un código de acceso a tu email registrado para verificar tu identidad.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
               
               <button
                 onClick={() => setShowAuthModal(true)}
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Solicitar Acceso
+                Solicitar Código de Acceso
               </button>
             </div>
           </div>
@@ -252,14 +231,97 @@ export default function UserTrackingPage() {
           onSuccess={handleAuthSuccess}
           username={slugUsuario}
           type="user"
-          title="Verificación de Acceso"
+          title="Verificación de Identidad"
         />
       </div>
     );
   }
 
+  // Mostrar error si no se pueden cargar los datos (solo si está autenticado)
+  if (error && isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-32">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="mb-6">
+                <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-2xl">❌</span>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                  Error al Cargar Seguimiento
+                </h1>
+                <p className="text-gray-600 mb-4">
+                  {error}
+                </p>
+                <p className="text-sm text-blue-600">
+                  Tu token de acceso es válido, pero hay un problema con los datos del seguimiento.
+                </p>
+              </div>
+              
+              <button
+                onClick={() => {
+                  setError(null);
+                  loadTrackingData(slugUsuario, jwtToken || undefined);
+                }}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Reintentar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Mostrar loading cuando está autenticado pero no hay datos aún
+  if (isAuthenticated && !tracking && !error) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-32">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Cargando datos de seguimiento...</p>
+              <p className="text-sm text-gray-500 mt-2">Acceso verificado, obteniendo información...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Solo renderizar el contenido principal si hay datos de tracking
   if (!tracking) {
-    return null; // This should be handled by the error state above
+    return (
+      <div className="min-h-screen bg-gray-50 pt-32">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="mb-6">
+                <div className="mx-auto w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-2xl">⚠️</span>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                  Datos No Disponibles
+                </h1>
+                <p className="text-gray-600 mb-4">
+                  No se pudieron cargar los datos de seguimiento.
+                </p>
+              </div>
+              
+              <button
+                onClick={() => loadTrackingData(slugUsuario, jwtToken || undefined)}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Reintentar Carga
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const totalAmountUsd = getTotalAmount();

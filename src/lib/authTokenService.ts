@@ -75,7 +75,7 @@ export class AuthTokenService {
   /**
    * Genera y envía token para acceso de admin
    */
-  static async generateAdminAccessToken(username: string): Promise<{ success: boolean; message: string; token?: string }> {
+  static async generateAdminAccessToken(username: string): Promise<{ success: boolean; message: string }> {
     try {
       this.cleanExpiredTokens();
 
@@ -91,19 +91,14 @@ export class AuthTokenService {
         used: false
       });
 
-      // En modo desarrollo, mostrar el token en la consola y en la respuesta
+      // En modo desarrollo, mostrar el token en la consola del servidor
       const isDev = process.env.NODE_ENV === 'development';
       
       if (isDev) {
         console.log(`🔑 TOKEN ADMIN DESARROLLO: ${token}`);
-        return {
-          success: true,
-          message: `Código de admin generado (desarrollo): ${token}. Válido por ${this.TOKEN_EXPIRY_MINUTES} minutos.`,
-          token: token
-        };
       }
 
-      // En producción, enviar email al admin
+      // Siempre enviar email al admin (tanto en desarrollo como en producción)
       const emailSent = await EmailService.sendAdminAccessToken(username, token);
 
       if (!emailSent) {
@@ -116,7 +111,8 @@ export class AuthTokenService {
 
       return {
         success: true,
-        message: `Código de admin enviado. Válido por ${this.TOKEN_EXPIRY_MINUTES} minutos.`
+        message: `Código de admin enviado por email. Válido por ${this.TOKEN_EXPIRY_MINUTES} minutos.`
+        // NO devolvemos el token en la respuesta para mantener la seguridad
       };
     } catch (error) {
       console.error('Error generando token de admin:', error);

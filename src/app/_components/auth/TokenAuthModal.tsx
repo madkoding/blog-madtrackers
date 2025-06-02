@@ -43,11 +43,7 @@ export default function TokenAuthModal({
       if (data.success) {
         setMessage(data.message);
         setStep('verify');
-        
-        // En modo desarrollo, si viene el token en la respuesta, auto-completarlo
-        if (data.token && process.env.NODE_ENV === 'development') {
-          setToken(data.token);
-        }
+        // Ya no auto-completamos el token, siempre debe ser ingresado manualmente
       } else {
         setError(data.message ?? 'Error al enviar código');
       }

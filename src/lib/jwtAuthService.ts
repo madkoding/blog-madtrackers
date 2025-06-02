@@ -12,8 +12,7 @@ interface JWTPayload {
 interface GeneratedToken {
   success: boolean;
   message: string;
-  token?: string;
-  jwt?: string;
+  jwt?: string; // Solo se devuelve el JWT cuando es válido
 }
 
 /**
@@ -132,8 +131,8 @@ export class JWTAuthService {
 
       return {
         success: true,
-        message: `Código enviado a ${userEmail}. Válido por ${this.TOKEN_EXPIRY_MINUTES} minutos.`,
-        token: emailToken
+        message: `Código enviado a ${userEmail}. Válido por ${this.TOKEN_EXPIRY_MINUTES} minutos.`
+        // NO devolvemos el token en la respuesta para mantener la seguridad
       };
     } catch (error) {
       console.error('Error generando token de usuario:', error);
@@ -162,19 +161,14 @@ export class JWTAuthService {
         used: false
       });
 
-      // En modo desarrollo, mostrar el token en la consola
+      // En modo desarrollo, mostrar el token en la consola del servidor
       const isDev = process.env.NODE_ENV === 'development';
       
       if (isDev) {
         console.log(`🔑 TOKEN ADMIN DESARROLLO: ${emailToken}`);
-        return {
-          success: true,
-          message: `Código de admin generado (desarrollo): ${emailToken}. Válido por ${this.TOKEN_EXPIRY_MINUTES} minutos.`,
-          token: emailToken
-        };
       }
 
-      // En producción, enviar email al admin
+      // Siempre enviar email al admin (tanto en desarrollo como en producción)
       const emailSent = await EmailService.sendAdminAccessToken(username, emailToken);
 
       if (!emailSent) {
@@ -187,8 +181,8 @@ export class JWTAuthService {
 
       return {
         success: true,
-        message: `Código de admin enviado. Válido por ${this.TOKEN_EXPIRY_MINUTES} minutos.`,
-        token: emailToken
+        message: `Código de admin enviado por email. Válido por ${this.TOKEN_EXPIRY_MINUTES} minutos.`
+        // NO devolvemos el token en la respuesta para mantener la seguridad
       };
     } catch (error) {
       console.error('Error generando token de admin:', error);

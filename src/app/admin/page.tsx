@@ -233,6 +233,136 @@ export default function AdminPage() {
     }
   };
 
+  // Función para renderizar el contenido de la tabla
+  const renderTableContent = () => {
+    if (loading) {
+      return (
+        <div className="p-8 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Cargando usuarios...</p>
+        </div>
+      );
+    }
+
+    if (filteredUsers.length === 0) {
+      return (
+        <div className="p-8 text-center">
+          <div className="text-gray-400 text-4xl mb-4">📭</div>
+          <p className="text-gray-600">
+            {users.length === 0 ? 'No hay usuarios registrados' : 'No se encontraron usuarios con ese criterio'}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Usuario
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Estado
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Progreso
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Trackers
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Fecha Límite
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {filteredUsers.map((user) => (
+              <tr key={user.id ?? user.nombreUsuario} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                      <span className="text-white font-medium text-sm">
+                        {user.nombreUsuario.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-sm font-medium text-gray-900">
+                        {user.nombreUsuario}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {user.contacto}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.estadoPedido)}`}>
+                    {getStatusText(user.estadoPedido)}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full" 
+                      style={{ width: `${getProgressPercentage(user)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-xs text-gray-500 mt-1">
+                    {getProgressPercentage(user)}%
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {user.numeroTrackers || 0}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {user.fechaLimite ? new Date(user.fechaLimite).toLocaleDateString() : 'No definida'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleEditUser(user)}
+                      disabled={navigatingUser === user.nombreUsuario}
+                      className={`px-3 py-1 rounded text-xs transition-colors flex items-center gap-1 ${
+                        navigatingUser === user.nombreUsuario
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          : 'text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100'
+                      }`}
+                    >
+                      {navigatingUser === user.nombreUsuario ? (
+                        <>
+                          <div className="animate-spin w-3 h-3 border border-gray-400 border-t-transparent rounded-full"></div>
+                          Navegando...
+                        </>
+                      ) : (
+                        <>
+                          ✏️ Editar
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => {
+                        const identifier = user.userHash ?? encodeURIComponent(user.nombreUsuario);
+                        window.open(`/seguimiento/${identifier}`, '_blank');
+                      }}
+                      className="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1 rounded text-xs transition-colors"
+                    >
+                      👁️ Ver
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
   // Mostrar carga inicial de autenticación
   if (checkingAuth) {
     return (
@@ -276,11 +406,9 @@ export default function AdminPage() {
         <TokenAuthModal
           isOpen={showAuthModal}
           onClose={() => {
-            // Si el usuario no está autenticado, mostrar un mensaje en lugar de redirigir
-            if (!isAuthenticated) {
-              console.log('🔒 Modal cerrado sin autenticación');
-              setError('Se requiere autenticación para acceder al panel administrativo.');
-            }
+            // Modal cerrado sin autenticación - el modal solo se muestra cuando no está autenticado
+            console.log('🔒 Modal cerrado sin autenticación');
+            setError('Se requiere autenticación para acceder al panel administrativo.');
           }}
           onSuccess={handleAuthSuccess}
           username="Administrador"
@@ -447,125 +575,7 @@ export default function AdminPage() {
                 Lista de Usuarios ({filteredUsers.length})
               </h3>
             </div>
-
-            {loading ? (
-              <div className="p-8 text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Cargando usuarios...</p>
-              </div>
-            ) : filteredUsers.length === 0 ? (
-              <div className="p-8 text-center">
-                <div className="text-gray-400 text-4xl mb-4">📭</div>
-                <p className="text-gray-600">
-                  {users.length === 0 ? 'No hay usuarios registrados' : 'No se encontraron usuarios con ese criterio'}
-                </p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Usuario
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estado
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Progreso
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Trackers
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Fecha Límite
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Acciones
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredUsers.map((user) => (
-                      <tr key={user.id ?? user.nombreUsuario} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                              <span className="text-white font-medium text-sm">
-                                {user.nombreUsuario.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {user.nombreUsuario}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {user.contacto}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.estadoPedido)}`}>
-                            {getStatusText(user.estadoPedido)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-blue-600 h-2 rounded-full" 
-                              style={{ width: `${getProgressPercentage(user)}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-xs text-gray-500 mt-1">
-                            {getProgressPercentage(user)}%
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {user.numeroTrackers || 0}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {user.fechaLimite ? new Date(user.fechaLimite).toLocaleDateString() : 'No definida'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleEditUser(user)}
-                              disabled={navigatingUser === user.nombreUsuario}
-                              className={`px-3 py-1 rounded text-xs transition-colors flex items-center gap-1 ${
-                                navigatingUser === user.nombreUsuario
-                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                  : 'text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100'
-                              }`}
-                            >
-                              {navigatingUser === user.nombreUsuario ? (
-                                <>
-                                  <div className="animate-spin w-3 h-3 border border-gray-400 border-t-transparent rounded-full"></div>
-                                  Navegando...
-                                </>
-                              ) : (
-                                <>
-                                  ✏️ Editar
-                                </>
-                              )}
-                            </button>
-                            <button
-                              onClick={() => {
-                                const identifier = user.userHash ?? encodeURIComponent(user.nombreUsuario);
-                                window.open(`/seguimiento/${identifier}`, '_blank');
-                              }}
-                              className="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1 rounded text-xs transition-colors"
-                            >
-                              👁️ Ver
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            {renderTableContent()}
           </div>
         </div>
       </div>

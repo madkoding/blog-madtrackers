@@ -73,17 +73,116 @@ export default function AddUserPage() {
   };
 
   const handleInputChange = (field: string, value: string | number | boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => {
+      const updated = {
+        ...prev,
+        [field]: value
+      };
+      
+      // Si se cambia el sensor, actualizar automáticamente el magnetómetro
+      if (field === 'sensor') {
+        updated.magneto = (value as string).includes('+');
+      }
+      
+      return updated;
+    });
+    
+    // Limpiar error cuando el usuario empiece a corregir
+    if (error) {
+      setError(null);
+    }
+  };
+
+  // Funciones de validación separadas para reducir complejidad cognitiva
+  const validateUserInfo = () => {
+    if (!formData.nombreUsuario.trim()) {
+      return 'El nombre de usuario es obligatorio';
+    }
+    
+    if (formData.nombreUsuario.trim().length < 3) {
+      return 'El nombre de usuario debe tener al menos 3 caracteres';
+    }
+
+    if (!formData.contacto.trim()) {
+      return 'El email es obligatorio';
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.contacto)) {
+      return 'El email no tiene un formato válido';
+    }
+
+    return null;
+  };
+
+  const validateDates = () => {
+    if (formData.fechaEntrega) {
+      const fechaEntrega = new Date(formData.fechaEntrega);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0); // Resetear horas para comparar solo fechas
+      
+      if (fechaEntrega < hoy) {
+        return 'La fecha de entrega no puede ser en el pasado';
+      }
+    }
+    return null;
+  };
+
+  const validateAmounts = () => {
+    if (!formData.numeroTrackers || formData.numeroTrackers < 1) {
+      return 'El número de trackers debe ser al menos 1';
+    }
+    
+    if (formData.numeroTrackers > 20) {
+      return 'El número de trackers no puede ser mayor a 20';
+    }
+
+    if (!formData.totalUsd || formData.totalUsd <= 0) {
+      return 'El total debe ser mayor a 0';
+    }
+
+    if (formData.abonadoUsd < 0) {
+      return 'El monto abonado no puede ser negativo';
+    }
+    
+    if (formData.abonadoUsd > formData.totalUsd) {
+      return 'El monto abonado no puede ser mayor al total';
+    }
+
+    return null;
+  };
+
+  const validateSelections = () => {
+    if (!formData.sensor || !Object.values(SensorTypes).includes(formData.sensor)) {
+      return 'Debe seleccionar un sensor válido';
+    }
+
+    if (!formData.colorCase || !Object.values(Colors).includes(formData.colorCase)) {
+      return 'Debe seleccionar un color válido para el case';
+    }
+
+    if (!formData.colorTapa || !Object.values(Colors).includes(formData.colorTapa)) {
+      return 'Debe seleccionar un color válido para la tapa';
+    }
+
+    if (!formData.paisEnvio) {
+      return 'Debe seleccionar un país de envío';
+    }
+
+    return null;
+  };
+
+  const validateForm = () => {
+    return validateUserInfo() ?? validateDates() ?? validateAmounts() ?? validateSelections();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.nombreUsuario.trim() || !formData.contacto.trim()) {
-      setError('Nombre de usuario y email son obligatorios');
+    // Validar formulario completo
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -233,9 +332,16 @@ export default function AddUserPage() {
                     value={formData.nombreUsuario}
                     onChange={(e) => handleInputChange('nombreUsuario', e.target.value)}
                     placeholder="Ej: usuario123"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-400"
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent bg-white text-gray-900 placeholder-gray-400 ${
+                      formData.nombreUsuario.trim().length > 0 && formData.nombreUsuario.trim().length < 3
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-gray-300 focus:ring-blue-500'
+                    }`}
                     required
                   />
+                  {formData.nombreUsuario.trim().length > 0 && formData.nombreUsuario.trim().length < 3 && (
+                    <p className="text-xs text-red-600 mt-1">Mínimo 3 caracteres</p>
+                  )}
                 </div>
                 
                 <div>
@@ -248,9 +354,16 @@ export default function AddUserPage() {
                     value={formData.contacto}
                     onChange={(e) => handleInputChange('contacto', e.target.value)}
                     placeholder="usuario@email.com"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-400"
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent bg-white text-gray-900 placeholder-gray-400 ${
+                      formData.contacto.trim().length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contacto)
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-gray-300 focus:ring-blue-500'
+                    }`}
                     required
                   />
+                  {formData.contacto.trim().length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contacto) && (
+                    <p className="text-xs text-red-600 mt-1">Formato de email inválido</p>
+                  )}
                 </div>
               </div>
 
@@ -265,8 +378,15 @@ export default function AddUserPage() {
                     type="date"
                     value={formData.fechaEntrega}
                     onChange={(e) => handleInputChange('fechaEntrega', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent bg-white text-gray-900 ${
+                      formData.fechaEntrega && new Date(formData.fechaEntrega) < new Date()
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-gray-300 focus:ring-blue-500'
+                    }`}
                   />
+                  {formData.fechaEntrega && new Date(formData.fechaEntrega) < new Date() && (
+                    <p className="text-xs text-red-600 mt-1">La fecha no puede ser en el pasado</p>
+                  )}
                 </div>
                 
                 <div>
@@ -292,7 +412,7 @@ export default function AddUserPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                   <label htmlFor="numeroTrackers" className="block text-sm font-medium text-gray-700 mb-2">
-                    Número de Trackers
+                    Número de Trackers *
                   </label>
                   <input
                     id="numeroTrackers"
@@ -301,13 +421,20 @@ export default function AddUserPage() {
                     max="20"
                     value={formData.numeroTrackers}
                     onChange={(e) => handleInputChange('numeroTrackers', parseInt(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent bg-white text-gray-900 ${
+                      formData.numeroTrackers < 1 || formData.numeroTrackers > 20
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-gray-300 focus:ring-blue-500'
+                    }`}
                   />
+                  {(formData.numeroTrackers < 1 || formData.numeroTrackers > 20) && (
+                    <p className="text-xs text-red-600 mt-1">Debe ser entre 1 y 20</p>
+                  )}
                 </div>
                 
                 <div>
                   <label htmlFor="totalUsd" className="block text-sm font-medium text-gray-700 mb-2">
-                    Total (USD)
+                    Total (USD) *
                   </label>
                   <input
                     id="totalUsd"
@@ -316,8 +443,15 @@ export default function AddUserPage() {
                     step="0.01"
                     value={formData.totalUsd}
                     onChange={(e) => handleInputChange('totalUsd', parseFloat(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent bg-white text-gray-900 ${
+                      formData.totalUsd <= 0
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-gray-300 focus:ring-blue-500'
+                    }`}
                   />
+                  {formData.totalUsd <= 0 && (
+                    <p className="text-xs text-red-600 mt-1">Debe ser mayor a 0</p>
+                  )}
                 </div>
                 
                 <div>
@@ -331,8 +465,23 @@ export default function AddUserPage() {
                     step="0.01"
                     value={formData.abonadoUsd}
                     onChange={(e) => handleInputChange('abonadoUsd', parseFloat(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent bg-white text-gray-900 ${
+                      formData.abonadoUsd < 0 || formData.abonadoUsd > formData.totalUsd
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-gray-300 focus:ring-blue-500'
+                    }`}
                   />
+                  {formData.abonadoUsd < 0 && (
+                    <p className="text-xs text-red-600 mt-1">No puede ser negativo</p>
+                  )}
+                  {formData.abonadoUsd > formData.totalUsd && (
+                    <p className="text-xs text-red-600 mt-1">No puede ser mayor al total</p>
+                  )}
+                  {formData.abonadoUsd >= 0 && formData.abonadoUsd <= formData.totalUsd && formData.totalUsd > 0 && (
+                    <p className="text-xs text-green-600 mt-1">
+                      Pendiente: ${(formData.totalUsd - formData.abonadoUsd).toFixed(2)} USD
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -354,27 +503,23 @@ export default function AddUserPage() {
                       </option>
                     ))}
                   </select>
+                  {formData.sensor.includes('+') && (
+                    <p className="text-xs text-green-600 mt-1 flex items-center">
+                      <span className="mr-1">✅</span>{' '}
+                      Incluye magnetómetro
+                    </p>
+                  )}
                 </div>
                 
-                <div className="flex items-center space-x-6">
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={formData.magneto}
-                      onChange={(e) => handleInputChange('magneto', e.target.checked)}
-                      className="mr-2 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    Magnetómetro
-                  </label>
-                  
-                  <label className="flex items-center">
+                <div className="flex items-center">
+                  <label className="flex items-center cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formData.envioPagado}
                       onChange={(e) => handleInputChange('envioPagado', e.target.checked)}
-                      className="mr-2 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
+                      className="mr-3 h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 accent-blue-600"
                     />
-                    Envío Pagado
+                    <span className="text-sm font-medium text-gray-700">Envío Pagado</span>
                   </label>
                 </div>
               </div>
@@ -429,8 +574,12 @@ export default function AddUserPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={saving}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                  disabled={saving || !!validateForm()}
+                  className={`px-6 py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                    saving || !!validateForm()
+                      ? 'bg-gray-400 text-white cursor-not-allowed'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
                 >
                   {saving ? (
                     <>
