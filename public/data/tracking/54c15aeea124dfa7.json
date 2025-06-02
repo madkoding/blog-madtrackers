@@ -1,0 +1,25 @@
+{
+	"nombreUsuario": "testuser",
+	"userHash": "54c15aeea124dfa7",
+	"contacto": "test@example.com",
+	"fechaEntrega": "2025-02-15T10:00:00.000Z",
+	"fechaLimite": "2025-02-15T10:00:00.000Z",
+	"totalUsd": 350,
+	"abonadoUsd": 175,
+	"envioPagado": false,
+	"numeroTrackers": 5,
+	"sensor": "LSM6DSR",
+	"magneto": false,
+	"porcentajes": {
+		"placa": 75,
+		"straps": 50,
+		"cases": 25,
+		"baterias": 0
+	},
+	"colorCase": "black",
+	"colorTapa": "black",
+	"paisEnvio": "Chile",
+	"estadoPedido": "manufacturing",
+	"createdAt": "2025-01-20T10:00:00.000Z",
+	"updatedAt": "2025-01-25T15:30:00.000Z"
+}

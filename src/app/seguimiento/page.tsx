@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { translations } from "../i18n";
 import { useLang } from "../lang-context";
+import { isHashFormat } from "../../utils/hashUtils";
 
 export default function SeguimientoPage() {
   const { lang } = useLang();
@@ -11,10 +12,39 @@ export default function SeguimientoPage() {
   const [searchUser, setSearchUser] = useState("");
   const router = useRouter();
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (searchUser.trim()) {
-      router.push(`/seguimiento/${encodeURIComponent(searchUser.trim())}`);
+      const input = searchUser.trim();
+      
+      // Si ya es un hash, redirigir directamente
+      if (isHashFormat(input)) {
+        router.push(`/seguimiento/${encodeURIComponent(input)}`);
+        return;
+      }
+      
+      // Si es un username, obtener el hash primero y redirigir al hash
+      try {
+        const response = await fetch(`/api/public/tracking/${encodeURIComponent(input)}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.userHash) {
+            // Redirigir al hash para mantener la URL segura
+            router.push(`/seguimiento/${data.userHash}`);
+          } else {
+            // Si no hay hash, usar el username como fallback
+            router.push(`/seguimiento/${encodeURIComponent(input)}`);
+          }
+        } else {
+          // Si no se encuentra, intentar buscar de todas formas
+          router.push(`/seguimiento/${encodeURIComponent(input)}`);
+        }
+      } catch (error) {
+        console.error('Error al buscar usuario:', error);
+        // En caso de error, proceder con el input original
+        router.push(`/seguimiento/${encodeURIComponent(input)}`);
+      }
     }
   };
 

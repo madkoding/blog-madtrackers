@@ -6,3 +6,4 @@ export { default as StatusSelector } from './StatusSelector';
 export { default as SensorSelector } from './SensorSelector';
 export { default as CountrySelector } from './CountrySelector';
 export { default as InfoCard } from './InfoCard';
+export { default as ShareableLink } from './ShareableLink';

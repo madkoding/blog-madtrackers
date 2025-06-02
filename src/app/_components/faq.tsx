@@ -25,7 +25,7 @@ const Faq = () => {
     });
 
     const data = await res.json();
-    setAnswer(data.answer || "No se encontró una respuesta.");
+    setAnswer(data.answer ?? "No se encontró una respuesta.");
     setLoading(false);
   };
 

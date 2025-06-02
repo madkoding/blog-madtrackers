@@ -8,12 +8,14 @@
     "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts",
     "migrate:firestore": "npx ts-node --project tsconfig.scripts.json scripts/migrateToFirestore.ts",
     "migrate:test-data": "npx ts-node --project tsconfig.scripts.json scripts/migrateTestData.ts",
+    "migrate:hash": "npx ts-node --project tsconfig.scripts.json scripts/migrateUserHashes.ts",
     "test:firebase": "npx ts-node --project tsconfig.scripts.json scripts/testFirebaseService.ts"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@types/better-sqlite3": "^7.6.12",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/three": "^0.176.0",
     "better-sqlite3": "^11.8.1",
     "classnames": "^2.5.1",
@@ -21,6 +23,7 @@
     "dotenv": "^16.4.7",
     "firebase": "^11.8.1",
     "gray-matter": "^4.0.3",
+    "jsonwebtoken": "^9.0.2",
     "next": "^14.2.24",
     "openai": "^4.85.1",
     "react": "^18",
@@ -29,6 +32,7 @@
     "remark": "^15.0.1",
     "remark-grid-tables": "^1.0.16",
     "remark-html": "^16.0.1",
+    "resend": "^4.5.1",
     "sqlite-vss": "^0.1.2",
     "three": "^0.176.0"
   },

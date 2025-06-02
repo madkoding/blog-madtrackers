@@ -12,6 +12,7 @@ export enum OrderStatus {
 export interface UserTracking {
   id?: string; // ID de Firestore
   nombreUsuario: string;
+  userHash?: string; // Hash seguro del nombre de usuario para URLs
   contacto: string;
   fechaEntrega: string; // ISO date string
   fechaLimite?: string; // Temporal para transición

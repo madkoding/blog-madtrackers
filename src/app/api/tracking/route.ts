@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FirebaseTrackingService } from '../../../lib/firebaseTrackingService';
 import { UserTracking } from '../../../interfaces/tracking';
-import { validateApiKey, corsHeaders, unauthorizedResponse } from '../../../lib/apiAuth';
+import { validateApiKeyOrJWT, corsHeaders, jwtUnauthorizedResponse } from '../../../lib/apiAuth';
 import fs from 'fs';
 import path from 'path';
 
@@ -33,14 +33,16 @@ export async function OPTIONS() {
 // GET - Obtener todos los trackings o uno específico por query param
 export async function GET(request: NextRequest) {
   try {
-    // Validar API Key
-    if (!validateApiKey(request)) {
-      return unauthorizedResponse();
+    // Validar autenticación (API Key o JWT para acceso de usuario)
+    const auth = validateApiKeyOrJWT(request, 'user');
+    if (!auth.valid) {
+      return jwtUnauthorizedResponse(auth.message);
     }
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     const username = searchParams.get('username');
+    const hash = searchParams.get('hash');
     const shippingStatus = searchParams.get('shippingStatus');
     const nearDeadline = searchParams.get('nearDeadline');
 
@@ -56,14 +58,25 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(tracking, { headers: corsHeaders });
     }
 
-    // Si se especifica un username, obtener tracking por nombre de usuario
+    // Si se especifica un hash, obtener tracking por hash (método preferido)
+    if (hash) {
+      const tracking = await FirebaseTrackingService.getTrackingByHashOrUsername(hash);
+      
+      if (!tracking) {
+        return NextResponse.json({ error: 'Tracking not found' }, { 
+          status: 404,
+          headers: corsHeaders
+        });
+      }
+      return NextResponse.json([tracking], { headers: corsHeaders }); // Retornar como array para consistencia con la interfaz admin
+    }
+
+    // Si se especifica un username, obtener tracking por nombre de usuario (legacy)
     if (username) {
       let tracking = await FirebaseTrackingService.getTrackingByUsername(username);
       
       // Si no se encuentra en Firebase, intentar cargar desde archivos de prueba
-      if (!tracking) {
-        tracking = await loadTestTrackingData(username);
-      }
+      tracking ??= await loadTestTrackingData(username);
       
       if (!tracking) {
         return NextResponse.json({ error: 'Tracking not found' }, { 
@@ -103,9 +116,10 @@ export async function GET(request: NextRequest) {
 // POST - Crear nuevo tracking
 export async function POST(request: NextRequest) {
   try {
-    // Validar API Key
-    if (!validateApiKey(request)) {
-      return unauthorizedResponse();
+    // Validar autenticación (API Key o JWT para acceso de usuario)
+    const auth = validateApiKeyOrJWT(request, 'user');
+    if (!auth.valid) {
+      return jwtUnauthorizedResponse(auth.message);
     }
 
     const trackingData: UserTracking = await request.json();
@@ -140,9 +154,10 @@ export async function POST(request: NextRequest) {
 // PUT - Actualizar tracking existente
 export async function PUT(request: NextRequest) {
   try {
-    // Validar API Key
-    if (!validateApiKey(request)) {
-      return unauthorizedResponse();
+    // Validar autenticación (API Key o JWT para acceso de usuario)
+    const auth = validateApiKeyOrJWT(request, 'user');
+    if (!auth.valid) {
+      return jwtUnauthorizedResponse(auth.message);
     }
 
     const { searchParams } = new URL(request.url);
@@ -190,9 +205,10 @@ export async function PUT(request: NextRequest) {
 // DELETE - Eliminar tracking
 export async function DELETE(request: NextRequest) {
   try {
-    // Validar API Key
-    if (!validateApiKey(request)) {
-      return unauthorizedResponse();
+    // Validar autenticación (API Key o JWT para acceso de usuario)
+    const auth = validateApiKeyOrJWT(request, 'user');
+    if (!auth.valid) {
+      return jwtUnauthorizedResponse(auth.message);
     }
 
     const { searchParams } = new URL(request.url);

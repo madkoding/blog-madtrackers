@@ -13,6 +13,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { UserTracking } from '../interfaces/tracking';
+import { generateUserHash } from '../utils/hashUtils';
 
 const COLLECTION_NAME = 'user_tracking';
 
@@ -23,8 +24,12 @@ export class FirebaseTrackingService {
    */
   static async createTracking(trackingData: UserTracking): Promise<string> {
     try {
+      // Generar hash si no existe
+      const userHash = trackingData.userHash ?? generateUserHash(trackingData.nombreUsuario);
+      
       const docRef = await addDoc(collection(db, COLLECTION_NAME), {
         ...trackingData,
+        userHash,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
@@ -74,6 +79,57 @@ export class FirebaseTrackingService {
       }
     } catch (error) {
       console.error('Error getting tracking by username:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtener un registro de tracking por hash de usuario (método seguro)
+   */
+  static async getTrackingByUserHash(userHash: string): Promise<UserTracking | null> {
+    try {
+      const q = query(
+        collection(db, COLLECTION_NAME), 
+        where('userHash', '==', userHash),
+        limit(1)
+      );
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        return { id: doc.id, ...doc.data() } as UserTracking;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error getting tracking by user hash:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Buscar tracking por hash o username (para compatibilidad hacia atrás)
+   */
+  static async getTrackingByHashOrUsername(identifier: string): Promise<UserTracking | null> {
+    try {
+      // Primero intentar buscar por hash (método preferido)
+      let tracking = await this.getTrackingByUserHash(identifier);
+      
+      // Si no se encuentra por hash, intentar por username para compatibilidad
+      if (!tracking) {
+        tracking = await this.getTrackingByUsername(identifier);
+        
+        // Si se encuentra por username pero no tiene hash, generar y actualizar
+        if (tracking?.id && !tracking.userHash) {
+          const userHash = generateUserHash(tracking.nombreUsuario);
+          await this.updateTracking(tracking.id, { userHash });
+          tracking.userHash = userHash;
+        }
+      }
+      
+      return tracking;
+    } catch (error) {
+      console.error('Error getting tracking by hash or username:', error);
       throw error;
     }
   }

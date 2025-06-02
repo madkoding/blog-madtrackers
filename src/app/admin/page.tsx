@@ -1,124 +1,553 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { UserTracking } from "../../interfaces/tracking";
+import TokenAuthModal from "../_components/auth/TokenAuthModal";
+import { generateUserHash } from "../../utils/hashUtils";
 
-export default function AdminIndexPage() {
+export default function AdminPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  
+  // Estados de autenticación
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  
+  // Estados de datos
+  const [users, setUsers] = useState<UserTracking[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserTracking[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [navigatingUser, setNavigatingUser] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!username.trim()) return;
+  // Verificar autenticación al cargar
+  useEffect(() => {
+    const checkAuthentication = () => {
+      // Verificar JWT en localStorage
+      const jwtToken = localStorage.getItem('madtrackers_jwt');
+      
+      if (jwtToken) {
+        // Verificar si el JWT es válido
+        try {
+          const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+          const now = Date.now() / 1000;
+          
+          // Verificar si el token no ha expirado y es de tipo admin
+          if (payload.exp > now && payload.type === 'admin') {
+            setIsAuthenticated(true);
+            setShowAuthModal(false);
+          } else {
+            // Token expirado o incorrecto
+            localStorage.removeItem('madtrackers_jwt');
+          }
+        } catch (error) {
+          // Token inválido
+          localStorage.removeItem('madtrackers_jwt');
+        }
+      }
+      
+      setCheckingAuth(false);
+    };
+
+    checkAuthentication();
+  }, []);
+
+  // Cargar usuarios cuando esté autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadUsers();
+    }
+  }, [isAuthenticated]);
+
+  // Filtrar usuarios cuando cambie el término de búsqueda
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = users.filter(user => 
+        user.nombreUsuario.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.contacto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (user.estadoPedido && user.estadoPedido.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+      setFilteredUsers(filtered);
+    } else {
+      setFilteredUsers(users);
+    }
+  }, [searchTerm, users]);
+
+  const handleAuthSuccess = (jwtToken: string) => {
+    setIsAuthenticated(true);
+    setShowAuthModal(false);
     
-    setLoading(true);
+    // El JWT ya está guardado en localStorage por el modal
+    console.log('✅ Autenticación JWT exitosa');
+  };
+
+  const handleEditUser = async (user: UserTracking) => {
+    console.log('🔧 handleEditUser llamado con:', { 
+      nombreUsuario: user.nombreUsuario, 
+      id: user.id, 
+      userHash: user.userHash 
+    });
+    
+    // Mostrar indicador de navegación
+    setNavigatingUser(user.nombreUsuario);
     
     try {
-      // Verificar si el usuario existe antes de navegar
-      const response = await fetch(`/api/tracking?username=${encodeURIComponent(username.trim())}`, {
+      // Si el usuario ya tiene userHash, usarlo directamente
+      if (user.userHash) {
+        console.log('✅ Usuario ya tiene userHash, navegando directamente:', user.userHash);
+        router.push(`/admin/seguimiento/${user.userHash}`);
+        return;
+      }
+
+      // Si no tiene userHash, generarlo y actualizar el registro
+      const userHash = generateUserHash(user.nombreUsuario);
+      console.log('🔑 Hash generado:', userHash);
+      
+      // Actualizar el usuario con el hash
+      if (user.id) {
+        console.log('📡 Actualizando usuario en Firebase con ID:', user.id);
+        
+        const apiKey = process.env.NEXT_PUBLIC_API_KEY ?? 'madtrackers_2025_secure_api_key_dev_only';
+        const jwtToken = localStorage.getItem('madtrackers_jwt');
+        console.log('🔐 Usando API Key:', apiKey);
+        
+        const response = await fetch(`/api/tracking/${user.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': apiKey,
+            ...(jwtToken && { 'Authorization': `Bearer ${jwtToken}` })
+          },
+          body: JSON.stringify({ userHash })
+        });
+
+        console.log('📡 Respuesta del servidor:', {
+          status: response.status,
+          statusText: response.statusText,
+          ok: response.ok
+        });
+
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log('✅ Hash actualizado exitosamente:', responseData);
+          
+          // Actualizar el estado local
+          setUsers(prev => prev.map(u => 
+            u.id === user.id ? { ...u, userHash } : u
+          ));
+          
+          // Navegar al admin del seguimiento
+          console.log('🚀 Navegando a:', `/admin/seguimiento/${userHash}`);
+          router.push(`/admin/seguimiento/${userHash}`);
+        } else {
+          const errorData = await response.text();
+          console.error('❌ Error actualizando userHash:', {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorData
+          });
+          
+          // Como fallback, navegar con el username
+          console.log('🔄 Usando fallback con username');
+          router.push(`/admin/seguimiento/${encodeURIComponent(user.nombreUsuario)}`);
+        }
+      } else {
+        console.log('⚠️ Usuario sin ID, navegando directamente con hash generado');
+        router.push(`/admin/seguimiento/${userHash}`);
+      }
+    } catch (error) {
+      console.error('💥 Error en navegación:', error);
+      // Fallback a username
+      console.log('🔄 Usando fallback final con username');
+      router.push(`/admin/seguimiento/${encodeURIComponent(user.nombreUsuario)}`);
+    } finally {
+      // Ocultar indicador de navegación después de un breve retraso
+      setTimeout(() => setNavigatingUser(null), 2000);
+    }
+  };
+
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const jwtToken = localStorage.getItem('madtrackers_jwt');
+      
+      const response = await fetch('/api/admin/users', {
         headers: {
-          'X-API-Key': process.env.NEXT_PUBLIC_API_KEY ?? 'admin-key'
+          'X-API-Key': process.env.NEXT_PUBLIC_API_KEY ?? 'admin-key',
+          ...(jwtToken && { 'Authorization': `Bearer ${jwtToken}` })
         }
       });
       
-      if (response.ok) {
-        router.push(`/admin/seguimiento/${encodeURIComponent(username.trim())}`);
-      } else {
-        alert('Usuario no encontrado');
+      if (!response.ok) {
+        throw new Error('Error al cargar usuarios');
       }
-    } catch (error) {
-      console.error('Error verificando usuario:', error);
-      alert('Error al verificar el usuario');
+      
+      const data = await response.json();
+      setUsers(data.users ?? []);
+      
+    } catch (err) {
+      console.error('Error loading users:', err);
+      setError(err instanceof Error ? err.message : 'Error al cargar usuarios');
     } finally {
       setLoading(false);
     }
   };
 
+  const getProgressPercentage = (user: UserTracking) => {
+    if (!user.porcentajes) return 0;
+    const total = Object.values(user.porcentajes).reduce((sum, val) => sum + (val || 0), 0);
+    return Math.round(total / 4);
+  };
+
+  const getStatusColor = (status: string | undefined) => {
+    if (!status) return 'bg-gray-100 text-gray-800';
+    
+    switch (status.toLowerCase()) {
+      case 'waiting': return 'bg-yellow-100 text-yellow-800';
+      case 'in_progress': return 'bg-blue-100 text-blue-800';
+      case 'shipped': return 'bg-purple-100 text-purple-800';
+      case 'delivered': return 'bg-green-100 text-green-800';
+      case 'manufacturing': return 'bg-blue-100 text-blue-800';
+      case 'testing': return 'bg-orange-100 text-orange-800';
+      case 'received': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusText = (status: string | undefined) => {
+    if (!status) return 'Sin Estado';
+    
+    switch (status.toLowerCase()) {
+      case 'waiting': return 'En Espera';
+      case 'in_progress': return 'En Proceso';
+      case 'shipped': return 'Enviado';
+      case 'delivered': return 'Entregado';
+      case 'manufacturing': return 'Fabricando';
+      case 'testing': return 'Probando';
+      case 'received': return 'Recibido';
+      default: return status;
+    }
+  };
+
+  // Mostrar carga inicial de autenticación
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-32">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex justify-center items-center h-64">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Verificando acceso administrativo...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Mostrar modal de autenticación si no está autenticado
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-32">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="mb-6">
+                <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-blue-600 text-2xl">🔒</span>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Panel Administrativo
+                </h2>
+                <p className="text-gray-600">
+                  Se requiere autenticación para acceder al panel de administración.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <TokenAuthModal
+          isOpen={showAuthModal}
+          onClose={() => router.push('/')}
+          onSuccess={handleAuthSuccess}
+          username="Administrador"
+          type="admin"
+          title="Acceso Administrativo"
+        />
+      </div>
+    );
+  }
+
+  // Panel principal autenticado
   return (
     <div className="min-h-screen bg-gray-50 pt-32">
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-gray-800 mb-4">
-                🔧 Panel de Administración
-              </h1>
-              <p className="text-gray-600">
-                Gestiona la información de seguimiento de pedidos
-              </p>
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              🔧 Panel Administrativo
+            </h1>
+            <p className="text-gray-600">
+              Gestión y seguimiento de todos los pedidos de MadTrackers
+            </p>
+          </div>
+
+          {/* Estadísticas rápidas */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <span className="text-blue-600 text-xl">👥</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Total Usuarios</p>
+                  <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+                </div>
+              </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                  Nombre de Usuario
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-yellow-100 rounded-lg">
+                  <span className="text-yellow-600 text-xl">⏳</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">En Proceso</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {users.filter(u => u.estadoPedido && ['waiting', 'in_progress', 'manufacturing', 'testing'].includes(u.estadoPedido)).length}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <span className="text-green-600 text-xl">✅</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Completados</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {users.filter(u => u.estadoPedido && ['delivered', 'received'].includes(u.estadoPedido)).length}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <span className="text-purple-600 text-xl">📦</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Enviados</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {users.filter(u => u.estadoPedido === 'shipped').length}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Herramientas */}
+          <div className="bg-white rounded-lg shadow mb-8 p-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="flex-1 max-w-md">
+                <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+                  Buscar usuarios
                 </label>
                 <input
+                  id="search"
                   type="text"
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Ej: usuario123"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
-                  required
+                  placeholder="Buscar por nombre, email o estado..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-400"
                 />
               </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={loadUsers}
+                  disabled={loading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors flex items-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                      Cargando...
+                    </>
+                  ) : (
+                    <>
+                      🔄 Actualizar
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => router.push('/admin/nuevo-usuario')}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                >
+                  ➕ Nuevo Usuario
+                </button>
+              </div>
+            </div>
+          </div>
 
-              <button
-                type="submit"
-                disabled={loading || !username.trim()}
-                className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                    Verificando...
-                  </>
-                ) : (
-                  <>
-                    🔍 Buscar y Editar
-                  </>
-                )}
-              </button>
-            </form>
+          {/* Status message */}
+          {navigatingUser && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center">
+                <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full mr-2"></div>
+                <p className="text-blue-700">
+                  Preparando navegación para <strong>{navigatingUser}</strong>...
+                </p>
+              </div>
+            </div>
+          )}
 
-            <div className="mt-8 p-4 bg-yellow-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-yellow-800 mb-2">
-                ⚠️ Modo Administrador
+          {/* Error */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center">
+                <span className="text-red-600 mr-2">⚠️</span>
+                <p className="text-red-700">{error}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Lista de usuarios */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">
+                Lista de Usuarios ({filteredUsers.length})
               </h3>
-              <ul className="text-yellow-700 text-sm space-y-1">
-                <li>• Edita toda la información de seguimiento en tiempo real</li>
-                <li>• Los cambios se guardan automáticamente</li>
-                <li>• Acceso a controles visuales para colores y progreso</li>
-                <li>• Gestión completa del estado del pedido</li>
-              </ul>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-semibold text-blue-800 mb-1">Edición Visual</h4>
-                <p className="text-blue-600 text-sm">
-                  Controles inline para todos los campos con selectores de color y barras de progreso editables.
+            {loading ? (
+              <div className="p-8 text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Cargando usuarios...</p>
+              </div>
+            ) : filteredUsers.length === 0 ? (
+              <div className="p-8 text-center">
+                <div className="text-gray-400 text-4xl mb-4">📭</div>
+                <p className="text-gray-600">
+                  {users.length === 0 ? 'No hay usuarios registrados' : 'No se encontraron usuarios con ese criterio'}
                 </p>
               </div>
-              <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-semibold text-green-800 mb-1">Vista Previa</h4>
-                <p className="text-green-600 text-sm">
-                  Modelo 3D actualizado en tiempo real con los colores seleccionados.
-                </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Usuario
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Estado
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Progreso
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Trackers
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Fecha Límite
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Acciones
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredUsers.map((user) => (
+                      <tr key={user.id || user.nombreUsuario} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                              <span className="text-white font-medium text-sm">
+                                {user.nombreUsuario.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {user.nombreUsuario}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {user.contacto}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.estadoPedido)}`}>
+                            {getStatusText(user.estadoPedido)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-blue-600 h-2 rounded-full" 
+                              style={{ width: `${getProgressPercentage(user)}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-xs text-gray-500 mt-1">
+                            {getProgressPercentage(user)}%
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {user.numeroTrackers || 0}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {user.fechaLimite ? new Date(user.fechaLimite).toLocaleDateString() : 'No definida'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleEditUser(user)}
+                              disabled={navigatingUser === user.nombreUsuario}
+                              className={`px-3 py-1 rounded text-xs transition-colors flex items-center gap-1 ${
+                                navigatingUser === user.nombreUsuario
+                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                  : 'text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100'
+                              }`}
+                            >
+                              {navigatingUser === user.nombreUsuario ? (
+                                <>
+                                  <div className="animate-spin w-3 h-3 border border-gray-400 border-t-transparent rounded-full"></div>
+                                  Navegando...
+                                </>
+                              ) : (
+                                <>
+                                  ✏️ Editar
+                                </>
+                              )}
+                            </button>
+                            <button
+                              onClick={() => {
+                                const identifier = user.userHash || encodeURIComponent(user.nombreUsuario);
+                                window.open(`/seguimiento/${identifier}`, '_blank');
+                              }}
+                              className="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1 rounded text-xs transition-colors"
+                            >
+                              👁️ Ver
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </div>
-
-            <div className="mt-6 text-center">
-              <Link
-                href="/seguimiento"
-                className="text-blue-600 hover:text-blue-800 text-sm"
-              >
-                ← Volver a la página de seguimiento pública
-              </Link>
-            </div>
+            )}
           </div>
         </div>
       </div>

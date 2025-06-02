@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FirebaseTrackingService } from '../../../../lib/firebaseTrackingService';
 import { UserTracking } from '../../../../interfaces/tracking';
-import { validateApiKey, corsHeaders, unauthorizedResponse } from '../../../../lib/apiAuth';
+import { validateApiKeyOrJWT, corsHeaders, jwtUnauthorizedResponse } from '../../../../lib/apiAuth';
 
 // OPTIONS - Handle CORS preflight
 export async function OPTIONS() {
@@ -17,9 +17,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Validar API Key
-    if (!validateApiKey(request)) {
-      return unauthorizedResponse();
+    // Validar autenticación (API Key o JWT para acceso de usuario)
+    const auth = validateApiKeyOrJWT(request, 'user');
+    if (!auth.valid) {
+      return jwtUnauthorizedResponse(auth.message);
     }
 
     const tracking = await FirebaseTrackingService.getTrackingById(params.id);
@@ -48,9 +49,10 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Validar API Key
-    if (!validateApiKey(request)) {
-      return unauthorizedResponse();
+    // Validar autenticación (API Key o JWT para acceso de usuario)
+    const auth = validateApiKeyOrJWT(request, 'user');
+    if (!auth.valid) {
+      return jwtUnauthorizedResponse(auth.message);
     }
 
     const updateData: Partial<UserTracking> = await request.json();
@@ -84,9 +86,10 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Validar API Key
-    if (!validateApiKey(request)) {
-      return unauthorizedResponse();
+    // Validar autenticación (API Key o JWT para acceso de usuario)
+    const auth = validateApiKeyOrJWT(request, 'user');
+    if (!auth.valid) {
+      return jwtUnauthorizedResponse(auth.message);
     }
 
     // Verificar que el tracking existe

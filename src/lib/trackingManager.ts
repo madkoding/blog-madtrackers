@@ -1,5 +1,6 @@
 import { UserTracking, OrderStatus } from '../interfaces/tracking';
 import { countries, type CountryConfig } from '../app/constants';
+import { generateUserHash } from '../utils/hashUtils';
 
 /**
  * Utilidad para crear y gestionar archivos de seguimiento
@@ -37,8 +38,11 @@ export class TrackingManager {
     numeroTrackers: number;
     sensor: string;
   }): UserTracking {
+    const userHash = generateUserHash(nombreUsuario);
+    
     return {
       nombreUsuario,
+      userHash,
       contacto,
       fechaEntrega: fechaLimite, // Usar fechaLimite como fechaEntrega por compatibilidad
       fechaLimite,

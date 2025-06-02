@@ -6,6 +6,7 @@ import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
 import { UserTracking, OrderStatus } from "../../../interfaces/tracking";
 import { colors } from "../../constants";
+import { isHashFormat } from "../../../utils/hashUtils";
 import {
   TrackingModelViewer,
   CurrencyDisplay,
@@ -14,6 +15,7 @@ import {
   InfoCard,
   InfoRow
 } from "../../_components/tracking";
+import TokenAuthModal from "../../_components/auth/TokenAuthModal";
 
 export default function UserTrackingPage() {
   const { lang } = useLang();
@@ -24,19 +26,53 @@ export default function UserTrackingPage() {
   const [tracking, setTracking] = useState<UserTracking | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [jwtToken, setJwtToken] = useState<string | null>(null);
 
-  const loadTrackingData = useCallback(async (username: string) => {
+  // Función para verificar si el JWT es válido y no ha expirado
+  const isJWTValid = (token: string): boolean => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const now = Date.now() / 1000;
+      return payload.exp > now && payload.type === 'user';
+    } catch {
+      return false;
+    }
+  };
+
+  const loadTrackingData = useCallback(async (identifier: string, token?: string) => {
     try {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(`/api/public/tracking/${encodeURIComponent(username)}`);
+      // SOLO permitir acceso mediante hash - rechazar usernames directos
+      const isHash = isHashFormat(identifier);
+      if (!isHash) {
+        throw new Error('Acceso no autorizado. Solo se permite acceso mediante URL segura.');
+      }
+      
+      // Solo usar el endpoint de hash para mayor seguridad
+      const endpoint = `/api/public/tracking/hash/${encodeURIComponent(identifier)}`;
+      
+      // Preparar headers para la solicitud
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json'
+      };
+      
+      // Si tenemos un token JWT, incluirlo en los headers
+      const currentToken = token || jwtToken;
+      if (currentToken) {
+        headers.Authorization = `Bearer ${currentToken}`;
+      }
+      
+      const response = await fetch(endpoint, { headers });
       
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error(t.trackingNotFound);
         } else if (response.status === 400) {
-          throw new Error('Formato de nombre de usuario inválido');
+          throw new Error('Formato de identificador inválido');
         } else {
           throw new Error(t.trackingError);
         }
@@ -50,19 +86,40 @@ export default function UserTrackingPage() {
       }
       
       setTracking(data);
+      
     } catch (err) {
       console.error('Error loading tracking data:', err);
       setError(err instanceof Error ? err.message : t.trackingError);
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [t, jwtToken]);
 
   useEffect(() => {
     if (slugUsuario) {
+      // Primero intentar cargar los datos sin autenticación (acceso público por hash)
       loadTrackingData(slugUsuario);
+      
+      // Verificar si hay un JWT válido para funciones adicionales
+      const storedJWT = localStorage.getItem('madtrackers_jwt');
+      if (storedJWT && isJWTValid(storedJWT)) {
+        setJwtToken(storedJWT);
+        setIsAuthenticated(true);
+      }
     }
   }, [slugUsuario, loadTrackingData]);
+
+  const handleAuthSuccess = (jwt: string) => {
+    setJwtToken(jwt);
+    setIsAuthenticated(true);
+    setShowAuthModal(false);
+    // Recargar datos con JWT para acceso completo
+    loadTrackingData(slugUsuario, jwt);
+  };
+
+  const handleRequestAuth = () => {
+    setShowAuthModal(true);
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -106,13 +163,15 @@ export default function UserTrackingPage() {
     };
   };
 
+  // Mostrar loading mientras se cargan los datos
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 pt-32">
         <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Cargando datos de seguimiento...</p>
             </div>
           </div>
         </div>
@@ -120,30 +179,87 @@ export default function UserTrackingPage() {
     );
   }
 
-  if (error || !tracking) {
+  // Mostrar error si no se pueden cargar los datos
+  if (error) {
     return (
       <div className="min-h-screen bg-gray-50 pt-32">
         <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-red-500 text-6xl mb-4">⚠️</div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-4">
-                {error || t.trackingNotFound}
-              </h1>
-              <p className="text-gray-600 text-center mb-6">
-                {t.verifyUsername}
-              </p>
-              <button
-                onClick={() => window.history.back()}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                {t.goBack}
-              </button>
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="mb-6">
+                <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-2xl">❌</span>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                  Error de Acceso
+                </h1>
+                <p className="text-gray-600 mb-4">
+                  {error}
+                </p>
+                {!isAuthenticated && (
+                  <p className="text-sm text-blue-600">
+                    ¿Necesitas acceso? Puedes solicitar verificación.
+                  </p>
+                )}
+              </div>
+              
+              {!isAuthenticated && (
+                <button
+                  onClick={handleRequestAuth}
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Solicitar Acceso Verificado
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
     );
+  }
+
+  if (!tracking) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-32">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="mb-6">
+                <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-2xl">🔐</span>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                  Acceso Requerido
+                </h1>
+                <p className="text-gray-600">
+                  Para acceder al seguimiento de tu pedido, necesitas verificar tu identidad.
+                </p>
+              </div>
+              
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Solicitar Acceso
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <TokenAuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          onSuccess={handleAuthSuccess}
+          username={slugUsuario}
+          type="user"
+          title="Verificación de Acceso"
+        />
+      </div>
+    );
+  }
+
+  if (!tracking) {
+    return null; // This should be handled by the error state above
   }
 
   const totalAmountUsd = getTotalAmount();
@@ -160,6 +276,29 @@ export default function UserTrackingPage() {
             <h1 className="text-4xl font-bold text-gray-800 mb-2">
               {t.orderTracking}
             </h1>
+            
+            {/* Indicador de estado de autenticación */}
+            <div className="flex justify-center items-center gap-4 mt-4">
+              {isAuthenticated ? (
+                <div className="flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                  <span>🔓</span>
+                  <span>Acceso Verificado</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                    <span>👁️</span>
+                    <span>Vista Pública</span>
+                  </div>
+                  <button
+                    onClick={handleRequestAuth}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    🔐 Obtener Acceso Verificado
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Estado del Pedido */}
