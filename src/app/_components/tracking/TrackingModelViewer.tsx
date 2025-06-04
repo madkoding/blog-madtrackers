@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { colors as colorOptions } from "../../constants";
-import RotatingFBXModel from "../RotatingFBXModel";
+import LazyRotatingFBXModel from "../LazyRotatingFBXModel";
 import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
 
@@ -15,7 +15,7 @@ interface TrackingModelViewerProps {
  * Componente que muestra el modelo 3D del tracker con los colores especificados
  * del case y la tapa según los datos de seguimiento.
  */
-const TrackingModelViewer: React.FC<TrackingModelViewerProps> = ({
+const TrackingModelViewer: React.FC<TrackingModelViewerProps> = React.memo(({
   caseColor,
   coverColor,
 }) => {
@@ -49,9 +49,11 @@ const TrackingModelViewer: React.FC<TrackingModelViewerProps> = ({
       </div>
       
       {/* Modelo 3D */}
-      <RotatingFBXModel colors={modelColors} />
+      <LazyRotatingFBXModel colors={modelColors} />
     </div>
   );
-};
+});
+
+TrackingModelViewer.displayName = 'TrackingModelViewer';
 
 export default TrackingModelViewer;

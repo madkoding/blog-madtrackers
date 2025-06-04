@@ -79,8 +79,8 @@ function createStandardMaterial({
 
 const FBXModel: React.FC<ModelProps> = ({ modelPath, colors }) => {
   const fbxOriginal = useLoader(FBXLoader, modelPath);
-  const envMap = useEnvironment({ files: "/assets/env.hdr" });
-  const normalMap = useLoader(TextureLoader, "/assets/noise-normal.png");
+  const envMap = useEnvironment({ files: "/assets/env_256x128.hdr" }); // Usar versión más pequeña
+  const normalMap = useLoader(TextureLoader, "/assets/noise-normal.webp");
   normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
   normalMap.repeat.set(FBX_MODEL_NORMAL_REPEAT, FBX_MODEL_NORMAL_REPEAT);
   const modelRef = useRef<THREE.Group>(null);
@@ -106,11 +106,19 @@ const FBXModel: React.FC<ModelProps> = ({ modelPath, colors }) => {
         globalMatIndex,
         colors,
       });
+      // Optimización: Eliminar mapas de textura innecesarios para reducir memoria
       newMat.map = null;
       newMat.roughnessMap = null;
       newMat.metalnessMap = null;
       newMat.aoMap = null;
       newMat.alphaMap = null;
+      newMat.lightMap = null;
+      newMat.emissiveMap = null;
+      // Optimización: Usar configuración de memoria eficiente
+      if (newMat.normalMap) {
+        newMat.normalMap.generateMipmaps = false;
+        newMat.normalMap.minFilter = THREE.LinearFilter;
+      }
       materials.current.push(newMat);
       return newMat;
     };

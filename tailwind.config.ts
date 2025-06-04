@@ -23,7 +23,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['"Exo 2"', "sans-serif"],
-        exo2: ['"Exo 2"', "sans-serif"], // Define la fuente
+        exo2: ['var(--font-exo2)', '"Exo 2"', "sans-serif"], // Variable CSS + fallback
+        faustina: ['var(--font-faustina)', '"Faustina"', "serif"], // Nueva fuente secundaria
       },
       fontSize: {
         "5xl": "2.5rem",

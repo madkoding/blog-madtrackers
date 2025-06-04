@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { InlineEditProps } from '../../../types/admin';
 
-export default function InlineEdit({ value, field, type = 'text', onUpdate, className = "" }: Readonly<InlineEditProps>) {
+const InlineEdit = React.memo<InlineEditProps>(({ value, field, type = 'text', onUpdate, className = "" }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value);
 
@@ -12,7 +12,7 @@ export default function InlineEdit({ value, field, type = 'text', onUpdate, clas
   }, [value]);
 
   // Función para convertir fecha ISO a formato YYYY-MM-DD (local, sin cambio de zona horaria)
-  const getInputDateValue = (dateValue: string) => {
+  const getInputDateValue = useCallback((dateValue: string) => {
     if (type === 'date' && typeof dateValue === 'string') {
       try {
         // Si el valor ya está en formato YYYY-MM-DD, devolverlo directamente
@@ -31,10 +31,10 @@ export default function InlineEdit({ value, field, type = 'text', onUpdate, clas
       }
     }
     return dateValue;
-  };
+  }, [type]);
 
   // Función para convertir fecha de input a ISO (manteniendo la fecha local)
-  const convertDateValue = (inputValue: string) => {
+  const convertDateValue = useCallback((inputValue: string) => {
     if (type === 'date') {
       // Crear fecha local sin cambio de zona horaria
       const [year, month, day] = inputValue.split('-').map(Number);
@@ -42,9 +42,9 @@ export default function InlineEdit({ value, field, type = 'text', onUpdate, clas
       return date.toISOString();
     }
     return inputValue;
-  };
+  }, [type]);
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     let processedValue = tempValue;
     
     if (type === 'number') {
@@ -57,29 +57,36 @@ export default function InlineEdit({ value, field, type = 'text', onUpdate, clas
       onUpdate(field, processedValue);
     }
     setIsEditing(false);
-  };
+  }, [tempValue, type, convertDateValue, value, onUpdate, field]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setTempValue(value);
     setIsEditing(false);
-  };
+  }, [value]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSave();
     } else if (e.key === 'Escape') {
       handleCancel();
     }
-  };
+  }, [handleSave, handleCancel]);
 
-  const handleEditStart = () => {
+  const handleEditStart = useCallback(() => {
     setIsEditing(true);
     // Para fechas, convertir el valor inicial al formato del input
     if (type === 'date') {
       const inputDateValue = getInputDateValue(value as string);
       setTempValue(inputDateValue);
     }
-  };
+  }, [type, getInputDateValue, value]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleEditStart();
+    }
+  }, [handleEditStart]);
 
   if (isEditing) {
     return (
@@ -97,13 +104,6 @@ export default function InlineEdit({ value, field, type = 'text', onUpdate, clas
     );
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleEditStart();
-    }
-  };
-
   return (
     <button
       type="button"
@@ -116,4 +116,8 @@ export default function InlineEdit({ value, field, type = 'text', onUpdate, clas
       {value}
     </button>
   );
-}
+});
+
+InlineEdit.displayName = 'InlineEdit';
+
+export default InlineEdit;

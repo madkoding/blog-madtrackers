@@ -1,17 +1,18 @@
+import React, { useMemo } from 'react';
 import { InfoRowProps } from '../../../types/admin';
 import { useLang } from '../../lang-context';
 import { translations } from '../../i18n';
 
-export default function InfoRow({ label, value }: Readonly<InfoRowProps>) {
+const InfoRow: React.FC<InfoRowProps> = React.memo(({ label, value }) => {
   const { lang } = useLang();
   const t = translations[lang];
   
-  let displayValue: string | number;
-  if (typeof value === 'boolean') {
-    displayValue = value ? t.yes : t.no;
-  } else {
-    displayValue = value;
-  }
+  const displayValue = useMemo(() => {
+    if (typeof value === 'boolean') {
+      return value ? t.yes : t.no;
+    }
+    return value;
+  }, [value, t.yes, t.no]);
 
   return (
     <div className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
@@ -19,4 +20,8 @@ export default function InfoRow({ label, value }: Readonly<InfoRowProps>) {
       <span className="font-medium text-gray-800">{displayValue}</span>
     </div>
   );
-}
+});
+
+InfoRow.displayName = 'InfoRow';
+
+export default InfoRow;

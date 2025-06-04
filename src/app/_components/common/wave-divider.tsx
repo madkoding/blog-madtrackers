@@ -1,4 +1,6 @@
-const WaveDivider = () => {
+import React from "react";
+
+const WaveDivider = React.memo(() => {
   return (
     <div className="relative -mt-12 lg:-mt-24">
       <svg
@@ -59,6 +61,8 @@ const WaveDivider = () => {
       </svg>
     </div>
   );
-};
+});
+
+WaveDivider.displayName = 'WaveDivider';
 
 export default WaveDivider;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Currency } from "../../types";
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
@@ -50,7 +50,7 @@ const formatUsd = (value: number): string =>
  *
  * @param props - Props de PricingSummary.
  */
-const PricingSummary: React.FC<PricingSummaryProps> = ({
+const PricingSummary: React.FC<PricingSummaryProps> = React.memo(({
   totalPrice,
   shippingPrice,
   currency,
@@ -60,36 +60,46 @@ const PricingSummary: React.FC<PricingSummaryProps> = ({
   const { lang } = useLang();
   const t = translations[lang];
 
-  const totalLocal = Number(totalPrice);
-  const shippingLocal = Number(shippingPrice);
-  const showUsdEquivalent = currency !== "USD";
+  const { totalLocal, shippingLocal, showUsdEquivalent } = useMemo(() => ({
+    totalLocal: Number(totalPrice),
+    shippingLocal: Number(shippingPrice),
+    showUsdEquivalent: currency !== "USD"
+  }), [totalPrice, shippingPrice, currency]);
 
-  // Cálculo del equivalente en USD
-  const totalUsd = showUsdEquivalent ? totalLocal / exchangeRate : undefined;
-  const shippingUsd = showUsdEquivalent
-    ? shippingLocal / exchangeRate
-    : undefined;
+  const { totalUsd, shippingUsd } = useMemo(() => ({
+    totalUsd: showUsdEquivalent ? totalLocal / exchangeRate : undefined,
+    shippingUsd: showUsdEquivalent ? shippingLocal / exchangeRate : undefined
+  }), [showUsdEquivalent, totalLocal, shippingLocal, exchangeRate]);
+
+  const formattedTotalPrice = useMemo(() => formatPrice(totalPrice), [totalPrice]);
+  const formattedShippingPrice = useMemo(() => formatPrice(shippingPrice), [shippingPrice]);
+  const formattedUsdTotal = useMemo(() => 
+    totalUsd && shippingUsd ? formatUsd(totalUsd + shippingUsd) : undefined,
+    [totalUsd, shippingUsd]
+  );
 
   return (
     <div className="text-center mt-6">
       <h2 className="text-xl font-semibold">
         {t.total}: {currencySymbol}
-        {formatPrice(totalPrice)} {currency}
+        {formattedTotalPrice} {currency}
       </h2>
       <p className="text-center text-gray-600">
         {t.shipping}: {currencySymbol}
-        {formatPrice(shippingPrice)} {currency}
+        {formattedShippingPrice} {currency}
       </p>
-      {showUsdEquivalent && (
+      {showUsdEquivalent && formattedUsdTotal && (
         <div className="mt-2">
           <p className="text-center text-gray-500">
             {t.usdEquivalent || "Equivalente en USD"}:{" "}
-            {formatUsd(totalUsd! + shippingUsd!)}
+            {formattedUsdTotal}
           </p>
         </div>
       )}
     </div>
   );
-};
+});
+
+PricingSummary.displayName = 'PricingSummary';
 
 export default PricingSummary;

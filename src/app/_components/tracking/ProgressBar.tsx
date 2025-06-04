@@ -1,6 +1,7 @@
+import React from 'react';
 import { ProgressBarProps } from '../../../types/admin';
 
-export default function ProgressBar({ label, percentage, color }: Readonly<ProgressBarProps>) {
+const ProgressBar: React.FC<ProgressBarProps> = React.memo(({ label, percentage, color }) => {
   return (
     <div className="mb-4">
       <div className="flex justify-between items-center mb-1">
@@ -15,4 +16,8 @@ export default function ProgressBar({ label, percentage, color }: Readonly<Progr
       </div>
     </div>
   );
-}
+});
+
+ProgressBar.displayName = 'ProgressBar';
+
+export default ProgressBar;

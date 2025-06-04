@@ -3,8 +3,10 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
+    "analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "security-check": "bash scripts/security-check.sh",
+    "test:performance": "node scripts/testPerformance.js",
     "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts",
     "migrate:firestore": "npx ts-node --project tsconfig.scripts.json scripts/migrateToFirestore.ts",
     "migrate:test-data": "npx ts-node --project tsconfig.scripts.json scripts/migrateTestData.ts",
@@ -34,15 +36,19 @@
     "remark-html": "^16.0.1",
     "resend": "^4.5.1",
     "sqlite-vss": "^0.1.2",
-    "three": "^0.176.0"
+    "three": "^0.176.0",
+    "web-vitals": "^5.0.2"
   },
   "devDependencies": {
+    "@gltf-transform/cli": "^4.1.4",
+    "@next/bundle-analyzer": "^15.3.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "eslint": "8.57.1",
     "eslint-config-next": "15.3.3",
+    "gltf-pipeline": "^4.1.0",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",

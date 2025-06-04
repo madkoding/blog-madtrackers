@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,15 +10,11 @@ import { useLang } from "../lang-context";
 /**
  * Botón de navegación genérico
  */
-function NavButton({
-  href,
-  label,
-  className,
-}: Readonly<{
+const NavButton = React.memo<{
   href: string;
   label: string;
   className: string;
-}>) {
+}>(({ href, label, className }) => {
   return (
     <li className="mr-3">
       <a
@@ -29,22 +25,29 @@ function NavButton({
       </a>
     </li>
   );
-}
+});
+
+NavButton.displayName = 'NavButton';
 
 /**
  * Selector de idioma
  */
-function LanguageSelector({
-  lang,
-  onChange,
-}: Readonly<{
+const LanguageSelector = React.memo<{
   lang: "en" | "es";
   onChange: (lang: "en" | "es") => void;
-}>) {
+}>(({ lang, onChange }) => {
+  const handleSelectEnglish = React.useCallback(() => {
+    onChange("en");
+  }, [onChange]);
+
+  const handleSelectSpanish = React.useCallback(() => {
+    onChange("es");
+  }, [onChange]);
+
   return (
     <li className="flex space-x-2 ml-4">
       <button
-        onClick={() => onChange("en")}
+        onClick={handleSelectEnglish}
         className={`px-2 py-1 rounded ${
           lang === "en" ? "bg-gray-800 text-white" : "bg-gray-200 text-gray-800"
         }`}
@@ -52,7 +55,7 @@ function LanguageSelector({
         EN
       </button>
       <button
-        onClick={() => onChange("es")}
+        onClick={handleSelectSpanish}
         className={`px-2 py-1 rounded ${
           lang === "es" ? "bg-gray-800 text-white" : "bg-gray-200 text-gray-800"
         }`}
@@ -61,7 +64,9 @@ function LanguageSelector({
       </button>
     </li>
   );
-}
+});
+
+LanguageSelector.displayName = 'LanguageSelector';
 
 export function NavBar() {
   const [scrollpos, setScrollpos] = useState(0);

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Faustina:ital,wght@0,300..800;1,300..800&display=swap');
+/* Critical CSS optimized - Fonts now loaded via Next.js optimization */
 
 @tailwind base;
 @tailwind components;
@@ -9,9 +9,8 @@ html {
 }
 
 body {
-  @apply font-exo2;
   @apply bg-accent-1 text-accent-7;
-  font-family: "Exo 2", serif !important;
+  font-family: var(--font-exo2), "Exo 2", sans-serif;
   background-image: linear-gradient(to right top, #051937, #002667, #0f2e97, #492ec4, #8612eb);
 }
 

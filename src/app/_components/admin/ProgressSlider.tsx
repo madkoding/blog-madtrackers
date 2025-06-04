@@ -1,22 +1,26 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ProgressSliderProps } from '../../../types/admin';
 import { getColorHex } from '../../../utils/colorUtils';
 
-export default function ProgressSlider({ label, percentage, color, field, onUpdate }: Readonly<ProgressSliderProps>) {
+const ProgressSlider = React.memo<ProgressSliderProps>(({ label, percentage, color, field, onUpdate }) => {
   const [value, setValue] = useState(percentage);
 
   useEffect(() => {
     setValue(percentage);
   }, [percentage]);
 
-  const handleChange = (newValue: number) => {
+  const handleChange = useCallback((newValue: number) => {
     if (newValue !== percentage) {
       setValue(newValue);
       onUpdate(field, newValue);
     }
-  };
+  }, [percentage, field, onUpdate]);
+
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    handleChange(Number(e.target.value));
+  }, [handleChange]);
 
   return (
     <div className="mb-4">
@@ -30,7 +34,7 @@ export default function ProgressSlider({ label, percentage, color, field, onUpda
           min="0"
           max="100"
           value={value}
-          onChange={(e) => handleChange(Number(e.target.value))}
+          onChange={handleInputChange}
           className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
           style={{
             background: `linear-gradient(to right, ${getColorHex(color)} 0%, ${getColorHex(color)} ${value}%, #e5e7eb ${value}%, #e5e7eb 100%)`
@@ -60,4 +64,8 @@ export default function ProgressSlider({ label, percentage, color, field, onUpda
       `}</style>
     </div>
   );
-}
+});
+
+ProgressSlider.displayName = 'ProgressSlider';
+
+export default ProgressSlider;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import Image from "next/image";
 
 /**
@@ -19,14 +19,17 @@ export interface PaypalButtonProps {
  * @param props - Props del componente
  * @returns {JSX.Element} El formulario de PayPal.
  */
-export default function PaypalButton({ 
+const PaypalButton: React.FC<PaypalButtonProps> = React.memo(({ 
   amount, 
   description = "Pago de MadTrackers",
-}: PaypalButtonProps): JSX.Element {
+}) => {
   // Generar un ID único para la transacción
-  const transactionId = `txn_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+  const transactionId = useMemo(() => 
+    `txn_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
+    []
+  );
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     
     // Obtener email de PayPal desde variables de entorno o usar valor por defecto
@@ -52,7 +55,12 @@ export default function PaypalButton({
     
     // Abrir PayPal en nueva ventana
     window.open(paypalUrl.toString(), '_blank');
-  };
+  }, [amount, description, transactionId]);
+
+  const buttonLabel = useMemo(() => 
+    `Anticipo de $${amount.toFixed(2)} USD`,
+    [amount]
+  );
   return (
     <>
       <style jsx>{`
@@ -84,7 +92,7 @@ export default function PaypalButton({
         <input
           className="pp-6BPXHUKRZPK88"
           type="submit"
-          value={`Anticipo de $${amount.toFixed(2)} USD`}
+          value={buttonLabel}
         />
         <Image
           src="https://www.paypalobjects.com/images/Debit_Credit.svg"
@@ -105,4 +113,8 @@ export default function PaypalButton({
       </form>
     </>
   );
-}
+});
+
+PaypalButton.displayName = 'PaypalButton';
+
+export default PaypalButton;

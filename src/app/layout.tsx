@@ -5,6 +5,10 @@ import "./globals.css";
 import { NavBar } from "./_components/navbar";
 import Footer from "./_components/common/footer";
 import { LangProvider } from "./lang-context";
+import { exo2, faustina } from "./fonts";
+import ResourceOptimizer from "./_components/common/ResourceOptimizer";
+import CriticalCSS from "./_components/common/CriticalCSS";
+import WebVitalsMonitor from "./_components/common/WebVitalsMonitor";
 
 export const metadata: Metadata = {
   title: `madTrackers`,
@@ -32,12 +36,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): JSX.Element {
   return (
-    <html lang="en">
+    <html lang="en" className={`${exo2.variable} ${faustina.variable}`}>
       <head>
+        {/* CSS crítico inline para optimizar First Paint */}
+        <CriticalCSS />
+        
+        {/* Preconnect para optimizar carga de recursos */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* DNS prefetch para recursos externos */}
+        <link rel="dns-prefetch" href="https://www.paypal.com" />
+        <link rel="dns-prefetch" href="https://www.paypalobjects.com" />
+        
         <Script
           src="https://www.paypal.com/sdk/js?client-id=BAAeh6JHd00AdVhZOeXQzNBTbUJsl6pydxlxpvSOvzq4RdlRi4nwtYpYUS_DFVur0iBvF9U6vXkTIPEd7Y&components=hosted-buttons&disable-funding=venmo&currency=USD"
           crossOrigin="anonymous"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
         <link
           rel="icon"
@@ -55,7 +70,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="madTrackers" />
         <link rel="manifest" href="/favicon/site.webmanifest" />
       </head>
-      <body className="leading-normal tracking-normal text-white gradient">
+      <body className={`leading-normal tracking-normal text-white gradient ${exo2.className}`}>
+        <WebVitalsMonitor />
+        <ResourceOptimizer />
         <LangProvider>
           <NavBar />
           <div className="min-h-screen">{children}</div>

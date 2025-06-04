@@ -16,6 +16,7 @@ import {
   InfoRow
 } from "../../_components/tracking";
 import TokenAuthModal from "../../_components/auth/TokenAuthModal";
+import { useUserAuth } from "../../../hooks/useUserAuth";
 
 export default function UserTrackingPage() {
   const { lang } = useLang();
@@ -23,23 +24,19 @@ export default function UserTrackingPage() {
   const params = useParams();
   const slugUsuario = params?.slugUsuario as string;
   
+  // Usar hook centralizado de autenticación
+  const { 
+    isAuthenticated, 
+    isLoading: authLoading, 
+    showAuthModal, 
+    jwtToken, 
+    handleAuthSuccess: handleAuthSuccessFromHook, 
+    requestAuth 
+  } = useUserAuth();
+  
   const [tracking, setTracking] = useState<UserTracking | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [jwtToken, setJwtToken] = useState<string | null>(null);
-
-  // Función para verificar si el JWT es válido y no ha expirado
-  const isJWTValid = (token: string): boolean => {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const now = Date.now() / 1000;
-      return payload.exp > now && payload.type === 'user';
-    } catch {
-      return false;
-    }
-  };
 
   const loadTrackingData = useCallback(async (identifier: string, token?: string) => {
     try {
@@ -99,32 +96,22 @@ export default function UserTrackingPage() {
   }, [t, jwtToken]);
 
   useEffect(() => {
-    if (slugUsuario) {
-      // Verificar si hay un JWT válido
-      const storedJWT = localStorage.getItem('madtrackers_jwt');
-      if (storedJWT && isJWTValid(storedJWT)) {
-        setJwtToken(storedJWT);
-        setIsAuthenticated(true);
-        // Solo cargar datos si hay JWT válido
-        loadTrackingData(slugUsuario, storedJWT);
+    if (slugUsuario && !authLoading) {
+      if (isAuthenticated && jwtToken) {
+        // Cargar datos si ya está autenticado
+        loadTrackingData(slugUsuario, jwtToken);
       } else {
-        // No hay JWT válido, mostrar modal de autenticación
-        setShowAuthModal(true);
+        // Si no está autenticado, detener el loading
         setLoading(false);
       }
     }
-  }, [slugUsuario, loadTrackingData]);
+  }, [slugUsuario, isAuthenticated, jwtToken, authLoading, loadTrackingData]);
 
+  // Función personalizada para manejar el éxito de autenticación
   const handleAuthSuccess = (jwt: string) => {
-    setJwtToken(jwt);
-    setIsAuthenticated(true);
-    setShowAuthModal(false);
+    handleAuthSuccessFromHook(jwt);
     // Recargar datos con JWT para acceso completo
     loadTrackingData(slugUsuario, jwt);
-  };
-
-  const handleRequestAuth = () => {
-    setShowAuthModal(true);
   };
 
   const formatDate = (dateString: string) => {
@@ -216,7 +203,7 @@ export default function UserTrackingPage() {
               </div>
               
               <button
-                onClick={() => setShowAuthModal(true)}
+                onClick={requestAuth}
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Solicitar Código de Acceso
@@ -227,7 +214,7 @@ export default function UserTrackingPage() {
 
         <TokenAuthModal
           isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
+          onClose={() => {}} // El hook maneja el cierre automáticamente
           onSuccess={handleAuthSuccess}
           username={slugUsuario}
           type="user"
@@ -353,7 +340,7 @@ export default function UserTrackingPage() {
                     <span>Vista Pública</span>
                   </div>
                   <button
-                    onClick={handleRequestAuth}
+                    onClick={requestAuth}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
                   >
                     🔐 Obtener Acceso Verificado

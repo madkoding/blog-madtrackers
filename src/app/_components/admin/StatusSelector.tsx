@@ -1,21 +1,28 @@
 "use client";
 
+import React, { useCallback, useMemo } from 'react';
 import { StatusSelectorProps } from '../../../types/admin';
 import { OrderStatus } from '../../../interfaces/tracking';
 import { useLang } from '../../lang-context';
 import { translations } from '../../i18n';
 
-export default function StatusSelector({ currentStatus, onUpdate }: Readonly<StatusSelectorProps>) {
+const StatusSelector = React.memo<StatusSelectorProps>(({ currentStatus, onUpdate }) => {
   const { lang } = useLang();
   const t = translations[lang];
 
-  const statuses = [
+  const statuses = useMemo(() => [
     { value: OrderStatus.WAITING, label: t.orderStatus_waiting, color: 'bg-gray-500', icon: '⏳' },
     { value: OrderStatus.MANUFACTURING, label: t.orderStatus_manufacturing, color: 'bg-blue-500', icon: '🔧' },
     { value: OrderStatus.TESTING, label: t.orderStatus_testing, color: 'bg-yellow-500', icon: '🧪' },
     { value: OrderStatus.SHIPPING, label: t.orderStatus_shipping, color: 'bg-purple-500', icon: '📦' },
     { value: OrderStatus.RECEIVED, label: t.orderStatus_received, color: 'bg-green-500', icon: '✅' }
-  ];
+  ], [t]);
+
+  const handleStatusChange = useCallback((statusValue: OrderStatus) => {
+    if (statusValue !== currentStatus) {
+      onUpdate('estadoPedido', statusValue);
+    }
+  }, [currentStatus, onUpdate]);
 
   return (
     <div className="space-y-3">
@@ -24,11 +31,7 @@ export default function StatusSelector({ currentStatus, onUpdate }: Readonly<Sta
         {statuses.map((status) => (
           <button
             key={status.value}
-            onClick={() => {
-              if (status.value !== currentStatus) {
-                onUpdate('estadoPedido', status.value);
-              }
-            }}
+            onClick={() => handleStatusChange(status.value)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
               currentStatus === status.value
                 ? `${status.color} text-white shadow-lg scale-105`
@@ -42,4 +45,8 @@ export default function StatusSelector({ currentStatus, onUpdate }: Readonly<Sta
       </div>
     </div>
   );
-}
+});
+
+StatusSelector.displayName = 'StatusSelector';
+
+export default StatusSelector;

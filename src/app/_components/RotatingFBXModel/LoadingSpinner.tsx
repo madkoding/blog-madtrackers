@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadingSpinner: React.FC = () => (
+const LoadingSpinner: React.FC = React.memo(() => (
   <svg
     style={{
       width: 48,
@@ -34,6 +34,8 @@ const LoadingSpinner: React.FC = () => (
       opacity="1"
     />
   </svg>
-);
+));
+
+LoadingSpinner.displayName = 'LoadingSpinner';
 
 export default LoadingSpinner;

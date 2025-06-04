@@ -1,17 +1,28 @@
 "use client";
 
-import { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ColorSelectorProps } from '../../../types/admin';
 import { colors } from '../../constants';
 
-export default function ColorSelector({ selectedColor, field, onUpdate }: Readonly<ColorSelectorProps>) {
+const ColorSelector = React.memo<ColorSelectorProps>(({ selectedColor, field, onUpdate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectedColorObj = colors.find(color => color.id === selectedColor);
+
+  const handleToggle = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, [isOpen]);
+
+  const handleColorSelect = useCallback((colorId: string) => {
+    if (colorId !== selectedColor) {
+      onUpdate(field, colorId);
+    }
+    setIsOpen(false);
+  }, [selectedColor, field, onUpdate]);
 
   return (
     <div className="relative">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
         className="flex items-center gap-2 px-3 py-2 border rounded-lg hover:bg-gray-50 transition-colors w-full text-gray-900 bg-white"
       >
         <div 
@@ -34,12 +45,7 @@ export default function ColorSelector({ selectedColor, field, onUpdate }: Readon
             {colors.map((color) => (
               <button
                 key={color.id}
-                onClick={() => {
-                  if (color.id !== selectedColor) {
-                    onUpdate(field, color.id);
-                  }
-                  setIsOpen(false);
-                }}
+                onClick={() => handleColorSelect(color.id)}
                 className={`flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 transition-colors text-gray-800 ${
                   selectedColor === color.id ? 'bg-blue-50 border border-blue-300' : 'border border-transparent'
                 }`}
@@ -62,4 +68,8 @@ export default function ColorSelector({ selectedColor, field, onUpdate }: Readon
       )}
     </div>
   );
-}
+});
+
+ColorSelector.displayName = 'ColorSelector';
+
+export default ColorSelector;

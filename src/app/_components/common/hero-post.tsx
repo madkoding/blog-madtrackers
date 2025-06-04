@@ -1,6 +1,6 @@
 "use client";
 
-import RotatingFBXModel from "../RotatingFBXModel";
+import LazyRotatingFBXModel from "../LazyRotatingFBXModel";
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
 
@@ -20,7 +20,7 @@ export function HeroPost({ title, subtitle }: Readonly<Props>) {
           {/* Modelo 3D */}
           <div className="w-full md:w-3/5 flex justify-center items-center">
             <div className="w-full max-w-[600px] h-auto aspect-square">
-              <RotatingFBXModel
+              <LazyRotatingFBXModel
                 colors={["#444444", "#000000", "#FFFFFF", "#FFFFFF"]}
               />
             </div>

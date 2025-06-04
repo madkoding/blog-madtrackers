@@ -1,33 +1,41 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import ExhibitionLights from "./RotatingFBXModel/ExhibitionLights";
-import FBXModel from "./RotatingFBXModel/FBXModel";
 import LoadingSpinner from "./RotatingFBXModel/LoadingSpinner";
+import LazyOptimizedFBXModel from "./LazyOptimizedFBXModel";
 
-const RotatingFBXModel: React.FC<{ colors: string[] }> = ({ colors }) => {
+interface RotatingFBXModelProps {
+  colors: string[];
+}
+
+const RotatingFBXModel: React.FC<RotatingFBXModelProps> = ({ colors }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <div className="relative aspect-square">
-      <Suspense
-        fallback={
-          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-            <LoadingSpinner />
-          </div>
-        }
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <LoadingSpinner />
+        </div>
+      )}
+      <Canvas
+        camera={{ position: [0, 2, 5], fov: 50 }}
+        className="!w-full !h-full"
+        gl={{ alpha: true }}
+        style={{ background: "transparent" }}
+        onCreated={() => setIsLoading(false)}
       >
-        <Canvas
-          camera={{ position: [0, 2, 5], fov: 50 }}
-          className="!w-full !h-full"
-          gl={{ alpha: true }}
-          style={{ background: "transparent" }}
-        >
+        <Suspense fallback={null}>
           <ExhibitionLights />
-          <Environment files="/assets/env.hdr" background={false} />
-          <FBXModel modelPath="/models/SmolModel.fbx" colors={colors} />
-        </Canvas>
-      </Suspense>
+          <Environment files="/assets/env_256x128.hdr" background={false} />
+          <LazyOptimizedFBXModel 
+            colors={colors}
+          />
+        </Suspense>
+      </Canvas>
     </div>
   );
 };
