@@ -1,19 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { OrderStatus, SensorTypes, Colors } from "../../../interfaces/tracking";
 import { availableCountries } from "../../constants/countries.constants";
 import { TrackingManager } from "../../../lib/trackingManager";
 import TokenAuthModal from "../../_components/auth/TokenAuthModal";
+import { useAdminAuth } from "../../../hooks/useAdminAuth";
 
 export default function AddUserPage() {
   const router = useRouter();
   
-  // Estados de autenticación
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(true);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  // Hook centralizado de autenticación
+  const { isAuthenticated, isLoading, showAuthModal, handleAuthSuccess } = useAdminAuth();
   
   // Estados del formulario
   const [formData, setFormData] = useState({
@@ -33,44 +32,6 @@ export default function AddUserPage() {
   
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Verificar autenticación al cargar
-  useEffect(() => {
-    const checkAuthentication = () => {
-      const sessionKey = 'admin_auth_main';
-      const savedAuth = sessionStorage.getItem(sessionKey);
-      
-      if (savedAuth) {
-        const authData = JSON.parse(savedAuth);
-        const now = Date.now();
-        
-        // Verificar si la sesión no ha expirado (15 minutos)
-        if (authData.timestamp && (now - authData.timestamp) < 15 * 60 * 1000) {
-          setIsAuthenticated(true);
-          setShowAuthModal(false);
-        } else {
-          // Sesión expirada
-          sessionStorage.removeItem(sessionKey);
-        }
-      }
-      
-      setCheckingAuth(false);
-    };
-
-    checkAuthentication();
-  }, []);
-
-  const handleAuthSuccess = () => {
-    setIsAuthenticated(true);
-    setShowAuthModal(false);
-    
-    // Guardar sesión
-    const sessionKey = 'admin_auth_main';
-    const authData = {
-      timestamp: Date.now()
-    };
-    sessionStorage.setItem(sessionKey, JSON.stringify(authData));
-  };
 
   const handleInputChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => {
@@ -232,7 +193,7 @@ export default function AddUserPage() {
   };
 
   // Mostrar carga inicial de autenticación
-  if (checkingAuth) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 pt-32">
         <div className="container mx-auto px-4 py-8">

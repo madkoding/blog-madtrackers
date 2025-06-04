@@ -32,6 +32,12 @@ export default function AdminLayout({
                 📋 Buscar Usuario
               </Link>
               <Link
+                href="/admin/nuevo-usuario"
+                className="text-red-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                ➕ Nuevo Usuario
+              </Link>
+              <Link
                 href="/seguimiento"
                 className="text-red-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >

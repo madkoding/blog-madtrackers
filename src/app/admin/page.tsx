@@ -5,14 +5,13 @@ import { useRouter } from "next/navigation";
 import { UserTracking, OrderStatus } from "../../interfaces/tracking";
 import TokenAuthModal from "../_components/auth/TokenAuthModal";
 import { generateUserHash } from "../../utils/hashUtils";
+import { useAdminAuth } from "../../hooks/useAdminAuth";
 
 export default function AdminPage() {
   const router = useRouter();
   
-  // Estados de autenticación
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(true);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  // Hook centralizado de autenticación
+  const { isAuthenticated, isLoading, showAuthModal, handleAuthSuccess, handleLogout } = useAdminAuth();
   
   // Estados de datos
   const [users, setUsers] = useState<UserTracking[]>([]);
@@ -21,38 +20,6 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [navigatingUser, setNavigatingUser] = useState<string | null>(null);
-
-  // Verificar autenticación al cargar
-  useEffect(() => {
-    const checkAuthentication = () => {
-      // Verificar JWT en localStorage
-      const jwtToken = localStorage.getItem('madtrackers_jwt');
-      
-      if (jwtToken) {
-        // Verificar si el JWT es válido
-        try {
-          const payload = JSON.parse(atob(jwtToken.split('.')[1]));
-          const now = Date.now() / 1000;
-          
-          // Verificar si el token no ha expirado y es de tipo admin
-          if (payload.exp > now && payload.type === 'admin') {
-            setIsAuthenticated(true);
-            setShowAuthModal(false);
-          } else {
-            // Token expirado o incorrecto
-            localStorage.removeItem('madtrackers_jwt');
-          }
-        } catch (error) {
-          console.error('Error al verificar el token:', error);
-          localStorage.removeItem('madtrackers_jwt');
-        }
-      }
-      
-      setCheckingAuth(false);
-    };
-
-    checkAuthentication();
-  }, []);
 
   // Cargar usuarios cuando esté autenticado
   useEffect(() => {
@@ -74,14 +41,6 @@ export default function AdminPage() {
       setFilteredUsers(users);
     }
   }, [searchTerm, users]);
-
-  const handleAuthSuccess = () => {
-    setIsAuthenticated(true);
-    setShowAuthModal(false);
-    
-    // El JWT ya está guardado en localStorage por el modal
-    console.log('✅ Autenticación JWT exitosa');
-  };
 
   const handleEditUser = async (user: UserTracking) => {
     console.log('🔧 handleEditUser llamado con:', { 
@@ -364,7 +323,7 @@ export default function AdminPage() {
   };
 
   // Mostrar carga inicial de autenticación
-  if (checkingAuth) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 pt-32">
         <div className="container mx-auto px-4 py-8">
@@ -435,11 +394,7 @@ export default function AdminPage() {
               </p>
             </div>
             <button
-              onClick={() => {
-                localStorage.removeItem('madtrackers_jwt');
-                setIsAuthenticated(false);
-                setShowAuthModal(true);
-              }}
+              onClick={handleLogout}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
             >
               🚪 Cerrar Sesión

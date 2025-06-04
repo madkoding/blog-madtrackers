@@ -4,14 +4,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TokenAuthModal from "../_components/auth/TokenAuthModal";
 import { UserTracking, OrderStatus } from "../../interfaces/tracking";
+import { useAdminAuth } from "../../hooks/useAdminAuth";
 
 export default function AdminIndexPage() {
   const router = useRouter();
   
-  // Estados de autenticación
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(true);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  // Hook centralizado de autenticación
+  const { isAuthenticated, isLoading, showAuthModal, handleAuthSuccess, handleLogout } = useAdminAuth();
   
   // Estados de datos
   const [users, setUsers] = useState<UserTracking[]>([]);
@@ -19,58 +18,12 @@ export default function AdminIndexPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Verificar autenticación al cargar
-  useEffect(() => {
-    const checkAuthentication = () => {
-      const sessionKey = 'admin_auth_main';
-      const savedAuth = sessionStorage.getItem(sessionKey);
-      
-      if (savedAuth) {
-        const authData = JSON.parse(savedAuth);
-        const now = Date.now();
-        
-        // Verificar si la sesión no ha expirado (15 minutos)
-        if (authData.timestamp && (now - authData.timestamp) < 15 * 60 * 1000) {
-          setIsAuthenticated(true);
-          setShowAuthModal(false);
-        } else {
-          // Sesión expirada
-          sessionStorage.removeItem(sessionKey);
-        }
-      }
-      
-      setCheckingAuth(false);
-    };
-
-    checkAuthentication();
-  }, []);
-
   // Cargar usuarios cuando se autentica
   useEffect(() => {
     if (isAuthenticated) {
       loadUsers();
     }
   }, [isAuthenticated]);
-
-  const handleAuthSuccess = () => {
-    setIsAuthenticated(true);
-    setShowAuthModal(false);
-    
-    // Guardar sesión
-    const sessionKey = 'admin_auth_main';
-    const authData = {
-      timestamp: Date.now()
-    };
-    sessionStorage.setItem(sessionKey, JSON.stringify(authData));
-  };
-
-  const handleLogout = () => {
-    const sessionKey = 'admin_auth_main';
-    sessionStorage.removeItem(sessionKey);
-    setIsAuthenticated(false);
-    setShowAuthModal(true);
-    setUsers([]);
-  };
 
   const loadUsers = async () => {
     try {
@@ -125,7 +78,7 @@ export default function AdminIndexPage() {
   };
 
   // Mostrar carga inicial de autenticación
-  if (checkingAuth) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 pt-32">
         <div className="container mx-auto px-4 py-8">
@@ -178,7 +131,9 @@ export default function AdminIndexPage() {
 
         <TokenAuthModal
           isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
+          onClose={() => {
+            console.log('🔒 Modal cerrado sin autenticación');
+          }}
           onSuccess={handleAuthSuccess}
           username="Administrador"
           type="admin"

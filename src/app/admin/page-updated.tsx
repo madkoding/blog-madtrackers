@@ -4,14 +4,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TokenAuthModal from "../_components/auth/TokenAuthModal";
 import { UserTracking } from "../../interfaces/tracking";
+import { useAdminAuth } from "../../hooks/useAdminAuth";
 
 export default function AdminIndexPage() {
   const router = useRouter();
   
-  // Estados de autenticación
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(true);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  // Hook centralizado de autenticación
+  const { isAuthenticated, isLoading, showAuthModal, handleAuthSuccess, handleLogout } = useAdminAuth();
   
   // Estados de datos
   const [users, setUsers] = useState<UserTracking[]>([]);
@@ -19,58 +18,12 @@ export default function AdminIndexPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Verificar autenticación al cargar
-  useEffect(() => {
-    const checkAuthentication = () => {
-      const sessionKey = 'admin_auth_main';
-      const savedAuth = sessionStorage.getItem(sessionKey);
-      
-      if (savedAuth) {
-        const authData = JSON.parse(savedAuth);
-        const now = Date.now();
-        
-        // Verificar si la sesión no ha expirado (15 minutos)
-        if (authData.timestamp && (now - authData.timestamp) < 15 * 60 * 1000) {
-          setIsAuthenticated(true);
-          setShowAuthModal(false);
-        } else {
-          // Sesión expirada
-          sessionStorage.removeItem(sessionKey);
-        }
-      }
-      
-      setCheckingAuth(false);
-    };
-
-    checkAuthentication();
-  }, []);
-
   // Cargar usuarios cuando se autentica
   useEffect(() => {
     if (isAuthenticated) {
       loadUsers();
     }
   }, [isAuthenticated]);
-
-  const handleAuthSuccess = () => {
-    setIsAuthenticated(true);
-    setShowAuthModal(false);
-    
-    // Guardar sesión
-    const sessionKey = 'admin_auth_main';
-    const authData = {
-      timestamp: Date.now()
-    };
-    sessionStorage.setItem(sessionKey, JSON.stringify(authData));
-  };
-
-  const handleLogout = () => {
-    const sessionKey = 'admin_auth_main';
-    sessionStorage.removeItem(sessionKey);
-    setIsAuthenticated(false);
-    setShowAuthModal(true);
-    setUsers([]);
-  };
 
   const loadUsers = async () => {
     try {
@@ -113,7 +66,7 @@ export default function AdminIndexPage() {
   );
 
   // Mostrar carga inicial de autenticación
-  if (checkingAuth) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 pt-32">
         <div className="container mx-auto px-4 py-8">
@@ -166,7 +119,9 @@ export default function AdminIndexPage() {
 
         <TokenAuthModal
           isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
+          onClose={() => {
+            console.log('🔒 Modal cerrado sin autenticación');
+          }}
           onSuccess={handleAuthSuccess}
           username="Administrador"
           type="admin"
@@ -327,7 +282,24 @@ export default function AdminIndexPage() {
                           (user.porcentajes.placa + user.porcentajes.straps + 
                            user.porcentajes.cases + user.porcentajes.baterias) / 4
                         );
-                        
+                        // Extraer la clase de color del estado del pedido
+                        let estadoPedidoClass = '';
+                        switch (user.estadoPedido) {
+                          case 'received':
+                            estadoPedidoClass = 'bg-green-100 text-green-800';
+                            break;
+                          case 'manufacturing':
+                            estadoPedidoClass = 'bg-blue-100 text-blue-800';
+                            break;
+                          case 'shipping':
+                            estadoPedidoClass = 'bg-yellow-100 text-yellow-800';
+                            break;
+                          case 'testing':
+                            estadoPedidoClass = 'bg-purple-100 text-purple-800';
+                            break;
+                          default:
+                            estadoPedidoClass = 'bg-gray-100 text-gray-800';
+                        }
                         return (
                           <tr key={user.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -354,18 +326,8 @@ export default function AdminIndexPage() {
                               <div className="text-xs text-gray-500">{user.paisEnvio}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                user.estadoPedido === 'received' 
-                                  ? 'bg-green-100 text-green-800'
-                                  : user.estadoPedido === 'manufacturing'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : user.estadoPedido === 'shipping'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : user.estadoPedido === 'testing'
-                                  ? 'bg-purple-100 text-purple-800'
-                                  : 'bg-gray-100 text-gray-800'
-                              }`}>
-                                {user.estadoPedido || 'waiting'}
+                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${estadoPedidoClass}`}>
+                                {user.estadoPedido ?? 'waiting'}
                               </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -381,18 +343,18 @@ export default function AdminIndexPage() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-900">
-                                ${user.totalUsd || (user.total ? (user.total / 1000).toFixed(2) : '0.00')}
+                                ${user.totalUsd ?? (user.total ? (user.total / 1000).toFixed(2) : '0.00')}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <button
-                                onClick={() => handleEditUser(user.userHash || user.id || '')}
+                                onClick={() => handleEditUser(user.userHash ?? user.id ?? '')}
                                 className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors mr-2"
                               >
                                 ✏️ Editar
                               </button>
                               <a
-                                href={`/seguimiento/${user.userHash || user.id}`}
+                                href={`/seguimiento/${user.userHash ?? user.id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors"
