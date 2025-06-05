@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
 import { quantities, countries, useTranslatedConstants } from "../../constants";
 import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
@@ -204,10 +205,44 @@ const Pricing = () => {
           , {t.continuePayment}.
         </h3>
         <br />
-        <PaypalButton 
-          amount={totalPriceUsd / 4} // Pago del 25% como anticipo
-          description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity} (Anticipo 25%)`}
-        />
+        {currency === "CLP" ? (
+          <div className="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 p-8 rounded-2xl shadow-xl max-w-lg mx-auto border border-purple-100">
+            {/* Header con logo */}
+            <div className="flex items-center justify-center mb-6">
+              <Image 
+                src="/assets/mach-logo.png" 
+                alt="MACH Logo" 
+                width={140}
+                height={45}
+                className="drop-shadow-sm"
+              />
+            </div>
+            
+            {/* Texto principal */}
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                Pagos en Chile
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                En Chile puedes realizar <span className="font-semibold text-purple-700">transferencia directa</span> a la cuenta corriente o transferir tu anticipo vía <span className="font-semibold text-blue-600">MACH</span>
+              </p>
+            </div>
+            
+            
+            {/* Nota adicional */}
+            <div className="mt-6 p-3 bg-white/60 rounded-lg border-l-4 border-purple-400">
+              <p className="text-sm text-gray-700 flex items-center">
+                <span className="mr-2">💡</span>
+                <span>Contacta por WhatsApp para coordinar el pago o anticipo</span>
+              </p>
+            </div>
+          </div>
+        ) : (
+          <PaypalButton 
+            amount={totalPriceUsd / 4} // Pago del 25% como anticipo
+            description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity} (Anticipo 25%)`}
+          />
+        )}
       </div>
     </section>
   );
