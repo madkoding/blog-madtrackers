@@ -248,11 +248,14 @@ export interface CountryConfig {
 
 /**
  * Mapeo de países a su configuración de moneda y envío.
+ * Las tasas de cambio para países internacionales incluyen un ajuste del 20% 
+ * para compensar comisiones de PayPal y retiro, manteniendo la equivalencia 
+ * con el precio base en pesos chilenos.
  */
 export const countries: Record<string, CountryConfig> = {
   CL: { currency: "CLP", exchangeRate: 1000, currencySymbol: "$", shippingCostUsd: 0 },
-  PE: { currency: "PEN", exchangeRate: 3.8, currencySymbol: "S/", shippingCostUsd: 65 },
-  AR: { currency: "ARS", exchangeRate: 1170, currencySymbol: "$", shippingCostUsd: 65 },
-  MX: { currency: "MXN", exchangeRate: 20, currencySymbol: "$", shippingCostUsd: 65 },
-  US: { currency: "USD", exchangeRate: 1, currencySymbol: "US$", shippingCostUsd: 65 },
+  PE: { currency: "PEN", exchangeRate: 4.56, currencySymbol: "S/", shippingCostUsd: 65 },
+  AR: { currency: "ARS", exchangeRate: 1404, currencySymbol: "$", shippingCostUsd: 65 },
+  MX: { currency: "MXN", exchangeRate: 24, currencySymbol: "$", shippingCostUsd: 65 },
+  US: { currency: "USD", exchangeRate: 1.2, currencySymbol: "US$", shippingCostUsd: 65 },
 };
