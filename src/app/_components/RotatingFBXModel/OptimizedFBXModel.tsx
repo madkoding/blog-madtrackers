@@ -29,6 +29,14 @@ interface OptimizedModelProps extends ModelProps {
   maxDistance?: number;
 }
 
+// Tipo auxiliar para los userData de LOD
+interface LODUserData {
+  lod0?: THREE.Group;
+  lod1?: THREE.Group;
+  lod2?: THREE.Group;
+  [key: string]: THREE.Group | undefined;
+}
+
 // Función para simplificar geometría según distancia
 function simplifyGeometry(geometry: THREE.BufferGeometry, factor: number): THREE.BufferGeometry {
   if (factor >= 1) return geometry;
@@ -110,9 +118,49 @@ function createOptimizedMaterial({
   }
 }
 
+// Extracción de funciones auxiliares fuera de useMemo para reducir anidamiento y tipado explícito
+function assignMaterialFactory({ normalMap, colors, materials, isLowDetail = false }: {
+  normalMap: THREE.Texture;
+  colors: string[];
+  materials: React.MutableRefObject<THREE.Material[]>;
+  isLowDetail?: boolean;
+}) {
+  return function assignMaterial(mat: THREE.Material | undefined, globalMatIndex: number): THREE.MeshStandardMaterial {
+    const colorValue = colors[globalMatIndex] ??
+      (globalMatIndex === 0 || globalMatIndex === 1
+        ? FBX_MODEL_PURPLE_COLOR
+        : FBX_MODEL_DEFAULT_COLOR);
+    const newMat = createOptimizedMaterial({
+      mat,
+      colorValue,
+      normalMap,
+      globalMatIndex,
+      colors,
+      isLowDetail,
+    });
+    newMat.map = null;
+    newMat.roughnessMap = null;
+    newMat.metalnessMap = null;
+    newMat.aoMap = null;
+    newMat.alphaMap = null;
+    newMat.lightMap = null;
+    newMat.emissiveMap = null;
+    materials.current.push(newMat);
+    return newMat;
+  };
+}
+
+function centerAndScaleModel(model: THREE.Group) {
+  model.scale.set(FBX_MODEL_SCALE, FBX_MODEL_SCALE, FBX_MODEL_SCALE);
+  const box = new THREE.Box3().setFromObject(model);
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  model.position.sub(center);
+}
+
 const OptimizedFBXModel: React.FC<OptimizedModelProps> = ({ 
   modelPath, 
-  colors,
+  colors = [],
   enableLOD = true,
   maxDistance = 10
 }) => {
@@ -131,174 +179,87 @@ const OptimizedFBXModel: React.FC<OptimizedModelProps> = ({
   normalMap.minFilter = THREE.LinearFilter;
 
   // Crear modelos con diferentes niveles de detalle
-  const lodModels = useMemo(() => {
+  const lodModels: (THREE.Group & { userData: LODUserData }) | null = useMemo(() => {
     if (!fbxOriginal || !enableLOD) return null;
-
     const cacheKey = `${modelPath}_lod`;
     if (modelCache.has(cacheKey)) {
-      return modelCache.get(cacheKey);
+      return modelCache.get(cacheKey) as THREE.Group & { userData: LODUserData };
     }
-
-    const createLODModel = (simplificationFactor: number, isLowDetail: boolean) => {
-      const assignMaterial = (mat: THREE.Material | undefined, globalMatIndex: number) => {
-        const colorValue = colors?.[globalMatIndex] ?? 
-          (globalMatIndex === 0 || globalMatIndex === 1 
-            ? FBX_MODEL_PURPLE_COLOR 
-            : FBX_MODEL_DEFAULT_COLOR);
-        
-        const newMat = createOptimizedMaterial({
-          mat,
-          colorValue,
-          normalMap,
-          globalMatIndex,
-          colors,
-          isLowDetail,
-        });
-
-        // Limpiar mapas innecesarios
-        newMat.map = null;
-        newMat.roughnessMap = null;
-        newMat.metalnessMap = null;
-        newMat.aoMap = null;
-        newMat.alphaMap = null;
-        newMat.lightMap = null;
-        newMat.emissiveMap = null;
-
-        materials.current.push(newMat);
-        return newMat;
-      };
-
+    const assignMaterial = assignMaterialFactory({ normalMap, colors, materials, isLowDetail: false });
+    const assignMaterialLow = assignMaterialFactory({ normalMap, colors, materials, isLowDetail: true });
+    function createLODModel(simplificationFactor: number, isLowDetail: boolean) {
+      const assignMat = isLowDetail ? assignMaterialLow : assignMaterial;
       const model = fbxOriginal.clone();
-      model.scale.set(FBX_MODEL_SCALE, FBX_MODEL_SCALE, FBX_MODEL_SCALE);
-      
-      // Centrar modelo
-      const box = new THREE.Box3().setFromObject(model);
-      const center = new THREE.Vector3();
-      box.getCenter(center);
-      model.position.sub(center);
-
+      centerAndScaleModel(model);
       let globalMatIndex = 0;
       model.traverse((child: THREE.Object3D) => {
         if (child instanceof THREE.Mesh) {
-          // Simplificar geometría según factor
           if (child.geometry && simplificationFactor < 1) {
             child.geometry = simplifyGeometry(child.geometry, simplificationFactor);
           }
-
-          // Asignar materiales
           if (Array.isArray(child.material)) {
-            child.material = child.material.map((mat) => {
-              const newMat = assignMaterial(mat, globalMatIndex);
+            const newMats: THREE.Material[] = [];
+            for (const mat of child.material) {
+              newMats.push(assignMat(mat, globalMatIndex));
               globalMatIndex++;
-              return newMat;
-            });
+            }
+            child.material = newMats;
           } else {
-            const newMat = assignMaterial(child.material, globalMatIndex);
-            child.material = newMat;
+            child.material = assignMat(child.material, globalMatIndex);
             globalMatIndex++;
           }
         }
       });
-
       const group = new THREE.Group();
       group.add(model);
       return group;
-    };
-
-    // Crear diferentes niveles de LOD
-    const lodGroup = new THREE.Group();
-    
-    // LOD 0: Máximo detalle (distancia cercana)
-    const highDetail = createLODModel(1.0, false);
-    lodGroup.userData.lod0 = highDetail;
-    
-    // LOD 1: Detalle medio (distancia media)
-    const mediumDetail = createLODModel(0.7, false);
-    lodGroup.userData.lod1 = mediumDetail;
-    
-    // LOD 2: Bajo detalle (distancia lejana)
-    const lowDetail = createLODModel(0.4, true);
-    lodGroup.userData.lod2 = lowDetail;
-
-    // Cachear el grupo LOD
+    }
+    const lodGroup = new THREE.Group() as THREE.Group & { userData: LODUserData };
+    lodGroup.userData.lod0 = createLODModel(1.0, false);
+    lodGroup.userData.lod1 = createLODModel(0.7, false);
+    lodGroup.userData.lod2 = createLODModel(0.4, true);
     modelCache.set(cacheKey, lodGroup);
-    
     return lodGroup;
-  }, [fbxOriginal, normalMap, colors, enableLOD, modelPath]);
+  }, [fbxOriginal, normalMap, colors, enableLOD, modelPath, modelCache]);
 
   // Modelo simple para cuando LOD está deshabilitado
   const simpleModel = useMemo(() => {
     if (!fbxOriginal || enableLOD) return null;
-    
     const cacheKey = `${modelPath}_simple`;
     if (modelCache.has(cacheKey)) {
       return modelCache.get(cacheKey);
     }
-
-    const assignMaterial = (mat: THREE.Material | undefined, globalMatIndex: number) => {
-      const colorValue = colors?.[globalMatIndex] ?? 
-        (globalMatIndex === 0 || globalMatIndex === 1 
-          ? FBX_MODEL_PURPLE_COLOR 
-          : FBX_MODEL_DEFAULT_COLOR);
-      
-      const newMat = createOptimizedMaterial({
-        mat,
-        colorValue,
-        normalMap,
-        globalMatIndex,
-        colors,
-      });
-
-      newMat.map = null;
-      newMat.roughnessMap = null;
-      newMat.metalnessMap = null;
-      newMat.aoMap = null;
-      newMat.alphaMap = null;
-      newMat.lightMap = null;
-      newMat.emissiveMap = null;
-
-      materials.current.push(newMat);
-      return newMat;
-    };
-
+    const assignMaterial = assignMaterialFactory({ normalMap, colors, materials });
     const model = fbxOriginal.clone();
-    model.scale.set(FBX_MODEL_SCALE, FBX_MODEL_SCALE, FBX_MODEL_SCALE);
-    
-    const box = new THREE.Box3().setFromObject(model);
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-    model.position.sub(center);
-    
+    centerAndScaleModel(model);
     const group = new THREE.Group();
     group.add(model);
     materials.current = [];
-    
     let globalMatIndex = 0;
     model.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
         if (Array.isArray(child.material)) {
-          child.material = child.material.map((mat) => {
-            const newMat = assignMaterial(mat, globalMatIndex);
+          const newMats: THREE.Material[] = [];
+          for (const mat of child.material) {
+            newMats.push(assignMaterial(mat, globalMatIndex));
             globalMatIndex++;
-            return newMat;
-          });
+          }
+          child.material = newMats;
         } else {
-          const newMat = assignMaterial(child.material, globalMatIndex);
-          child.material = newMat;
+          child.material = assignMaterial(child.material, globalMatIndex);
           globalMatIndex++;
         }
       }
     });
-
     modelCache.set(cacheKey, group);
     return group;
-  }, [fbxOriginal, normalMap, colors, enableLOD, modelPath]);
+  }, [fbxOriginal, normalMap, colors, enableLOD, modelPath, modelCache]);
 
   const currentModel = enableLOD ? lodModels : simpleModel;
 
   // Efecto para actualizar colores
   useEffect(() => {
-    if (!currentModel || !colors || colors.length === 0) return;
+    if (!currentModel || colors.length === 0) return;
     
     materials.current.forEach((mat, i) => {
       if (hasColorProperty(mat) && colors[i] !== undefined) {
@@ -354,43 +315,39 @@ const OptimizedFBXModel: React.FC<OptimizedModelProps> = ({
     }
   }, [currentModel, envMap]);
 
-  // Frame loop con LOD dinámico
-  useFrame(({ camera }) => {
+  // Refactorizar lógica de useFrame para reducir complejidad
+  function rotateModel(modelRef: React.RefObject<THREE.Group>) {
     if (modelRef.current) {
-      // Rotación del modelo
       modelRef.current.rotation.x += FBX_MODEL_ROTATION_SPEED_X;
       modelRef.current.rotation.y += FBX_MODEL_ROTATION_SPEED_Y;
       modelRef.current.rotation.z += FBX_MODEL_ROTATION_SPEED_Z;
-
-      // LOD dinámico basado en distancia
-      if (enableLOD && lodModels) {
-        const distance = camera.position.distanceTo(modelRef.current.position);
-        let newLODLevel = 0;
-        
-        if (distance > maxDistance * 0.7) {
-          newLODLevel = 2; // Bajo detalle
-        } else if (distance > maxDistance * 0.4) {
-          newLODLevel = 1; // Detalle medio
-        } else {
-          newLODLevel = 0; // Alto detalle
-        }
-
-        // Cambiar LOD solo si es necesario
-        if (newLODLevel !== currentLODLevel.current) {
-          currentLODLevel.current = newLODLevel;
-          
-          // Limpiar hijos actuales
-          while (modelRef.current.children.length > 0) {
-            modelRef.current.remove(modelRef.current.children[0]);
-          }
-          
-          // Añadir el modelo LOD apropiado
-          const lodKey = `lod${newLODLevel}`;
-          if (lodModels.userData[lodKey]) {
-            modelRef.current.add(lodModels.userData[lodKey].clone());
-          }
-        }
+    }
+  }
+  function updateLOD(camera: THREE.Camera, modelRef: React.RefObject<THREE.Group>, lodModels: (THREE.Group & { userData: LODUserData }) | null, maxDistance: number) {
+    if (!modelRef.current || !lodModels) return;
+    const distance = camera.position.distanceTo(modelRef.current.position);
+    let newLODLevel = 0;
+    if (distance > maxDistance * 0.7) {
+      newLODLevel = 2;
+    } else if (distance > maxDistance * 0.4) {
+      newLODLevel = 1;
+    }
+    if (newLODLevel !== currentLODLevel.current) {
+      currentLODLevel.current = newLODLevel;
+      while (modelRef.current.children.length > 0) {
+        modelRef.current.remove(modelRef.current.children[0]);
       }
+      const lodKey = `lod${newLODLevel}`;
+      const lodChild = lodModels.userData[lodKey];
+      if (lodChild) {
+        modelRef.current.add(lodChild.clone());
+      }
+    }
+  }
+  useFrame(({ camera }) => {
+    rotateModel(modelRef);
+    if (enableLOD) {
+      updateLOD(camera, modelRef, lodModels ?? null, maxDistance);
     }
   });
 

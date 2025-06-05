@@ -3,15 +3,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "analyze": "ANALYZE=true npm run build",
     "start": "next start",
-    "security-check": "bash scripts/security-check.sh",
-    "test:performance": "node scripts/testPerformance.js",
-    "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts",
-    "migrate:firestore": "npx ts-node --project tsconfig.scripts.json scripts/migrateToFirestore.ts",
-    "migrate:test-data": "npx ts-node --project tsconfig.scripts.json scripts/migrateTestData.ts",
-    "migrate:hash": "npx ts-node --project tsconfig.scripts.json scripts/migrateUserHashes.ts",
-    "test:firebase": "npx ts-node --project tsconfig.scripts.json scripts/testFirebaseService.ts"
+    "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",
