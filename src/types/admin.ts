@@ -15,6 +15,8 @@ export interface InlineEditProps {
   type?: 'text' | 'number' | 'email' | 'date';
   onUpdate: (field: string, value: string | number | boolean) => void;
   className?: string;
+  error?: string;
+  placeholder?: string;
 }
 
 export interface ColorSelectorProps {

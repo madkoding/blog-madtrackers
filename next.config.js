@@ -17,46 +17,52 @@ const nextConfig = {
       'three',
       'react-simple-typewriter'
     ],
-    // optimizeCss: true, // Desactivado temporalmente por error con critters
   },
-  webpack: (config, { isServer }) => {
-    // Bundle splitting for heavy dependencies
-    if (!isServer) {
+  // Configuración mejorada para el manejo de chunks
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+  },
+  webpack: (config, { isServer, dev }) => {
+    // Configuración mejorada para evitar errores de chunk loading
+    if (!isServer && !dev) {
       config.optimization.splitChunks = {
         ...config.optimization.splitChunks,
+        chunks: 'all',
         cacheGroups: {
           ...config.optimization.splitChunks.cacheGroups,
-          styles: {
-            name: 'styles',
-            test: /\.(css|scss|sass)$/,
-            chunks: 'all',
-            enforce: true,
-            priority: 20,
-          },
           three: {
             name: 'three',
             test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
             chunks: 'all',
             priority: 30,
             reuseExistingChunk: true,
+            enforce: true,
           },
-          firebase: {
-            name: 'firebase',
-            test: /[\\/]node_modules[\\/]firebase[\\/]/,
+          vendor: {
+            name: 'vendor',
+            test: /[\\/]node_modules[\\/]/,
             chunks: 'all',
-            priority: 25,
-            reuseExistingChunk: true,
-          },
-          openai: {
-            name: 'openai',
-            test: /[\\/]node_modules[\\/]openai[\\/]/,
-            chunks: 'all',
-            priority: 20,
+            priority: 10,
             reuseExistingChunk: true,
           },
         },
       };
     }
+    
+    // Configuración adicional para mejorar la carga de archivos
+    config.module.rules.push({
+      test: /\.(fbx|glb|gltf)$/,
+      use: {
+        loader: 'file-loader',
+        options: {
+          publicPath: '/_next/static/models/',
+          outputPath: 'static/models/',
+        },
+      },
+    });
+    
     return config;
   },
 }

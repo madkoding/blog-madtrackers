@@ -3,9 +3,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { InlineEditProps } from '../../../types/admin';
 
-const InlineEdit = React.memo<InlineEditProps>(({ value, field, type = 'text', onUpdate, className = "" }) => {
+const InlineEdit = React.memo<InlineEditProps>(({ value, field, type = 'text', onUpdate, className = "", error, placeholder }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value);
+
+  // Función para obtener el placeholder apropiado
+  const getPlaceholder = useCallback(() => {
+    if (placeholder) return placeholder;
+    
+    switch (type) {
+      case 'email':
+        return 'ejemplo@correo.com';
+      case 'number':
+        return '0';
+      case 'date':
+        return 'dd/mm/aaaa';
+      default:
+        return 'Ingrese valor...';
+    }
+  }, [placeholder, type]);
 
   useEffect(() => {
     setTempValue(value);
@@ -88,33 +104,54 @@ const InlineEdit = React.memo<InlineEditProps>(({ value, field, type = 'text', o
     }
   }, [handleEditStart]);
 
+  // Mostrar placeholder cuando el valor está vacío
+  const displayValue = value || getPlaceholder();
+  const isPlaceholder = !value;
+
   if (isEditing) {
     return (
-      <div className="flex items-center gap-2">
-        <input
-          type={type}
-          value={tempValue}
-          onChange={(e) => setTempValue(e.target.value)}
-          onKeyDown={handleKeyPress}
-          onBlur={handleSave}
-          autoFocus
-          className={`px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white text-right ${className}`}
-        />
+      <div className="w-full">
+        <div className="flex items-center gap-2">
+          <input
+            type={type}
+            value={tempValue}
+            placeholder={getPlaceholder()}
+            onChange={(e) => setTempValue(e.target.value)}
+            onKeyDown={handleKeyPress}
+            onBlur={handleSave}
+            autoFocus
+            className={`px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 text-gray-900 bg-white text-right flex-1 min-w-0 shadow-sm ${
+              error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+            } ${className}`}
+          />
+        </div>
+        {error && (
+          <p className="text-xs text-red-600 mt-1">{error}</p>
+        )}
       </div>
     );
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleEditStart}
-      onKeyDown={handleKeyDown}
-      aria-label="Click para editar"
-      className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded border border-transparent hover:border-gray-300 transition-colors text-gray-900 font-medium text-right block focus:outline-none focus:ring-2 focus:ring-blue-500 w-full bg-transparent"
-      title="Click para editar"
-    >
-      {value}
-    </button>
+    <div className="w-full">
+      <button
+        type="button"
+        onClick={handleEditStart}
+        onKeyDown={handleKeyDown}
+        aria-label="Click para editar"
+        className={`cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg border transition-all duration-200 text-right block focus:outline-none focus:ring-2 focus:ring-blue-500 w-full min-w-0 shadow-sm ${
+          error 
+            ? 'border-red-300 bg-red-50' 
+            : 'border-gray-200 bg-white hover:border-gray-300'
+        } ${isPlaceholder ? 'text-gray-400 italic' : 'text-gray-900 font-medium'}`}
+        title="Click para editar"
+      >
+        {displayValue}
+      </button>
+      {error && (
+        <p className="text-xs text-red-600 mt-1">{error}</p>
+      )}
+    </div>
   );
 });
 

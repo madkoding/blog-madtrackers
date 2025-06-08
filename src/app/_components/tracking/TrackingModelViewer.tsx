@@ -15,7 +15,7 @@ interface TrackingModelViewerProps {
  * Componente que muestra el modelo 3D del tracker con los colores especificados
  * del case y la tapa según los datos de seguimiento.
  */
-const TrackingModelViewer: React.FC<TrackingModelViewerProps> = React.memo(({
+const TrackingModelViewer: React.FC<TrackingModelViewerProps> = ({
   caseColor,
   coverColor,
 }) => {
@@ -28,7 +28,7 @@ const TrackingModelViewer: React.FC<TrackingModelViewerProps> = React.memo(({
     const coverColorData = colorOptions.find(color => color.id === coverColor);
     
     // Determinar el color del logo basado en la tapa
-    const logoColor = coverColor === "blanco" ? "#000000" : "#CCCCCC";
+    const logoColor = coverColor === "white" ? "#000000" : "#CCCCCC";
     
     // Material 0: Case, material 1: Tapa, materiales 2 y 3: Logo
     return [
@@ -52,7 +52,7 @@ const TrackingModelViewer: React.FC<TrackingModelViewerProps> = React.memo(({
       <LazyRotatingFBXModel colors={modelColors} />
     </div>
   );
-});
+};
 
 TrackingModelViewer.displayName = 'TrackingModelViewer';
 

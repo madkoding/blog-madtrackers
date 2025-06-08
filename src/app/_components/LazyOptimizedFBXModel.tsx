@@ -1,14 +1,5 @@
 import React from "react";
-import dynamic from "next/dynamic";
-
-// Importar el modelo FBX original optimizado
-const FBXModel = dynamic(
-  () => import("./RotatingFBXModel/FBXModel"),
-  { 
-    ssr: false,
-    loading: () => null // No loading component dentro de R3F Canvas
-  }
-);
+import FBXModel from "./RotatingFBXModel/FBXModel";
 
 interface LazyOptimizedFBXModelProps {
   colors: string[];

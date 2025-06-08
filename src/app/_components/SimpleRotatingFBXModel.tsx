@@ -3,24 +3,15 @@
 import React, { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
-import dynamic from "next/dynamic";
 import ExhibitionLights from "./RotatingFBXModel/ExhibitionLights";
 import LoadingSpinner from "./RotatingFBXModel/LoadingSpinner";
+import FBXModel from "./RotatingFBXModel/FBXModel";
 
-// Dynamic import para el modelo FBX
-const LazyOptimizedFBXModel = dynamic(
-  () => import("./LazyOptimizedFBXModel"),
-  { 
-    ssr: false,
-    loading: () => null
-  }
-);
-
-interface RotatingFBXModelProps {
+interface SimpleRotatingFBXModelProps {
   colors: string[];
 }
 
-const RotatingFBXModel: React.FC<RotatingFBXModelProps> = ({ colors }) => {
+const SimpleRotatingFBXModel: React.FC<SimpleRotatingFBXModelProps> = ({ colors }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -40,7 +31,8 @@ const RotatingFBXModel: React.FC<RotatingFBXModelProps> = ({ colors }) => {
         <Suspense fallback={null}>
           <ExhibitionLights />
           <Environment files="/assets/env_256x128.hdr" background={false} />
-          <LazyOptimizedFBXModel 
+          <FBXModel 
+            modelPath="/models/SmolModel.fbx"
             colors={colors}
           />
         </Suspense>
@@ -49,4 +41,4 @@ const RotatingFBXModel: React.FC<RotatingFBXModelProps> = ({ colors }) => {
   );
 };
 
-export default RotatingFBXModel;
+export default SimpleRotatingFBXModel;

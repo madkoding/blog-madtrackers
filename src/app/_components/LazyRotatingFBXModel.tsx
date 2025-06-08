@@ -4,9 +4,9 @@ import dynamic from "next/dynamic";
 import { Suspense, useState, useEffect } from "react";
 import LoadingSpinner from "./RotatingFBXModel/LoadingSpinner";
 
-// Lazy loading más agresivo del componente 3D pesado
-const RotatingFBXModel = dynamic(() => import("./RotatingFBXModel"), {
-  ssr: false, // Evitar SSR para componentes 3D
+// Importación directa sin múltiples capas de dynamic loading
+const SimpleRotatingFBXModel = dynamic(() => import("./SimpleRotatingFBXModel"), {
+  ssr: false,
   loading: () => (
     <div className="relative aspect-square flex items-center justify-center rounded-lg">
       <LoadingSpinner />
@@ -23,10 +23,10 @@ const LazyRotatingFBXModel: React.FC<LazyRotatingFBXModelProps> = ({ colors }) =
   const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
-    // Cargar el modelo 3D solo después de que la página esté completamente cargada
+    // Cargar el modelo 3D después de un pequeño delay
     const timer = setTimeout(() => {
       setShouldLoad(true);
-    }, 100); // Delay de 1 segundo para priorizar contenido crítico
+    }, 100);
 
     return () => clearTimeout(timer);
   }, []);
@@ -49,7 +49,7 @@ const LazyRotatingFBXModel: React.FC<LazyRotatingFBXModelProps> = ({ colors }) =
         </div>
       }
     >
-      <RotatingFBXModel colors={colors} />
+      <SimpleRotatingFBXModel colors={colors} />
     </Suspense>
   );
 };

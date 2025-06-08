@@ -14,6 +14,7 @@ const AdminDashboard = React.memo(() => {
   // Estados de datos
   const [users, setUsers] = useState<UserTracking[]>([]);
   const [loading, setLoading] = useState(false);
+  const [addingUser, setAddingUser] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const hasLoadedRef = useRef(false);
@@ -58,8 +59,14 @@ const AdminDashboard = React.memo(() => {
     }
   }, [isAuthenticated, loadUsers]);
 
-  const handleAddUser = useCallback(() => {
-    router.push('/admin/nuevo-usuario');
+  const handleAddUser = useCallback(async () => {
+    setAddingUser(true);
+    try {
+      router.push('/admin/nuevo-usuario');
+    } finally {
+      // Pequeño delay para mostrar el loading antes de navegar
+      setTimeout(() => setAddingUser(false), 500);
+    }
   }, [router]);
 
   const handleEditUser = useCallback((userIdentifier: string) => {
@@ -131,9 +138,21 @@ const AdminDashboard = React.memo(() => {
             </div>
             <button
               onClick={handleAddUser}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors whitespace-nowrap"
+              disabled={addingUser}
+              className={`px-6 py-2 rounded-lg transition-colors whitespace-nowrap text-white ${
+                addingUser 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-green-600 hover:bg-green-700'
+              }`}
             >
-              ➕ Agregar Usuario
+              {addingUser ? (
+                <span className="flex items-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Cargando...
+                </span>
+              ) : (
+                '➕ Agregar Usuario'
+              )}
             </button>
             <button
               onClick={loadUsers}
