@@ -449,30 +449,30 @@ export default function UserTrackingPage() {
             <InfoCard title={t.progress}>
               <ProgressBar 
                 label={t.progressPlates} 
-                percentage={tracking.porcentajes.placa} 
+                percentage={tracking.porcentajes?.placa ?? 0} 
                 color="bg-blue-500" 
               />
               <ProgressBar 
                 label={t.progressStraps} 
-                percentage={tracking.porcentajes.straps} 
+                percentage={tracking.porcentajes?.straps ?? 0} 
                 color="bg-green-500" 
               />
               <ProgressBar 
                 label={t.progressCases} 
-                percentage={tracking.porcentajes.cases} 
+                percentage={tracking.porcentajes?.cases ?? 0} 
                 color="bg-yellow-500" 
               />
               <ProgressBar 
                 label={t.progressBatteries} 
-                percentage={tracking.porcentajes.baterias} 
+                percentage={tracking.porcentajes?.baterias ?? 0} 
                 color="bg-purple-500" 
               />
               
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-800 mb-1">
-                    {Math.round((tracking.porcentajes.placa + tracking.porcentajes.straps + 
-                               tracking.porcentajes.cases + tracking.porcentajes.baterias) / 4)}%
+                    {Math.round(((tracking.porcentajes?.placa ?? 0) + (tracking.porcentajes?.straps ?? 0) + 
+                               (tracking.porcentajes?.cases ?? 0) + (tracking.porcentajes?.baterias ?? 0)) / 4)}%
                   </div>
                   <div className="text-sm text-gray-600">{t.totalProgress}</div>
                 </div>
