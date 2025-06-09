@@ -18,7 +18,7 @@ const initialUserData: Partial<UserTracking> = {
   colorCase: Colors.BLACK,
   colorTapa: Colors.BLACK,
   magneto: false,
-  totalUsd: 0,
+  totalUsd: 350, // Valor por defecto razonable
   abonadoUsd: 0,
   envioPagado: false,
   estadoPedido: OrderStatus.WAITING,
@@ -173,7 +173,7 @@ export default function AddUserPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <UserForm
-            userData={null}
+            userData={formData as UserTracking}
             saving={saving}
             saveStatus={saveStatus}
             validationErrors={validationErrors}

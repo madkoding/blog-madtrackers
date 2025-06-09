@@ -51,8 +51,8 @@ export default function UserForm({
 }: UserFormProps) {
   
   // Detectar automáticamente el modo si no se especifica
-  const isEditMode = mode === 'edit' || userData !== null;
-  const isCreateMode = mode === 'create' || userData === null;
+  const isEditMode = mode === 'edit';
+  const isCreateMode = mode === 'create';
   
   // Datos por defecto para modo create
   const defaultData: Partial<UserTracking> = {
@@ -65,7 +65,7 @@ export default function UserForm({
     colorCase: Colors.BLACK,
     colorTapa: Colors.BLACK,
     magneto: false,
-    totalUsd: 0,
+    totalUsd: 350, // Valor por defecto razonable
     abonadoUsd: 0,
     envioPagado: false,
     estadoPedido: OrderStatus.WAITING,
@@ -77,7 +77,7 @@ export default function UserForm({
     }
   };
   
-  // Usar los datos del usuario o los datos por defecto
+  // Usar los datos del usuario si están disponibles, sino los datos por defecto
   const formData = userData || defaultData;
   
   const formatDate = (dateString: string) => {
@@ -205,7 +205,16 @@ export default function UserForm({
                 <input
                   type="date"
                   value={formatDate(formData?.fechaEntrega ?? new Date().toISOString())}
-                  onChange={(e) => onFieldUpdate('fechaEntrega', e.target.value)}
+                  onChange={(e) => {
+                    // Convertir el valor de fecha del input (YYYY-MM-DD) a ISO
+                    const dateValue = e.target.value;
+                    if (dateValue) {
+                      const date = new Date(dateValue + 'T12:00:00.000Z');
+                      onFieldUpdate('fechaEntrega', date.toISOString());
+                    } else {
+                      onFieldUpdate('fechaEntrega', '');
+                    }
+                  }}
                   className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white shadow-sm"
                 />
               ) : (

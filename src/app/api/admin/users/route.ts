@@ -32,3 +32,47 @@ export async function GET(request: NextRequest) {
     });
   }
 }
+
+// POST - Crear un nuevo usuario
+export async function POST(request: NextRequest) {
+  try {
+    // Validar autenticación (API Key o JWT)
+    const auth = validateApiKeyOrJWT(request, 'admin');
+    if (!auth.valid) {
+      return jwtUnauthorizedResponse(auth.message);
+    }
+
+    // Obtener datos del cuerpo de la petición
+    const userData = await request.json();
+    
+    // Validar datos requeridos
+    if (!userData.nombreUsuario || !userData.contacto) {
+      return NextResponse.json({ 
+        error: 'nombreUsuario and contacto are required' 
+      }, { 
+        status: 400,
+        headers: corsHeaders
+      });
+    }
+
+    // Crear el tracking en Firebase
+    const newTracking = await FirebaseTrackingService.createTracking(userData);
+    
+    return NextResponse.json({ 
+      message: 'User created successfully',
+      user: newTracking 
+    }, { 
+      status: 201,
+      headers: corsHeaders 
+    });
+
+  } catch (error) {
+    console.error('POST /api/admin/users error:', error);
+    return NextResponse.json({ 
+      error: 'Internal server error' 
+    }, { 
+      status: 500,
+      headers: corsHeaders
+    });
+  }
+}
