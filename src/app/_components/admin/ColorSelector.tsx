@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { ColorSelectorProps } from '../../../types/admin';
 import { colors } from '../../constants';
 
-const ColorSelector = React.memo<ColorSelectorProps>(({ selectedColor, field, onUpdate }) => {
+const ColorSelector = React.memo<ColorSelectorProps>(({ selectedColor, field, onUpdate, id }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectedColorObj = colors.find(color => color.id === selectedColor);
 
@@ -22,6 +22,7 @@ const ColorSelector = React.memo<ColorSelectorProps>(({ selectedColor, field, on
   return (
     <div className="relative">
       <button
+        id={id}
         onClick={handleToggle}
         className="flex items-center gap-2 px-3 py-2 border rounded-lg hover:bg-gray-50 transition-colors w-full text-gray-900 bg-white"
       >

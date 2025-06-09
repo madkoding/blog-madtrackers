@@ -4,7 +4,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { CountrySelectorProps } from '../../../types/admin';
 import { availableCountries } from '../../constants';
 
-const CountrySelector = React.memo<CountrySelectorProps>(({ selectedCountry, onUpdate }) => {
+const CountrySelector = React.memo<CountrySelectorProps>(({ selectedCountry, onUpdate, id }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -46,6 +46,7 @@ const CountrySelector = React.memo<CountrySelectorProps>(({ selectedCountry, onU
   return (
     <div className="relative">
       <button
+        id={id}
         onClick={handleToggle}
         className="flex items-center gap-2 px-3 py-2 border rounded-lg hover:bg-gray-50 transition-colors w-full text-gray-900 bg-white"
       >

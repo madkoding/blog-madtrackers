@@ -17,27 +17,32 @@ export interface InlineEditProps {
   className?: string;
   error?: string;
   placeholder?: string;
+  id?: string;
 }
 
 export interface ColorSelectorProps {
   selectedColor: string;
   field: string;
   onUpdate: (field: string, value: string) => void;
+  id?: string;
 }
 
 export interface StatusSelectorProps {
   currentStatus: OrderStatus;
   onUpdate: (field: string, value: OrderStatus) => void;
+  id?: string;
 }
 
 export interface SensorSelectorProps {
   selectedSensor: string;
   onUpdate: (field: string, value: string) => void;
+  id?: string;
 }
 
 export interface CountrySelectorProps {
   selectedCountry: string;
   onUpdate: (field: string, value: string) => void;
+  id?: string;
 }
 
 export interface InfoCardProps {

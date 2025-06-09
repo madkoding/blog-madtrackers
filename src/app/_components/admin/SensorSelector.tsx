@@ -3,9 +3,10 @@
 import { SensorSelectorProps } from '../../../types/admin';
 import { sensors } from '../../constants';
 
-export default function SensorSelector({ selectedSensor, onUpdate }: Readonly<SensorSelectorProps>) {
+export default function SensorSelector({ selectedSensor, onUpdate, id }: Readonly<SensorSelectorProps>) {
   return (
     <select
+      id={id}
       value={selectedSensor}
       onChange={(e) => {
         if (e.target.value !== selectedSensor) {

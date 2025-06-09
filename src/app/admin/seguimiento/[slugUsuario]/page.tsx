@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { translations } from "../../../i18n";
-import { useLang } from "../../../lang-context";
-import { UserTracking, OrderStatus } from "../../../../interfaces/tracking";
-import UserForm from "../../../_components/UserForm";
-import { isValidHash } from "../../../../utils/hashUtils";
+import { translations } from "@/app/i18n";
+import { useLang } from "@/app/lang-context";
+import { UserTracking, OrderStatus } from "@/interfaces/tracking";
+import UserForm from "@/app/_components/UserForm";
+import { isValidHash } from "@/utils/hashUtils";
 
 export default function AdminTrackingPage() {
   const { lang } = useLang();

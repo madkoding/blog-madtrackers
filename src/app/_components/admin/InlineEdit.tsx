@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { InlineEditProps } from '../../../types/admin';
 
-const InlineEdit = React.memo<InlineEditProps>(({ value, field, type = 'text', onUpdate, className = "", error, placeholder }) => {
+const InlineEdit = React.memo<InlineEditProps>(({ value, field, type = 'text', onUpdate, className = "", error, placeholder, id }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value);
 
@@ -113,6 +113,7 @@ const InlineEdit = React.memo<InlineEditProps>(({ value, field, type = 'text', o
       <div className="w-full">
         <div className="flex items-center gap-2">
           <input
+            id={id}
             type={type}
             value={tempValue}
             placeholder={getPlaceholder()}
