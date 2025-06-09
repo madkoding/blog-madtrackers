@@ -248,10 +248,12 @@ const AdminDashboard = React.memo(() => {
                     ) : (
                       filteredUsers.map((user) => {
                         // Calcular progreso total
-                        const totalProgress = Math.round(
-                          (user.porcentajes.placa + user.porcentajes.straps + 
-                           user.porcentajes.cases + user.porcentajes.baterias) / 4
-                        );
+                        const totalProgress = Math.round((
+                          (user.porcentajes?.placa ?? 0) + 
+                          (user.porcentajes?.straps ?? 0) + 
+                          (user.porcentajes?.cases ?? 0) + 
+                          (user.porcentajes?.baterias ?? 0)
+                        ) / 4);
                         
                         return (
                           <tr key={user.id} className="hover:bg-gray-50">
