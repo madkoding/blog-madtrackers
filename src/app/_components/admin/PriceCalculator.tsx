@@ -175,11 +175,11 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Trackers ({selectedQuantity}x):</span>
-                <span className="font-medium">{formatUsd(calculations.basePrice)}</span>
+                <span className="font-medium text-gray-800">{formatUsd(calculations.basePrice)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Envío:</span>
-                <span className="font-medium">{formatUsd(calculations.shippingUsd)}</span>
+                <span className="font-medium text-gray-800">{formatUsd(calculations.shippingUsd)}</span>
               </div>
               <div className="border-t border-blue-200 pt-2 flex justify-between">
                 <span className="font-semibold text-blue-800">Total:</span>
@@ -197,13 +197,13 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Trackers ({selectedQuantity}x):</span>
-                <span className="font-medium">
+                <span className="font-medium text-gray-800">
                   {countryConfig.currencySymbol}{formatNumber(calculations.basePriceLocal)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Envío:</span>
-                <span className="font-medium">
+                <span className="font-medium text-gray-800">
                   {countryConfig.currencySymbol}{formatNumber(calculations.shippingLocal)}
                 </span>
               </div>
@@ -222,21 +222,21 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div>
               <span className="font-medium text-gray-700">Precio por tracker:</span>
-              <div className="text-gray-600">
+              <div className="text-gray-700">
                 {formatUsd(calculations.basePrice / selectedQuantity)} / 
                 {countryConfig.currencySymbol}{formatNumber(calculations.basePriceLocal / selectedQuantity)}
               </div>
             </div>
             <div>
               <span className="font-medium text-gray-700">Anticipo (25%):</span>
-              <div className="text-gray-600">
+              <div className="text-gray-700">
                 {formatUsd(calculations.totalUsd / 4)} / 
                 {countryConfig.currencySymbol}{formatNumber(calculations.totalLocal / 4)}
               </div>
             </div>
             <div>
               <span className="font-medium text-gray-700">Saldo (75%):</span>
-              <div className="text-gray-600">
+              <div className="text-gray-700">
                 {formatUsd(calculations.totalUsd * 0.75)} / 
                 {countryConfig.currencySymbol}{formatNumber(calculations.totalLocal * 0.75)}
               </div>
