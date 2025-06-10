@@ -9,6 +9,7 @@ import { exo2, faustina } from "./fonts";
 import ResourceOptimizer from "./_components/common/ResourceOptimizer";
 import CriticalCSS from "./_components/common/CriticalCSS";
 import WebVitalsMonitor from "./_components/common/WebVitalsMonitor";
+import ConditionalAnalytics from "./_components/common/ConditionalAnalytics";
 
 export const metadata: Metadata = {
   title: `madTrackers`,
@@ -73,6 +74,7 @@ export default function RootLayout({
       <body className={`leading-normal tracking-normal text-white gradient ${exo2.className}`}>
         <WebVitalsMonitor />
         <ResourceOptimizer />
+        <ConditionalAnalytics />
         <LangProvider>
           <NavBar />
           <div className="min-h-screen">{children}</div>

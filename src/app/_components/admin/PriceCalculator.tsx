@@ -88,7 +88,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
               const tracker = trackers.find(t => t.id === e.target.value);
               if (tracker) setSelectedTracker(tracker);
             }}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
           >
             {trackers.map((tracker) => (
               <option key={tracker.id} value={tracker.id}>
@@ -110,7 +110,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
               const sensor = availableSensors.find(s => s.id === e.target.value);
               if (sensor) setSelectedSensor(sensor);
             }}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
           >
             {availableSensors.map((sensor) => (
               <option key={sensor.id} value={sensor.id}>
@@ -131,7 +131,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
           <select
             value={selectedQuantity}
             onChange={(e) => setSelectedQuantity(Number(e.target.value))}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
           >
             {quantities.map((qty) => (
               <option key={qty} value={qty}>
@@ -149,7 +149,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
           <select
             value={selectedCountry}
             onChange={(e) => setSelectedCountry(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
           >
             {availableCountries.map((country) => (
               <option key={country.code} value={country.code}>
