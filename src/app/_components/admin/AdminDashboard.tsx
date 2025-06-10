@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import { useRouter } from "next/navigation";
 import { UserTracking } from "../../../interfaces/tracking";
 import { useAdminAuth } from "../../../hooks/useAdminAuth";
+import PriceCalculator from "./PriceCalculator";
 
 const AdminDashboard = React.memo(() => {
   const router = useRouter();
@@ -192,6 +193,9 @@ const AdminDashboard = React.memo(() => {
               </div>
             </div>
           </div>
+
+          {/* Cotizador de Precios */}
+          <PriceCalculator className="mb-6" />
 
           {/* Estado de carga */}
           {loading && (
