@@ -29,20 +29,24 @@ interface UserFormProps {
   readonly title?: string;
   readonly saveButtonText?: string;
   readonly cancelButtonText?: string;
+  readonly hasUnsavedChanges?: boolean;
+  readonly autoSaveCountdown?: number | null;
 }
 
 // Componentes auxiliares para reducir complejidad cognitiva
-const SaveStatusIndicator = ({ saving, saveStatus, isCreateMode }: {
+const SaveStatusIndicator = ({ saving, saveStatus, isCreateMode, hasUnsavedChanges, autoSaveCountdown }: {
   saving: boolean;
   saveStatus: 'idle' | 'success' | 'error';
   isCreateMode: boolean;
+  hasUnsavedChanges?: boolean;
+  autoSaveCountdown?: number | null;
 }) => (
   <div className="flex items-center gap-3">
     {saving && (
       <div className="flex items-center gap-2 text-blue-600">
         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
         <span className="text-sm">
-          {isCreateMode ? 'Creando...' : 'Guardando...'}
+          {isCreateMode ? 'Creando...' : 'Guardando automáticamente...'}
         </span>
       </div>
     )}
@@ -50,7 +54,7 @@ const SaveStatusIndicator = ({ saving, saveStatus, isCreateMode }: {
       <div className="flex items-center gap-2 text-green-600">
         <span>✅</span>
         <span className="text-sm">
-          {isCreateMode ? 'Usuario creado' : 'Guardado'}
+          {isCreateMode ? 'Usuario creado' : 'Guardado automáticamente'}
         </span>
       </div>
     )}
@@ -59,6 +63,18 @@ const SaveStatusIndicator = ({ saving, saveStatus, isCreateMode }: {
         <span>❌</span>
         <span className="text-sm">
           {isCreateMode ? 'Error al crear' : 'Error al guardar'}
+        </span>
+      </div>
+    )}
+    {!saving && saveStatus === 'idle' && !isCreateMode && (
+      <div className="flex items-center gap-2 text-gray-600">
+        <span>💾</span>
+        <span className="text-sm">
+          {(() => {
+            if (autoSaveCountdown) return `Guardando en ${autoSaveCountdown}s...`;
+            if (hasUnsavedChanges) return 'Cambios pendientes...';
+            return 'Auto-guardado activo';
+          })()}
         </span>
       </div>
     )}
@@ -504,7 +520,9 @@ export default function UserForm({
   mode = userData ? 'edit' : 'create',
   title,
   saveButtonText,
-  cancelButtonText
+  cancelButtonText,
+  hasUnsavedChanges = false,
+  autoSaveCountdown = null
 }: UserFormProps) {
   
   const isEditMode = mode === 'edit';
@@ -536,7 +554,9 @@ export default function UserForm({
           <SaveStatusIndicator 
             saving={saving} 
             saveStatus={saveStatus} 
-            isCreateMode={isCreateMode} 
+            isCreateMode={isCreateMode}
+            hasUnsavedChanges={hasUnsavedChanges}
+            autoSaveCountdown={autoSaveCountdown}
           />
         </div>
         <StatusSelector 

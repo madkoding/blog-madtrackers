@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { translations } from "@/app/i18n";
 import { useLang } from "@/app/lang-context";
@@ -21,6 +21,13 @@ export default function AdminTrackingPage() {
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [autoSaveCountdown, setAutoSaveCountdown] = useState<number | null>(null);
+  
+  // Ref para el timeout del debounce
+  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSavedDataRef = useRef<UserTracking | null>(null);
 
   const loadTrackingData = useCallback(async (hash: string) => {
     try {
@@ -59,6 +66,7 @@ export default function AdminTrackingPage() {
           };
         }
         setTracking(data);
+        lastSavedDataRef.current = data;
       } else {
         throw new Error(t.trackingNotFound);
       }
@@ -84,6 +92,21 @@ export default function AdminTrackingPage() {
   const handleFieldUpdate = useCallback((field: string, value: unknown) => {
     setTracking(prev => {
       if (!prev) return null;
+      
+      // Manejar campos anidados como porcentajes.placa
+      if (field.includes('.')) {
+        const [parentKey, childKey] = field.split('.');
+        const parentValue = prev[parentKey as keyof UserTracking];
+        
+        return {
+          ...prev,
+          [parentKey]: {
+            ...(typeof parentValue === 'object' && parentValue !== null ? parentValue : {}),
+            [childKey]: value
+          }
+        };
+      }
+      
       return { ...prev, [field]: value };
     });
     
@@ -93,6 +116,8 @@ export default function AdminTrackingPage() {
       delete newErrors[field];
       return newErrors;
     });
+
+    setHasUnsavedChanges(true);
   }, []);
 
   const handleSaveUser = useCallback(async () => {
@@ -123,6 +148,8 @@ export default function AdminTrackingPage() {
       }
 
       setSaveStatus('success');
+      setHasUnsavedChanges(false);
+      lastSavedDataRef.current = tracking;
       setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (error) {
       console.error('Error saving tracking data:', error);
@@ -136,6 +163,49 @@ export default function AdminTrackingPage() {
   const handleCancel = useCallback(() => {
     router.push('/admin');
   }, [router]);
+
+  // Auto-guardado con debounce y contador
+  useEffect(() => {
+    if (hasUnsavedChanges && tracking) {
+      // Limpiar timeouts anteriores
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+      }
+
+      // Iniciar contador de 2 segundos
+      setAutoSaveCountdown(2);
+      
+      // Actualizar contador cada segundo
+      countdownIntervalRef.current = setInterval(() => {
+        setAutoSaveCountdown(prev => {
+          if (prev === null || prev <= 1) {
+            return null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      // Guardar después de 2 segundos
+      autoSaveTimeoutRef.current = setTimeout(() => {
+        handleSaveUser();
+        setAutoSaveCountdown(null);
+      }, 2000);
+    } else {
+      setAutoSaveCountdown(null);
+    }
+
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+      }
+    };
+  }, [hasUnsavedChanges, handleSaveUser, tracking]);
 
   if (loading) {
     return (
@@ -191,6 +261,8 @@ export default function AdminTrackingPage() {
             onSave={handleSaveUser}
             onCancel={handleCancel}
             mode="edit"
+            hasUnsavedChanges={hasUnsavedChanges}
+            autoSaveCountdown={autoSaveCountdown}
           />
         </div>
       </div>
