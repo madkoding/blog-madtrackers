@@ -6,7 +6,7 @@ import { translations } from "@/app/i18n";
 import { useLang } from "@/app/lang-context";
 import { UserTracking, OrderStatus } from "@/interfaces/tracking";
 import UserForm from "@/app/_components/UserForm";
-import { isValidHash } from "@/utils/hashUtils";
+import { isValidHash, generateUserHashClient } from "@/utils/hashUtils";
 
 export default function AdminTrackingPage() {
   const { lang } = useLang();
@@ -121,20 +121,30 @@ export default function AdminTrackingPage() {
   }, []);
 
   const handleSaveUser = useCallback(async () => {
-    if (!tracking) return;
+    if (!tracking || !tracking.id) {
+      console.error('No tracking data or ID available for update');
+      setSaveStatus('error');
+      return;
+    }
 
     setSaving(true);
     setSaveStatus('idle');
     setValidationErrors({});
 
     try {
-      const response = await fetch('/api/tracking', {
+      // Actualizar el userHash si se cambió el nombre de usuario
+      const updatedTracking = { ...tracking };
+      if (tracking.nombreUsuario && (!tracking.userHash || tracking.userHash !== generateUserHashClient(tracking.nombreUsuario))) {
+        updatedTracking.userHash = generateUserHashClient(tracking.nombreUsuario);
+      }
+
+      const response = await fetch(`/api/tracking?id=${encodeURIComponent(tracking.id)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'madtrackers_2025_secure_api_key_dev_only'
         },
-        body: JSON.stringify(tracking)
+        body: JSON.stringify(updatedTracking)
       });
 
       if (!response.ok) {
@@ -147,9 +157,18 @@ export default function AdminTrackingPage() {
         throw new Error(errorData.error || 'Error al guardar los datos');
       }
 
+      const updatedData = await response.json();
+      setTracking(updatedData); // Actualizar con los datos del servidor
+      
+      // Si el hash del usuario cambió, actualizar la URL
+      if (updatedData.userHash && updatedData.userHash !== slugUsuario) {
+        // Reemplazar la URL actual en el historial sin recargar la página
+        window.history.replaceState(null, '', `/admin/seguimiento/${updatedData.userHash}`);
+      }
+      
       setSaveStatus('success');
       setHasUnsavedChanges(false);
-      lastSavedDataRef.current = tracking;
+      lastSavedDataRef.current = updatedData;
       setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (error) {
       console.error('Error saving tracking data:', error);
@@ -158,7 +177,7 @@ export default function AdminTrackingPage() {
     } finally {
       setSaving(false);
     }
-  }, [tracking]);
+  }, [tracking, slugUsuario]);
 
   const handleCancel = useCallback(() => {
     router.push('/admin');
