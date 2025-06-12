@@ -36,6 +36,7 @@ export { CountrySelector, type CountrySelectorProps } from './CountrySelector';
 export { PricingSummary, type PricingSummaryProps } from './PricingSummary';
 export { PricingSelector, type PricingSelectorProps } from './PricingSelector';
 export { PricingQuantitySelector, type PricingQuantitySelectorProps } from './PricingQuantitySelector';
+export { PricingColorSelector, type PricingColorSelectorProps } from './PricingColorSelector';
 export { AdminColorSelector, type AdminColorSelectorProps } from './AdminColorSelector/AdminColorSelector';
 export { TokenAuthModal, type TokenAuthModalProps } from './TokenAuthModal';
 export { PaypalButton, type PaypalButtonProps } from './PaypalButton';

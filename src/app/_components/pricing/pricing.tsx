@@ -3,10 +3,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { quantities, countries, useTranslatedConstants } from "../../constants";
+import { points } from "../../constants/coordinates.constants";
 import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
 import { Sensor, Currency, TrackerType } from "../../types";
-import { PricingSummary, PaypalButton, ColorSelector, PricingSelector, PricingQuantitySelector } from "../../../components/molecules";
+import { PricingSummary, PaypalButton, PricingColorSelector, PricingSelector, PricingQuantitySelector } from "../../../components/molecules";
 import { ImageWithPoints } from "../../../components/organisms";
 
 const Pricing = () => {
@@ -87,8 +88,8 @@ const Pricing = () => {
             JSON.stringify({ ...cfg, cachedAt: Date.now() })
           );
         }
-      } catch (error) {
-        console.error("Error obteniendo configuración de país:", error);
+      } catch {
+        // Error obteniendo configuración de país - usar valores por defecto
       }
     }
 
@@ -160,8 +161,8 @@ const Pricing = () => {
             selectedQuantity={selectedQuantity}
             setSelectedQuantity={setSelectedQuantity}
           />
-          <ImageWithPoints selectedQuantity={selectedQuantity} />
-          <ColorSelector
+          <ImageWithPoints selectedQuantity={selectedQuantity} points={points} />
+          <PricingColorSelector
             colors={colorsT}
           />
         </div>

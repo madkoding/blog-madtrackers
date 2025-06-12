@@ -3,11 +3,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { quantities, countries, useTranslatedConstants } from "../../../app/constants";
+import { points } from "../../../app/constants/coordinates.constants";
 import { translations } from "../../../app/i18n";
 import { useLang } from "../../../app/lang-context";
 import { Sensor, Currency, TrackerType } from "../../../app/types";
 import { Button } from "../../atoms";
-import { QuantitySelector, PricingSelector, ColorSelector, PricingSummary, PaypalButton } from "../../molecules";
+import { PricingSelector, PricingSummary, PaypalButton, PricingQuantitySelector, PricingColorSelector } from "../../molecules";
 import { ImageWithPoints } from "../../organisms";
 
 interface MadTrackersPricingProps {
@@ -92,8 +93,8 @@ const MadTrackersPricing: React.FC<MadTrackersPricingProps> = ({ className = "" 
             JSON.stringify({ ...cfg, cachedAt: Date.now() })
           );
         }
-      } catch (error) {
-        console.error("Error obteniendo configuración de país:", error);
+      } catch {
+        // Error obteniendo configuración de país - usar valores por defecto
       }
     }
 
@@ -168,13 +169,13 @@ const MadTrackersPricing: React.FC<MadTrackersPricingProps> = ({ className = "" 
         />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center items-center">
-          <QuantitySelector
+          <PricingQuantitySelector
             quantities={quantities}
             selectedQuantity={selectedQuantity}
-            onQuantityChange={setSelectedQuantity}
+            setSelectedQuantity={setSelectedQuantity}
           />
-          <ImageWithPoints selectedQuantity={selectedQuantity} />
-          <ColorSelector
+          <ImageWithPoints selectedQuantity={selectedQuantity} points={points} />
+          <PricingColorSelector
             colors={colorsT}
           />
         </div>

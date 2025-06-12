@@ -52,7 +52,6 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({
       
       return () => clearTimeout(timer1);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
