@@ -27,10 +27,11 @@ export async function OPTIONS() {
 // GET - Endpoint público para obtener tracking por username desde la web
 export async function GET(
   request: NextRequest,
-  { params }: { params: { username: string } }
+  { params }: { params: Promise<{ username: string }> }
 ) {
   try {
-    const username = decodeURIComponent(params.username);
+    const resolvedParams = await params;
+    const username = decodeURIComponent(resolvedParams.username);
     
     if (!username || username.trim() === '') {
       return NextResponse.json({ error: 'Username is required' }, { 

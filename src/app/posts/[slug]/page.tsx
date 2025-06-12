@@ -7,7 +7,8 @@ import { PostBody } from "@/app/_components/post/post-body";
 import WaveDivider from "@/app/_components/common/wave-divider";
 
 export default async function Post({ params }: Readonly<Params>) {
-  const post = getPostBySlug(params.slug);
+  const resolvedParams = await params;
+  const post = getPostBySlug(resolvedParams.slug);
 
   if (!post) {
     return notFound();
@@ -39,13 +40,14 @@ export default async function Post({ params }: Readonly<Params>) {
 }
 
 type Params = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export function generateMetadata({ params }: Params): Metadata {
-  const post = getPostBySlug(params.slug);
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const resolvedParams = await params;
+  const post = getPostBySlug(resolvedParams.slug);
 
   if (!post) {
     return notFound();

@@ -39,10 +39,11 @@ export async function OPTIONS() {
 // GET - Endpoint público para obtener tracking por hash seguro
 export async function GET(
   request: NextRequest,
-  { params }: { params: { hash: string } }
+  { params }: { params: Promise<{ hash: string }> }
 ) {
   try {
-    const hash = decodeURIComponent(params.hash);
+    const resolvedParams = await params;
+    const hash = decodeURIComponent(resolvedParams.hash);
     
     if (!hash || hash.trim() === '') {
       return NextResponse.json({ error: 'Hash is required' }, { 

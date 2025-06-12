@@ -14,7 +14,7 @@ export async function OPTIONS() {
 // GET - Obtener tracking por ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Validar autenticación (API Key o JWT para acceso de usuario)
@@ -23,7 +23,8 @@ export async function GET(
       return jwtUnauthorizedResponse(auth.message);
     }
 
-    const tracking = await FirebaseTrackingService.getTrackingById(params.id);
+    const resolvedParams = await params;
+    const tracking = await FirebaseTrackingService.getTrackingById(resolvedParams.id);
     
     if (!tracking) {
       return NextResponse.json({ error: 'Tracking not found' }, { 
@@ -46,7 +47,7 @@ export async function GET(
 // PUT - Actualizar tracking por ID
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Validar autenticación (API Key o JWT para acceso de usuario)
@@ -55,10 +56,11 @@ export async function PUT(
       return jwtUnauthorizedResponse(auth.message);
     }
 
+    const resolvedParams = await params;
     const updateData: Partial<UserTracking> = await request.json();
     
     // Verificar que el tracking existe
-    const existingTracking = await FirebaseTrackingService.getTrackingById(params.id);
+    const existingTracking = await FirebaseTrackingService.getTrackingById(resolvedParams.id);
     if (!existingTracking) {
       return NextResponse.json({ error: 'Tracking not found' }, { 
         status: 404,
@@ -66,8 +68,8 @@ export async function PUT(
       });
     }
 
-    await FirebaseTrackingService.updateTracking(params.id, updateData);
-    const updatedTracking = await FirebaseTrackingService.getTrackingById(params.id);
+    await FirebaseTrackingService.updateTracking(resolvedParams.id, updateData);
+    const updatedTracking = await FirebaseTrackingService.getTrackingById(resolvedParams.id);
     
     return NextResponse.json(updatedTracking, { headers: corsHeaders });
 
@@ -83,7 +85,7 @@ export async function PUT(
 // DELETE - Eliminar tracking por ID
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Validar autenticación (API Key o JWT para acceso de usuario)
@@ -92,8 +94,10 @@ export async function DELETE(
       return jwtUnauthorizedResponse(auth.message);
     }
 
+    const resolvedParams = await params;
+    
     // Verificar que el tracking existe
-    const existingTracking = await FirebaseTrackingService.getTrackingById(params.id);
+    const existingTracking = await FirebaseTrackingService.getTrackingById(resolvedParams.id);
     if (!existingTracking) {
       return NextResponse.json({ error: 'Tracking not found' }, { 
         status: 404,
@@ -101,7 +105,7 @@ export async function DELETE(
       });
     }
 
-    await FirebaseTrackingService.deleteTracking(params.id);
+    await FirebaseTrackingService.deleteTracking(resolvedParams.id);
     
     return NextResponse.json({ message: 'Tracking deleted successfully' }, { headers: corsHeaders });
 
