@@ -21,19 +21,38 @@ interface LazyRotatingFBXModelProps {
 
 const LazyRotatingFBXModel: React.FC<LazyRotatingFBXModelProps> = ({ colors }) => {
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // Cargar el modelo 3D después de un pequeño delay
+    // Verificar que estamos en el cliente
+    setIsClient(true);
+    
+    // Cargar el modelo 3D de forma más gradual
     const timer = setTimeout(() => {
-      setShouldLoad(true);
-    }, 100);
+      // Verificar si el navegador está idle antes de cargar
+      if (typeof requestIdleCallback !== 'undefined') {
+        requestIdleCallback(() => setShouldLoad(true), { timeout: 1000 });
+      } else {
+        setShouldLoad(true);
+      }
+    }, 200); // Aumentar delay inicial
 
     return () => clearTimeout(timer);
   }, []);
 
+  // No renderizar nada hasta que estemos en el cliente
+  if (!isClient) {
+    return (
+      <div className="relative aspect-square flex items-center justify-center rounded-lg bg-gray-100">
+        <LoadingSpinner />
+        <span className="sr-only">Preparando modelo 3D...</span>
+      </div>
+    );
+  }
+
   if (!shouldLoad) {
     return (
-      <div className="relative aspect-square flex items-center justify-center rounded-lg">
+      <div className="relative aspect-square flex items-center justify-center rounded-lg bg-gray-100">
         <LoadingSpinner />
         <span className="sr-only">Preparando modelo 3D...</span>
       </div>
@@ -43,7 +62,7 @@ const LazyRotatingFBXModel: React.FC<LazyRotatingFBXModelProps> = ({ colors }) =
   return (
     <Suspense 
       fallback={
-        <div className="relative aspect-square flex items-center justify-center rounded-lg">
+        <div className="relative aspect-square flex items-center justify-center rounded-lg bg-gray-100">
           <LoadingSpinner />
           <span className="sr-only">Cargando modelo 3D...</span>
         </div>

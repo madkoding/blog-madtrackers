@@ -7,8 +7,8 @@
     "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts"
   },
   "dependencies": {
-    "@react-three/drei": "^9.114.0",
-    "@react-three/fiber": "^8.17.10",
+    "@react-three/drei": "^9.105.6",
+    "@react-three/fiber": "^8.15.19",
     "@types/better-sqlite3": "^7.6.12",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/three": "^0.176.0",

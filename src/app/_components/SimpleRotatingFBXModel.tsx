@@ -1,44 +1,41 @@
 "use client";
 
-import React, { Suspense, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
-import ExhibitionLights from "./RotatingFBXModel/ExhibitionLights";
+import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./RotatingFBXModel/LoadingSpinner";
-import FBXModel from "./RotatingFBXModel/FBXModel";
+import UltraSafeThreeCanvas from "./UltraSafeThreeCanvas";
 
 interface SimpleRotatingFBXModelProps {
   colors: string[];
 }
 
 const SimpleRotatingFBXModel: React.FC<SimpleRotatingFBXModelProps> = ({ colors }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
-  return (
-    <div className="relative aspect-square">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <LoadingSpinner />
-        </div>
-      )}
-      <Canvas
-        camera={{ position: [0, 2, 5], fov: 50 }}
-        className="!w-full !h-full"
-        gl={{ alpha: true }}
-        style={{ background: "transparent" }}
-        onCreated={() => setIsLoading(false)}
-      >
-        <Suspense fallback={null}>
-          <ExhibitionLights />
-          <Environment files="/assets/env_256x128.hdr" background={false} />
-          <FBXModel 
-            modelPath="/models/SmolModel.fbx"
-            colors={colors}
-          />
-        </Suspense>
-      </Canvas>
-    </div>
-  );
+  useEffect(() => {
+    // Asegurar que solo se renderice en el cliente
+    setIsClient(true);
+    
+    // Delay adicional para asegurar que la hydration esté completa
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 1000); // Aumentar el delay para asegurar hidratación completa
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // No renderizar nada en el servidor o durante la hydratación
+  if (!isClient || !isReady) {
+    return (
+      <div className="relative aspect-square flex items-center justify-center">
+        <LoadingSpinner />
+        <span className="sr-only">Preparando modelo 3D...</span>
+      </div>
+    );
+  }
+
+  // Usar UltraSafeThreeCanvas que maneja la carga segura de Three.js
+  return <UltraSafeThreeCanvas colors={colors} />;
 };
 
 export default SimpleRotatingFBXModel;

@@ -25,9 +25,15 @@ export const LangProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    const stored =
-      typeof window !== "undefined" ? localStorage.getItem("lang") : null;
-    setLang(stored === "en" || stored === "es" ? stored : detectLang());
+    // Solo ejecutar en el cliente para evitar hydration mismatch
+    if (typeof window === "undefined") return;
+    
+    const stored = localStorage.getItem("lang");
+    
+    // Usar idioma almacenado o detectar el idioma del navegador
+    const detectedLang = stored === "en" || stored === "es" ? stored : detectLang();
+    setLang(detectedLang);
+    
     // Escuchar cambios de localStorage (por si hay más de una pestaña)
     const onStorage = (e: StorageEvent) => {
       if (e.key === "lang" && (e.newValue === "en" || e.newValue === "es")) {
@@ -51,6 +57,10 @@ export const LangProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export function useLang() {
   const context = useContext(LangContext);
-  if (!context) throw new Error("useLang must be used within a LangProvider");
+  if (!context) {
+    // En lugar de lanzar error, devolver valores por defecto
+    console.warn("useLang must be used within a LangProvider, using defaults");
+    return { lang: "en" as Lang, setLang: () => {} };
+  }
   return context;
 }

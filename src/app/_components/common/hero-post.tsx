@@ -1,6 +1,6 @@
 "use client";
 
-import LazyRotatingFBXModel from "../LazyRotatingFBXModel";
+import ClientOnly3DModel from "../ClientOnly3DModel";
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
 
@@ -20,7 +20,7 @@ export function HeroPost({ title, subtitle }: Readonly<Props>) {
           {/* Modelo 3D */}
           <div className="w-full md:w-3/5 flex justify-center items-center">
             <div className="w-full max-w-[600px] h-auto aspect-square">
-              <LazyRotatingFBXModel
+              <ClientOnly3DModel
                 colors={["#444444", "#000000", "#FFFFFF", "#FFFFFF"]}
               />
             </div>
@@ -29,7 +29,7 @@ export function HeroPost({ title, subtitle }: Readonly<Props>) {
           {/* Texto */}
           <div className="flex flex-col w-full md:w-2/5 justify-center items-center md:items-start text-center md:text-left">
             <p className="tracking-loose w-full text-center md:text-left">
-              {t.heroSlogan}
+              {t?.heroSlogan || "Made by a VRChat fan for VRChat fans"}
             </p>
 
             <div className="flex flex-col w-full">
@@ -40,14 +40,14 @@ export function HeroPost({ title, subtitle }: Readonly<Props>) {
             </div>
 
             <p className="w-full my-4 leading-normal text-xs mb-8 text-center md:text-left">
-              {t.heroExcerpt}
+              {t?.heroExcerpt || "Wireless motion capture sensors for real-time animation"}
             </p>
 
             <a
               href="#pricing"
               className="hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
             >
-              {t.heroButton}
+              {t?.heroButton || "Order a pack now!"}
             </a>
 
             <div className="h-8" />
