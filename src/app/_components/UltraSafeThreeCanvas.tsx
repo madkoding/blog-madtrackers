@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import LoadingSpinner from "./RotatingFBXModel/LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 import SimpleTestCanvas from "./SimpleTestCanvas";
 
 interface UltraSafeThreeCanvasProps {
@@ -29,7 +29,13 @@ const UltraSafeThreeCanvas: React.FC<UltraSafeThreeCanvasProps> = ({ colors }) =
   // Mostrar loading mientras esperamos
   if (!isClient || !isReady) {
     return (
-      <div className="relative aspect-square flex items-center justify-center">
+      <div 
+        className="three-canvas-container relative aspect-square flex items-center justify-center"
+        style={{ 
+          backgroundColor: "transparent",
+          background: "none"
+        }}
+      >
         <LoadingSpinner />
         <span className="sr-only">Preparando modelo 3D...</span>
       </div>

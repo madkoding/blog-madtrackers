@@ -143,7 +143,7 @@ p {
 /* Aseguramos que el contenido del texto se muestre por encima */
 .crt-screen .text-content {
   position: relative;
-  /* z-index: 3; */
+
 }
 
 /* Admin Panel Styles */
@@ -226,4 +226,29 @@ p {
 
 .admin-layout .spinner {
   @apply animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full;
+}
+
+/* Clase para componentes 3D que necesitan transparencia completa */
+.three-canvas-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.three-canvas-container * {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Forzar transparencia para aspect-square en contexto 3D */
+.three-canvas-container.aspect-square {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Asegurar que los hijos del canvas sean transparentes */
+.three-canvas-container canvas {
+  background: transparent !important;
+  background-color: transparent !important;
 }

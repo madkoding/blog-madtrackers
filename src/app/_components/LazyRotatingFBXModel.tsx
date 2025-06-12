@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Suspense, useState, useEffect } from "react";
-import LoadingSpinner from "./RotatingFBXModel/LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 
 // Importación directa sin múltiples capas de dynamic loading
 const SimpleRotatingFBXModel = dynamic(() => import("./SimpleRotatingFBXModel"), {

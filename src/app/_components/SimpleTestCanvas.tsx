@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import LoadingSpinner from "./RotatingFBXModel/LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 import {
   FBX_MODEL_METALNESS_MAIN,
   FBX_MODEL_ROUGHNESS_MAIN,
@@ -146,17 +146,25 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({ colors }) => {
           // Crear elementos básicos
           const scene = new THREE.Scene();
           const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-          const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+          const renderer = new THREE.WebGLRenderer({ 
+            alpha: true, 
+            antialias: true,
+            premultipliedAlpha: false,
+            preserveDrawingBuffer: true
+          });
 
           renderer.setSize(width, height);
           renderer.setPixelRatio(window.devicePixelRatio);
-          renderer.setClearColor(0x000000, 0);
+          renderer.setClearColor(0x000000, 0); // Transparente completo
           renderer.shadowMap.enabled = true;
           renderer.shadowMap.type = THREE.PCFSoftShadowMap;
           renderer.toneMapping = THREE.ACESFilmicToneMapping;
-          renderer.toneMappingExposure = 1.2; // Ligeramente más brillante para HDR
+          renderer.toneMappingExposure = 1.2;
           renderer.outputColorSpace = THREE.SRGBColorSpace;
           renderer.physicallyCorrectLights = true;
+
+          // Asegurar transparencia en el canvas
+          renderer.domElement.style.backgroundColor = 'transparent';
 
           containerRef.current.innerHTML = '';
           containerRef.current.appendChild(renderer.domElement);
@@ -174,8 +182,8 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({ colors }) => {
             scene.environment = texture;
             scene.backgroundIntensity = 0; // Sin background visible
             scene.environmentIntensity = 1.5; // Intensidad más alta para reflejos
-            // Completamente transparente - sin background
-            console.log("HDR environment loaded with enhanced intensity");
+            // NO establecer scene.background para mantener transparencia
+            console.log("HDR environment loaded with enhanced intensity - background transparent");
           });
 
           // Añadir luces optimizadas pero más suaves
@@ -346,7 +354,14 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({ colors }) => {
 
   if (!isClient) {
     return (
-      <div className="relative aspect-square flex items-center justify-center">
+      <div 
+        className="three-canvas-container relative aspect-square flex items-center justify-center"
+        style={{ 
+          backgroundColor: "transparent",
+          background: "transparent",
+          backgroundImage: "none"
+        }}
+      >
         <div className="text-center">
           <LoadingSpinner />
           <p className="text-sm mt-2">Detectando cliente...</p>
@@ -356,17 +371,35 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({ colors }) => {
   }
 
   return (
-    <div className="relative aspect-square flex items-center justify-center" style={{ minHeight: "300px", minWidth: "300px" }}>
+    <div 
+      className="three-canvas-container relative aspect-square flex items-center justify-center" 
+      style={{ 
+        minHeight: "300px", 
+        minWidth: "300px",
+        backgroundColor: "transparent",
+        background: "transparent",
+        backgroundImage: "none",
+        backgroundClip: "border-box",
+        backgroundOrigin: "border-box"
+      }}
+    >
       {/* Contenedor siempre visible para Three.js */}
       <div 
         ref={containerRef} 
-        className="w-full h-full absolute inset-0"
-        style={{ minWidth: "300px", minHeight: "300px", backgroundColor: "transparent" }}
+        className="three-canvas-container w-full h-full absolute inset-0"
+        style={{ 
+          minWidth: "300px", 
+          minHeight: "300px", 
+          backgroundColor: "transparent",
+          background: "transparent",
+          backgroundImage: "none",
+          overflow: "hidden"
+        }}
       ></div>
       
       {/* Overlay de debug solo cuando no está animando */}
       {step !== "animated" && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
+        <div className="absolute inset-0 flex items-center justify-center z-10" style={{ backgroundColor: "transparent" }}>
           <div className="p-4 bg-white bg-opacity-90 rounded shadow">
             <h3 className="font-bold mb-2">Debug SmolModel</h3>
             <p className="text-sm">Estado: {step}</p>

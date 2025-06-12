@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import LoadingSpinner from "./RotatingFBXModel/LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 import UltraSafeThreeCanvas from "./UltraSafeThreeCanvas";
 
 interface SimpleRotatingFBXModelProps {
@@ -27,7 +27,13 @@ const SimpleRotatingFBXModel: React.FC<SimpleRotatingFBXModelProps> = ({ colors 
   // No renderizar nada en el servidor o durante la hydratación
   if (!isClient || !isReady) {
     return (
-      <div className="relative aspect-square flex items-center justify-center">
+      <div 
+        className="three-canvas-container relative aspect-square flex items-center justify-center"
+        style={{ 
+          backgroundColor: "transparent",
+          background: "none"
+        }}
+      >
         <LoadingSpinner />
         <span className="sr-only">Preparando modelo 3D...</span>
       </div>

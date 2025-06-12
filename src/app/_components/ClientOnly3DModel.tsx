@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import LoadingSpinner from "./RotatingFBXModel/LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 import UltraSafeThreeCanvas from "./UltraSafeThreeCanvas";
 
 interface ClientOnly3DModelProps {
@@ -30,7 +30,13 @@ const ClientOnly3DModel: React.FC<ClientOnly3DModelProps> = ({ colors }) => {
   // No renderizar nada hasta que estemos en el cliente
   if (!isClient || !isReady) {
     return (
-      <div className="relative aspect-square flex items-center justify-center bg-gray-100 rounded-lg">
+      <div 
+        className="three-canvas-container relative aspect-square flex items-center justify-center rounded-lg"
+        style={{ 
+          backgroundColor: "transparent",
+          background: "none"
+        }}
+      >
         <LoadingSpinner />
         <span className="sr-only">Preparando modelo 3D...</span>
       </div>
