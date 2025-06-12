@@ -409,7 +409,7 @@ const ActionButtons = ({
     {isEditMode ? (
       <>
         <a
-          href={`/seguimiento/${formData?.nombreUsuario}`}
+          href={`/seguimiento/${formData?.userHash || formData?.nombreUsuario}`}
           className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
           target="_blank"
           rel="noopener noreferrer"
