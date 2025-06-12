@@ -2,10 +2,10 @@
 
 import dynamic from "next/dynamic";
 import { Suspense, useState, useEffect } from "react";
-import LoadingSpinner from "./LoadingSpinner";
+import { LoadingSpinner } from "../../components/atoms";
 
 // Importación directa sin múltiples capas de dynamic loading
-const SimpleRotatingFBXModel = dynamic(() => import("./SimpleRotatingFBXModel"), {
+const SimpleRotatingFBXModel = dynamic(() => import("../../components/organisms/SimpleRotatingFBXModel/SimpleRotatingFBXModel").then(mod => ({ default: mod.SimpleRotatingFBXModel })), {
   ssr: false,
   loading: () => (
     <div className="relative aspect-square flex items-center justify-center rounded-lg">

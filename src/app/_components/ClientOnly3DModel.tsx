@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import LoadingSpinner from "./LoadingSpinner";
-import UltraSafeThreeCanvas from "./UltraSafeThreeCanvas";
+import { LoadingSpinner } from "../../components/atoms";
+import { UltraSafeThreeCanvas } from "../../components/organisms/SimpleRotatingFBXModel";
 
 interface ClientOnly3DModelProps {
   colors: string[];

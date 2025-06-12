@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
-import TokenAuthModal from "../_components/auth/TokenAuthModal";
+import { TokenAuthModal } from "../../components/molecules";
 
 // Lazy loading del panel de admin completo con SSR deshabilitado
 const LazyAdminPage = dynamic(() => import("../_components/admin/LazyAdminPage"), {

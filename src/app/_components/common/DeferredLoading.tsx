@@ -11,7 +11,7 @@ export function useDeferredLoading(threshold = 0.1) {
   const ref = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    if (!ref.current) return
+    if (!ref.current) {return}
 
     const observer = new IntersectionObserver(
       ([entry]) => {

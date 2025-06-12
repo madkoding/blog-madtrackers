@@ -2,5 +2,62 @@
   "extends": [
     "next/core-web-vitals",
     "next/typescript"
+  ],
+  "rules": {
+    // SonarQube Security Rules
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-script-url": "error",
+    "no-new-func": "error",
+    
+    // SonarQube Code Quality Rules - Made less strict for development
+    "no-unused-vars": ["warn", { 
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_" 
+    }],
+    "no-console": "warn",
+    "no-debugger": "error",
+    "no-duplicate-imports": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-template": "error",
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+    "no-unused-expressions": "error",
+    "no-useless-return": "error",
+    "no-useless-concat": "error",
+    "no-empty-function": "warn",
+    "no-unreachable": "error",
+    "no-shadow": "warn",
+    
+    // Code Complexity Rules - Made less strict for development
+    "complexity": ["warn", 25],
+    "max-depth": ["warn", 6],
+    "max-params": ["warn", 8],
+    "max-lines-per-function": ["warn", 150]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.{js,ts,jsx,tsx}", "**/*.spec.{js,ts,jsx,tsx}"],
+      "rules": {
+        "no-console": "off",
+        "complexity": "off",
+        "max-lines-per-function": "off"
+      }
+    },
+    {
+      "files": ["scripts/**/*.{js,ts}", "verify_hash_consistency.js", "**/*.config.{js,ts}"],
+      "rules": {
+        "no-console": "off",
+        "complexity": "off",
+        "max-lines-per-function": "off"
+      }
+    },
+    {
+      "files": ["src/interfaces/**/*.ts", "src/types/**/*.ts"],
+      "rules": {
+        "no-unused-vars": "off"
+      }
+    }
   ]
 }

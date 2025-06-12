@@ -69,27 +69,27 @@ function calculatePerformanceScore(metrics: PerformanceMetrics): number {
   
   // FCP (First Contentful Paint)
   const fcp = metrics.firstContentfulPaint ?? 0;
-  if (fcp > 3000) score -= 20;
-  else if (fcp > 1800) score -= 10;
+  if (fcp > 3000) {score -= 20;}
+  else if (fcp > 1800) {score -= 10;}
   
   // LCP (Largest Contentful Paint)
   const lcp = metrics.largestContentfulPaint ?? 0;
-  if (lcp > 4000) score -= 25;
-  else if (lcp > 2500) score -= 12;
+  if (lcp > 4000) {score -= 25;}
+  else if (lcp > 2500) {score -= 12;}
   
   // FID (First Input Delay)
   const fid = metrics.firstInputDelay ?? 0;
-  if (fid > 300) score -= 25;
-  else if (fid > 100) score -= 12;
+  if (fid > 300) {score -= 25;}
+  else if (fid > 100) {score -= 12;}
   
   // CLS (Cumulative Layout Shift)
   const cls = metrics.cumulativeLayoutShift ?? 0;
-  if (cls > 0.25) score -= 25;
-  else if (cls > 0.1) score -= 12;
+  if (cls > 0.25) {score -= 25;}
+  else if (cls > 0.1) {score -= 12;}
   
   // Bundle load time
   const bundleTime = metrics.bundleLoadTime ?? 0;
-  if (bundleTime > 2000) score -= 5;
+  if (bundleTime > 2000) {score -= 5;}
   
   return Math.max(0, Math.round(score));
 }

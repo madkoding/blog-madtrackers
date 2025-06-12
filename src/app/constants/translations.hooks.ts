@@ -12,8 +12,8 @@ export function useTranslatedConstants() {
     () =>
       sensors.map((sensor) => ({
         ...sensor,
-        label: t[sensor.id + "_label"] || sensor.label,
-        description: t[sensor.id + "_desc"] || sensor.description,
+        label: t[`${sensor.id  }_label`] || sensor.label,
+        description: t[`${sensor.id  }_desc`] || sensor.description,
       })),
     [t]
   );
@@ -22,8 +22,8 @@ export function useTranslatedConstants() {
     () =>
       trackers.map((tracker) => ({
         ...tracker,
-        label: t[tracker.id + "_label"] || tracker.label,
-        description: t[tracker.id + "_desc"] || tracker.description,
+        label: t[`${tracker.id  }_label`] || tracker.label,
+        description: t[`${tracker.id  }_desc`] || tracker.description,
       })),
     [t]
   );
@@ -32,7 +32,7 @@ export function useTranslatedConstants() {
     () =>
       colors.map((color) => ({
         ...color,
-        label: t["color_" + color.id] || color.label,
+        label: t[`color_${  color.id}`] || color.label,
       })),
     [t]
   );

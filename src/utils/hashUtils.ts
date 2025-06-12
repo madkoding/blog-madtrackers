@@ -29,7 +29,7 @@ export function generateUserHash(username: string): string {
  * Valida si un hash es válido (formato correcto)
  */
 export function isValidHash(hash: string): boolean {
-  if (!hash) return false;
+  if (!hash) {return false;}
   // El hash debe tener exactamente 16 caracteres hexadecimales
   return /^[a-f0-9]{16}$/i.test(hash);
 }

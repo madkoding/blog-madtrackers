@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     const body = await request.text();
     
     // Verificar la notificación con PayPal
-    const verificationData = 'cmd=_notify-validate&' + body;
+    const verificationData = `cmd=_notify-validate&${  body}`;
     
     const verificationResponse = await fetch('https://ipnpb.paypal.com/cgi-bin/webscr', {
       method: 'POST',

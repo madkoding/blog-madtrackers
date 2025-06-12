@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAdminAuth } from "../../../hooks/useAdminAuth";
-import TokenAuthModal from "../../_components/auth/TokenAuthModal";
+import { TokenAuthModal } from "../../../components/molecules";
 import { UserTracking, OrderStatus, SensorTypes, Colors } from "../../../interfaces/tracking";
 import UserForm from "../../_components/UserForm";
 

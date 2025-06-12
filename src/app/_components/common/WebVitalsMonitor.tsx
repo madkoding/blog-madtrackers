@@ -14,13 +14,13 @@ export default function WebVitalsMonitor() {
   const isWebPSupported = useWebPSupport();
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {return;}
 
     const metrics: Metric[] = [];
 
     // Function to send metrics to our API
     const sendMetrics = async () => {
-      if (metrics.length === 0) return;
+      if (metrics.length === 0) {return;}
 
       try {
         await fetch('/api/performance', {

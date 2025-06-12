@@ -1,17 +1,17 @@
 "use client";
 
 import { UserTracking, OrderStatus, SensorTypes, Colors } from "../../interfaces/tracking";
-import TrackingModelViewer from "./tracking/TrackingModelViewer";
-import CurrencyDisplay from "./tracking/CurrencyDisplay";
+import { TrackingModelViewer } from "../../components/organisms";
 import {
+  CurrencyDisplay,
   ProgressSlider,
   InlineEdit,
-  ColorSelector,
-  StatusSelector,
+  AdminColorSelector,
   SensorSelector,
   CountrySelector,
-  InfoCard
-} from "./admin";
+  InfoCard,
+  StatusSelector
+} from "../../components/molecules";
 
 // Type alias para union type (requerido por SonarLint)
 type FieldValue = string | number | boolean;
@@ -71,8 +71,8 @@ const SaveStatusIndicator = ({ saving, saveStatus, isCreateMode, hasUnsavedChang
         <span>💾</span>
         <span className="text-sm">
           {(() => {
-            if (autoSaveCountdown) return `Guardando en ${autoSaveCountdown}s...`;
-            if (hasUnsavedChanges) return 'Cambios pendientes...';
+            if (autoSaveCountdown) {return `Guardando en ${autoSaveCountdown}s...`;}
+            if (hasUnsavedChanges) {return 'Cambios pendientes...';}
             return 'Auto-guardado activo';
           })()}
         </span>
@@ -138,7 +138,7 @@ const PersonalInfoSection = ({
               onChange={(e) => {
                 const dateValue = e.target.value;
                 if (dateValue) {
-                  const date = new Date(dateValue + 'T12:00:00.000Z');
+                  const date = new Date(`${dateValue  }T12:00:00.000Z`);
                   onFieldUpdate('fechaEntrega', date.toISOString());
                 } else {
                   onFieldUpdate('fechaEntrega', '');
@@ -275,7 +275,7 @@ const OrderDetailsSection = ({
 
         <div className="flex flex-col space-y-2">
           <label htmlFor="colorCase" className="text-sm font-medium text-gray-700">Color del Case:</label>
-          <ColorSelector
+          <AdminColorSelector
             id="colorCase"
             selectedColor={formData?.colorCase ?? Colors.BLACK}
             field="colorCase"
@@ -285,7 +285,7 @@ const OrderDetailsSection = ({
 
         <div className="flex flex-col space-y-2">
           <label htmlFor="colorTapa" className="text-sm font-medium text-gray-700">Color de la Tapa:</label>
-          <ColorSelector
+          <AdminColorSelector
             id="colorTapa"
             selectedColor={formData?.colorTapa ?? Colors.BLACK}
             field="colorTapa"
@@ -409,7 +409,7 @@ const ActionButtons = ({
     {isEditMode ? (
       <>
         <a
-          href={`/seguimiento/${formData?.userHash || formData?.nombreUsuario}`}
+          href={`/seguimiento/${formData?.userHash ?? formData?.nombreUsuario}`}
           className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
           target="_blank"
           rel="noopener noreferrer"
@@ -456,7 +456,7 @@ const ActionButtons = ({
 
 // Funciones auxiliares para reducir complejidad cognitiva
 const formatDate = (dateString: string, isCreateMode: boolean) => {
-  if (!dateString) return '';
+  if (!dateString) {return '';}
   
   if (isCreateMode) {
     const date = new Date(dateString);

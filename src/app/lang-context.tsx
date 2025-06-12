@@ -26,7 +26,7 @@ export const LangProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     // Solo ejecutar en el cliente para evitar hydration mismatch
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {return;}
     
     const stored = localStorage.getItem("lang");
     

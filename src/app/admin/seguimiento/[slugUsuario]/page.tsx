@@ -91,7 +91,7 @@ export default function AdminTrackingPage() {
 
   const handleFieldUpdate = useCallback((field: string, value: unknown) => {
     setTracking(prev => {
-      if (!prev) return null;
+      if (!prev) {return null;}
       
       // Manejar campos anidados como porcentajes.placa
       if (field.includes('.')) {

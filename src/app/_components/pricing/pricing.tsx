@@ -6,12 +6,8 @@ import { quantities, countries, useTranslatedConstants } from "../../constants";
 import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
 import { Sensor, Currency, TrackerType } from "../../types";
-import SensorSelector from "./sensor-selector";
-import QuantitySelector from "./quantity-selector";
-import ColorSelector from "./color-selector";
-import PricingSummary from "./pricing-summary";
-import ImageWithPoints from "./image-with-points";
-import PaypalButton from "./paypal";
+import { PricingSummary, PaypalButton, ColorSelector, PricingSelector, PricingQuantitySelector } from "../../../components/molecules";
+import { ImageWithPoints } from "../../../components/organisms";
 
 const Pricing = () => {
   const {
@@ -144,7 +140,7 @@ const Pricing = () => {
         </h1>
         <h3 className="text-sm font-semibold">{t.precisionWithTrackers}</h3>
         <br />
-        <SensorSelector
+        <PricingSelector
           sensors={sensorsT.filter(
             (sensor) =>
               sensor.available?.includes(selectedTrackerType.id) ?? false
@@ -159,7 +155,7 @@ const Pricing = () => {
             setSelectedTrackerType={setSelectedTrackerType}
           /> */}
 
-          <QuantitySelector
+          <PricingQuantitySelector
             quantities={quantities}
             selectedQuantity={selectedQuantity}
             setSelectedQuantity={setSelectedQuantity}
@@ -198,10 +194,10 @@ const Pricing = () => {
         <h3 className="p-3 text-sm font-semibold">{t.includes}</h3>
         <h3 className="p-3 text-sm font-semibold">
           {t.partialPayment}
-          {currencySymbol +
-            formatPrice((parseFloat(totalPrice) / 4).toString()) +
-            " " +
-            currency}
+          {`${currencySymbol +
+            formatPrice((parseFloat(totalPrice) / 4).toString()) 
+            } ${ 
+            currency}`}
           , {t.continuePayment}.
         </h3>
         <br />

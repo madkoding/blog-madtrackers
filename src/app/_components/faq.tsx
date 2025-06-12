@@ -14,7 +14,7 @@ const Faq = () => {
    * Envía la consulta a la API y actualiza la respuesta.
    */
   const askQuestion = async () => {
-    if (!query) return;
+    if (!query) {return;}
     setLoading(true);
     setAnswer("");
 

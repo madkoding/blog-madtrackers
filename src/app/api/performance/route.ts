@@ -26,10 +26,10 @@ const METRIC_THRESHOLDS = {
 
 function getRating(metric: string, value: number): 'good' | 'needs-improvement' | 'poor' {
   const thresholds = METRIC_THRESHOLDS[metric as keyof typeof METRIC_THRESHOLDS];
-  if (!thresholds) return 'good';
+  if (!thresholds) {return 'good';}
   
-  if (value <= thresholds.good) return 'good';
-  if (value <= thresholds.poor) return 'needs-improvement';
+  if (value <= thresholds.good) {return 'good';}
+  if (value <= thresholds.poor) {return 'needs-improvement';}
   return 'poor';
 }
 
@@ -72,8 +72,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 }
 
 function getScoreFromRating(rating: 'good' | 'needs-improvement' | 'poor'): number {
-  if (rating === 'good') return 100;
-  if (rating === 'needs-improvement') return 70;
+  if (rating === 'good') {return 100;}
+  if (rating === 'needs-improvement') {return 70;}
   return 40;
 }
 

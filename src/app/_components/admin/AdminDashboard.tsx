@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import { useRouter } from "next/navigation";
 import { UserTracking } from "../../../interfaces/tracking";
 import { useAdminAuth } from "../../../hooks/useAdminAuth";
-import PriceCalculator from "./PriceCalculator";
+import { PriceCalculator } from "../../../components/organisms";
 
 const AdminDashboard = React.memo(() => {
   const router = useRouter();
@@ -22,7 +22,7 @@ const AdminDashboard = React.memo(() => {
 
   // Memoizar función loadUsers para evitar re-creaciones innecesarias
   const loadUsers = useCallback(async () => {
-    if (loading) return; // Evitar múltiples solicitudes simultáneas
+    if (loading) {return;} // Evitar múltiples solicitudes simultáneas
 
     setLoading(true);
     setError(null);

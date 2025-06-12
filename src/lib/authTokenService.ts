@@ -186,8 +186,8 @@ export class AuthTokenService {
     let used = 0;
 
     for (const tokenData of this.tokens.values()) {
-      if (tokenData.expiresAt < now) expired++;
-      if (tokenData.used) used++;
+      if (tokenData.expiresAt < now) {expired++;}
+      if (tokenData.used) {used++;}
     }
 
     return {

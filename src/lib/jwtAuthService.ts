@@ -293,8 +293,8 @@ export class JWTAuthService {
     let used = 0;
 
     for (const tokenData of this.emailTokens.values()) {
-      if (tokenData.expiresAt < now) expired++;
-      if (tokenData.used) used++;
+      if (tokenData.expiresAt < now) {expired++;}
+      if (tokenData.used) {used++;}
     }
 
     return {

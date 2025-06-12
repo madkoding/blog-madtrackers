@@ -7,15 +7,8 @@ import { useLang } from "../../lang-context";
 import { UserTracking, OrderStatus } from "../../../interfaces/tracking";
 import { colors } from "../../constants";
 import { isHashFormat } from "../../../utils/hashUtils";
-import {
-  TrackingModelViewer,
-  CurrencyDisplay,
-  OrderStatusTracker,
-  ProgressBar,
-  InfoCard,
-  InfoRow
-} from "../../_components/tracking";
-import TokenAuthModal from "../../_components/auth/TokenAuthModal";
+import { CurrencyDisplay, InfoCard, InfoRow, ProgressBar, TokenAuthModal } from "../../../components/molecules";
+import { TrackingModelViewer, OrderStatusTracker } from "../../../components/organisms";
 import { useUserAuth } from "../../../hooks/useUserAuth";
 
 export default function UserTrackingPage() {

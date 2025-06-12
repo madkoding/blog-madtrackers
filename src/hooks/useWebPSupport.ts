@@ -31,7 +31,7 @@ export function useWebPSupport() {
   const [isSupported, setIsSupported] = useState<boolean | null>(webpSupportCache);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {return;}
 
     detectWebPSupport().then(setIsSupported);
   }, []);
@@ -40,7 +40,7 @@ export function useWebPSupport() {
 }
 
 export function getOptimizedImageSrc(originalSrc: string, webpSupported: boolean): string {
-  if (!webpSupported) return originalSrc;
+  if (!webpSupported) {return originalSrc;}
   
   // Convert common image extensions to webp
   return originalSrc.replace(/\.(jpg|jpeg|png)$/i, '.webp');
