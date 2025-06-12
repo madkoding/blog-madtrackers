@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserTracking, OrderStatus, SensorTypes, Colors } from '../interfaces/tracking';
 import { TrackingManager } from '../lib/trackingManager';
+import { logger } from '../lib/logger';
 
 interface UserFormData {
   nombreUsuario: string;
@@ -289,7 +290,7 @@ export function useUserForm({ mode, initialData, onSuccess }: UseUserFormProps) 
       return result;
       
     } catch (err) {
-      console.error(`Error ${mode === 'create' ? 'creating' : 'updating'} user:`, err);
+      logger.error(`Error ${mode === 'create' ? 'creating' : 'updating'} user:`, err);
       const errorAction = mode === 'create' ? 'crear' : 'actualizar';
       const errorMessage = err instanceof Error ? err.message : `Error al ${errorAction} el usuario`;
       setError(errorMessage);

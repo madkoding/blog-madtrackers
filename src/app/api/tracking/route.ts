@@ -4,6 +4,7 @@ import { UserTracking } from '../../../interfaces/tracking';
 import { validateApiKeyOrJWT, corsHeaders, jwtUnauthorizedResponse } from '../../../lib/apiAuth';
 import fs from 'fs';
 import path from 'path';
+import { logger } from '../../../lib/logger';
 
 // Función para cargar datos de prueba desde archivos JSON
 async function loadTestTrackingData(username: string): Promise<UserTracking | null> {
@@ -17,7 +18,7 @@ async function loadTestTrackingData(username: string): Promise<UserTracking | nu
     }
     return null;
   } catch (error) {
-    console.error('Error loading test data:', error);
+    logger.error('Error loading test data:', error);
     return null;
   }
 }
@@ -105,7 +106,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(trackings, { headers: corsHeaders });
 
   } catch (error) {
-    console.error('GET /api/tracking error:', error);
+    logger.error('GET /api/tracking error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders
@@ -143,7 +144,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('POST /api/tracking error:', error);
+    logger.error('POST /api/tracking error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders
@@ -194,7 +195,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(updatedTracking, { headers: corsHeaders });
 
   } catch (error) {
-    console.error('PUT /api/tracking error:', error);
+    logger.error('PUT /api/tracking error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders
@@ -235,7 +236,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ message: 'Tracking deleted successfully' }, { headers: corsHeaders });
 
   } catch (error) {
-    console.error('DELETE /api/tracking error:', error);
+    logger.error('DELETE /api/tracking error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders

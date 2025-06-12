@@ -14,6 +14,7 @@ import {
 import { db } from './firebase';
 import { UserTracking } from '../interfaces/tracking';
 import { generateUserHash } from '../utils/hashUtils';
+import { logger } from './logger';
 
 const COLLECTION_NAME = 'user_tracking';
 
@@ -35,7 +36,7 @@ export class FirebaseTrackingService {
       });
       return docRef.id;
     } catch (error) {
-      console.error('Error creating tracking:', error);
+      logger.error('Error creating tracking:', error);
       throw error;
     }
   }
@@ -54,7 +55,7 @@ export class FirebaseTrackingService {
         return null;
       }
     } catch (error) {
-      console.error('Error getting tracking:', error);
+      logger.error('Error getting tracking:', error);
       throw error;
     }
   }
@@ -78,7 +79,7 @@ export class FirebaseTrackingService {
         return null;
       }
     } catch (error) {
-      console.error('Error getting tracking by username:', error);
+      logger.error('Error getting tracking by username:', error);
       throw error;
     }
   }
@@ -102,7 +103,7 @@ export class FirebaseTrackingService {
         return null;
       }
     } catch (error) {
-      console.error('Error getting tracking by user hash:', error);
+      logger.error('Error getting tracking by user hash:', error);
       throw error;
     }
   }
@@ -129,7 +130,7 @@ export class FirebaseTrackingService {
       
       return tracking;
     } catch (error) {
-      console.error('Error getting tracking by hash or username:', error);
+      logger.error('Error getting tracking by hash or username:', error);
       throw error;
     }
   }
@@ -147,7 +148,7 @@ export class FirebaseTrackingService {
         ...doc.data()
       })) as UserTracking[];
     } catch (error) {
-      console.error('Error getting all trackings:', error);
+      logger.error('Error getting all trackings:', error);
       throw error;
     }
   }
@@ -163,7 +164,7 @@ export class FirebaseTrackingService {
         updatedAt: new Date().toISOString()
       });
     } catch (error) {
-      console.error('Error updating tracking:', error);
+      logger.error('Error updating tracking:', error);
       throw error;
     }
   }
@@ -176,7 +177,7 @@ export class FirebaseTrackingService {
       const docRef = doc(db, COLLECTION_NAME, id);
       await deleteDoc(docRef);
     } catch (error) {
-      console.error('Error deleting tracking:', error);
+      logger.error('Error deleting tracking:', error);
       throw error;
     }
   }
@@ -198,7 +199,7 @@ export class FirebaseTrackingService {
         ...doc.data()
       })) as UserTracking[];
     } catch (error) {
-      console.error('Error getting trackings by shipping status:', error);
+      logger.error('Error getting trackings by shipping status:', error);
       throw error;
     }
   }
@@ -223,7 +224,7 @@ export class FirebaseTrackingService {
         ...doc.data()
       })) as UserTracking[];
     } catch (error) {
-      console.error('Error getting trackings near deadline:', error);
+      logger.error('Error getting trackings near deadline:', error);
       throw error;
     }
   }

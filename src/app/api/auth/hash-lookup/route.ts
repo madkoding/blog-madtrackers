@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { corsHeaders } from '../../../../lib/apiAuth';
+import { logger } from '../../../../lib/logger';
 
 // OPTIONS - Handle CORS preflight
 export async function OPTIONS() {
@@ -57,7 +58,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error en hash lookup:', error);
+    logger.error('Error en hash lookup:', error);
     return NextResponse.json({ 
       error: 'Error interno del servidor' 
     }, { 

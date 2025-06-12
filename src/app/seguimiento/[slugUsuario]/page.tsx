@@ -10,6 +10,7 @@ import { isHashFormat } from "../../../utils/hashUtils";
 import { CurrencyDisplay, InfoCard, InfoRow, ProgressBar, TokenAuthModal } from "../../../components/molecules";
 import { TrackingModelViewer, OrderStatusTracker } from "../../../components/organisms";
 import { useUserAuth } from "../../../hooks/useUserAuth";
+import { logger } from '@/lib/logger';
 
 export default function UserTrackingPage() {
   const { lang } = useLang();
@@ -81,7 +82,7 @@ export default function UserTrackingPage() {
       setTracking(data);
       
     } catch (err) {
-      console.error('Error loading tracking data:', err);
+      logger.error('Error loading tracking data:', err);
       setError(err instanceof Error ? err.message : t.trackingError);
     } finally {
       setLoading(false);

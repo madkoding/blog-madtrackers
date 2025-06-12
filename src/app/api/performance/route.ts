@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '../../../lib/logger';
+
+type PerformanceRating = 'good' | 'needs-improvement' | 'poor';
 
 interface PerformanceMetric {
   name: string;
   value: number;
-  rating: 'good' | 'needs-improvement' | 'poor';
+  rating: PerformanceRating;
   timestamp: number;
 }
 
@@ -24,7 +27,7 @@ const METRIC_THRESHOLDS = {
   TTFB: { good: 800, poor: 1800 }, // Time to First Byte
 };
 
-function getRating(metric: string, value: number): 'good' | 'needs-improvement' | 'poor' {
+function getRating(metric: string, value: number): PerformanceRating {
   const thresholds = METRIC_THRESHOLDS[metric as keyof typeof METRIC_THRESHOLDS];
   if (!thresholds) {return 'good';}
   
@@ -45,7 +48,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }));
 
     // Log performance data (in production, you might want to store this in a database)
-    console.log('Performance Data Received:', {
+    logger.info('Performance Data Received:', {
       url: data.url,
       userAgent: data.userAgent,
       webpSupport: data.webpSupport,
@@ -63,7 +66,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       recommendations: generateRecommendations(processedMetrics, data),
     });
   } catch (error) {
-    console.error('Performance API Error:', error);
+    logger.error('Performance API Error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to process performance data' },
       { status: 500 }
@@ -71,7 +74,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-function getScoreFromRating(rating: 'good' | 'needs-improvement' | 'poor'): number {
+function getScoreFromRating(rating: PerformanceRating): number {
   if (rating === 'good') {return 100;}
   if (rating === 'needs-improvement') {return 70;}
   return 40;

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { translations } from "../i18n";
 import { useLang } from "../lang-context";
 import { isHashFormat } from "../../utils/hashUtils";
+import { logger } from '@/lib/logger';
 
 export default function SeguimientoPage() {
   const { lang } = useLang();
@@ -41,7 +42,7 @@ export default function SeguimientoPage() {
           router.push(`/seguimiento/${encodeURIComponent(input)}`);
         }
       } catch (error) {
-        console.error('Error al buscar usuario:', error);
+        logger.error('Error al buscar usuario:', error);
         // En caso de error, proceder con el input original
         router.push(`/seguimiento/${encodeURIComponent(input)}`);
       }

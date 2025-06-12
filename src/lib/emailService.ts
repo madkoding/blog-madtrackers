@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { logger } from './logger';
 
 // Configurar Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -22,7 +23,7 @@ export class EmailService {
   static async sendEmail({ to, subject, html, from }: EmailOptions): Promise<boolean> {
     try {
       if (!process.env.RESEND_API_KEY) {
-        console.error('RESEND_API_KEY no está configurado');
+        logger.error('RESEND_API_KEY no está configurado');
         return false;
       }
 
@@ -33,10 +34,10 @@ export class EmailService {
         html,
       });
 
-      console.log('Email enviado exitosamente:', result.data?.id);
+      logger.info('Email enviado exitosamente:', result.data?.id);
       return true;
     } catch (error) {
-      console.error('Error enviando email:', error);
+      logger.error('Error enviando email:', error);
       return false;
     }
   }

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
 import { TokenAuthModal } from "../../components/molecules";
+import { logger } from '@/lib/logger';
 
 // Lazy loading del panel de admin completo con SSR deshabilitado
 const LazyAdminPage = dynamic(() => import("../_components/admin/LazyAdminPage"), {
@@ -82,7 +83,7 @@ export default function AdminIndexPage() {
         <TokenAuthModal
           isOpen={showAuthModal}
           onClose={() => {
-            console.log('🔒 Modal cerrado sin autenticación');
+            logger.info('🔒 Modal cerrado sin autenticación');
           }}
           onSuccess={handleAuthSuccess}
           username="Administrador"

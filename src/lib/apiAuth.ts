@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { JWTAuthService } from './jwtAuthService';
+import { logger } from './logger';
 
 // Interfaz para el payload del JWT
 interface JWTPayload {
@@ -18,7 +19,7 @@ export function validateApiKey(request: NextRequest): boolean {
   const validApiKey = process.env.API_SECRET_KEY;
   
   if (!validApiKey) {
-    console.error('API_SECRET_KEY not configured');
+    logger.error('API_SECRET_KEY not configured');
     return false;
   }
   

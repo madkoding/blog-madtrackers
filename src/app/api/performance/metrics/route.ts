@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '../../../../lib/logger';
 
 // Interfaz para métricas de rendimiento
 interface PerformanceMetrics {
@@ -31,11 +32,11 @@ export async function POST(request: NextRequest) {
     // como Google Analytics, DataDog, New Relic, etc.
     
     if (process.env.NODE_ENV === 'development') {
-      console.log('📊 Métricas de rendimiento recibidas:');
-      console.log('🕐 Timestamp:', new Date(timestamp).toISOString());
-      console.log('🌐 URL:', url);
-      console.log('🔧 User Agent:', userAgent);
-      console.log('📈 Métricas:', JSON.stringify(metrics, null, 2));
+      logger.info('📊 Métricas de rendimiento recibidas:');
+      logger.info('🕐 Timestamp:', new Date(timestamp).toISOString());
+      logger.info('🌐 URL:', url);
+      logger.info('🔧 User Agent:', userAgent);
+      logger.info('📈 Métricas:', JSON.stringify(metrics, null, 2));
     }
 
     // Ejemplo de cómo podrías procesar las métricas
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
     
     // Aquí podrías guardar en base de datos, enviar alertas, etc.
     if (performanceScore < 70) {
-      console.warn(`⚠️ Rendimiento bajo detectado: ${performanceScore}/100`);
+      logger.warn(`⚠️ Rendimiento bajo detectado: ${performanceScore}/100`);
     }
 
     return NextResponse.json({ 
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error procesando métricas:', error);
+    logger.error('Error procesando métricas:', error);
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useWebPSupport } from '../../../hooks/useWebPSupport';
+import { logger } from '@/lib/logger';
 
 interface Metric {
   name: string;
@@ -43,14 +44,14 @@ export default function WebVitalsMonitor() {
           }),
         });
       } catch (error) {
-        console.error('Failed to send performance metrics:', error);
+        logger.error('Failed to send performance metrics:', error);
       }
     };
 
     // Web Vitals collection
     const reportMetric = (metric: Metric) => {
       metrics.push(metric);
-      console.log(`[Web Vitals] ${metric.name}:`, metric.value);
+      logger.info(`[Web Vitals] ${metric.name}:`, metric.value);
     };
 
     // Import and setup web-vitals if available
@@ -74,7 +75,7 @@ export default function WebVitalsMonitor() {
           window.removeEventListener('beforeunload', sendMetrics);
         };
       } catch (error) {
-        console.warn('Web Vitals not available:', error);
+        logger.warn('Web Vitals not available:', error);
         
         // Fallback: collect basic performance metrics
         const collectBasicMetrics = () => {

@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { logger } from '../../../lib/logger';
 
 export interface CurrencyDisplayProps {
   usdAmount: number;
@@ -36,7 +37,7 @@ const CurrencyDisplay: React.FC<CurrencyDisplayProps> = React.memo(({
       const showConversion = getCurrencyCodeFn(paisEnvio) !== 'USD';
       return { formatted, showConversion };
     } catch (error) {
-      console.error('Error in CurrencyDisplay:', error);
+      logger.error('Error in CurrencyDisplay:', error);
       return { 
         formatted: { local: `Error: $${usdAmount}`, usd: '' }, 
         showConversion: false 

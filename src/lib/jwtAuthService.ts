@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { EmailService } from './emailService';
+import { logger } from './logger';
 
 interface JWTPayload {
   username: string;
@@ -135,7 +136,7 @@ export class JWTAuthService {
         // NO devolvemos el token en la respuesta para mantener la seguridad
       };
     } catch (error) {
-      console.error('Error generando token de usuario:', error);
+      logger.error('Error generando token de usuario:', error);
       return {
         success: false,
         message: 'Error interno del servidor'
@@ -165,7 +166,7 @@ export class JWTAuthService {
       const isDev = process.env.NODE_ENV === 'development';
       
       if (isDev) {
-        console.log(`🔑 TOKEN ADMIN DESARROLLO: ${emailToken}`);
+        logger.info(`🔑 TOKEN ADMIN DESARROLLO: ${emailToken}`);
       }
 
       // Siempre enviar email al admin (tanto en desarrollo como en producción)
@@ -185,7 +186,7 @@ export class JWTAuthService {
         // NO devolvemos el token en la respuesta para mantener la seguridad
       };
     } catch (error) {
-      console.error('Error generando token de admin:', error);
+      logger.error('Error generando token de admin:', error);
       return {
         success: false,
         message: 'Error interno del servidor'

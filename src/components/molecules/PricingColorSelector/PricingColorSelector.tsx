@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useMemo } from "react";
-import { SimpleRotatingFBXModel } from "../../organisms/SimpleRotatingFBXModel";
+import { UltraSafeThreeCanvas } from "../../organisms/SimpleRotatingFBXModel";
 import { useLang } from "../../../app/lang-context";
 import { translations } from "../../../app/i18n";
 
@@ -95,7 +95,7 @@ const PricingColorSelector: React.FC<PricingColorSelectorProps> = React.memo(({
       <div className="mb-4">
         <h2 className="text-lg font-medium text-center mb-2">{t.modelPreview}</h2>
         <div className="h-[350px] flex justify-center">
-          <SimpleRotatingFBXModel colors={modelColors} />
+          <UltraSafeThreeCanvas colors={modelColors} />
         </div>
       </div>
     </div>

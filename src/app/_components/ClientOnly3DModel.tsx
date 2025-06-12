@@ -18,10 +18,10 @@ const ClientOnly3DModel: React.FC<ClientOnly3DModelProps> = ({ colors }) => {
     if (typeof window !== 'undefined') {
       setIsClient(true);
       
-      // Delay adicional para asegurar que la hydration esté completa
+      // Reducir delay para carga más rápida
       const timer = setTimeout(() => {
         setIsReady(true);
-      }, 500);
+      }, 50);
       
       return () => clearTimeout(timer);
     }
@@ -38,13 +38,12 @@ const ClientOnly3DModel: React.FC<ClientOnly3DModelProps> = ({ colors }) => {
         }}
       >
         <LoadingSpinner />
-        <span className="sr-only">Preparando modelo 3D...</span>
       </div>
     );
   }
 
-  // Renderizar el componente 3D ultra-seguro
-  return <UltraSafeThreeCanvas colors={colors} />;
+  // Renderizar el componente 3D optimizado
+  return <UltraSafeThreeCanvas colors={colors} loadingDelay={50} />;
 };
 
 export default ClientOnly3DModel;

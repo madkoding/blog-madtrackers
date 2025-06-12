@@ -6,6 +6,7 @@ import { UserTracking } from "../../../interfaces/tracking";
 import { useAdminAuth } from "../../../hooks/useAdminAuth";
 import { Button, LoadingSpinner } from "../../atoms";
 import { SearchBox, Card, CardHeader, CardTitle, CardContent } from "../../molecules";
+import { logger } from '../../../lib/logger';
 
 // Import existing components that will be migrated later
 import { PriceCalculator } from "../PriceCalculator";
@@ -59,7 +60,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ className = "" }) => {
       const data = await response.json();
       setUsers(data.users ?? []);
     } catch (error) {
-      console.error('Error loading users:', error);
+      logger.error('Error loading users:', error);
       setError(error instanceof Error ? error.message : 'Error desconocido');
     } finally {
       setLoading(false);
@@ -250,7 +251,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ className = "" }) => {
                   <div className="space-y-2">
                     {filteredUsers.map((user, index) => (
                       <div
-                        key={user.id || index}
+                        key={user.id ?? index}
                         className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex-1">
@@ -279,7 +280,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ className = "" }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleEditUser(user.nombreUsuario || user.id || '')}
+                          onClick={() => handleEditUser(user.nombreUsuario ?? user.id ?? '')}
                         >
                           📝 Editar
                         </Button>

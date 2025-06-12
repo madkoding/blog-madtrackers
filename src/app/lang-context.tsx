@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { detectLang } from "./i18n";
+import { logger } from '@/lib/logger';
 
 export type Lang = "en" | "es";
 
@@ -59,7 +60,7 @@ export function useLang() {
   const context = useContext(LangContext);
   if (!context) {
     // En lugar de lanzar error, devolver valores por defecto
-    console.warn("useLang must be used within a LangProvider, using defaults");
+    logger.warn("useLang must be used within a LangProvider, using defaults");
     return { lang: "en" as Lang, setLang: () => {} };
   }
   return context;

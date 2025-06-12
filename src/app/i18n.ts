@@ -277,8 +277,8 @@ export function detectLang(): "en" | "es" {
       if (lang.startsWith("es")) {return "es";}
       if (lang.startsWith("en")) {return "en";}
     }
-  } catch (error) {
-    console.warn("Error detecting language:", error);
+  } catch {
+    // Manejo de error omitido intencionalmente
   }
   
   return "en";

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FirebaseTrackingService } from '../../../../lib/firebaseTrackingService';
 import { UserTracking } from '../../../../interfaces/tracking';
 import { validateApiKeyOrJWT, corsHeaders, jwtUnauthorizedResponse } from '../../../../lib/apiAuth';
+import { logger } from '../../../../lib/logger';
 
 // OPTIONS - Handle CORS preflight
 export async function OPTIONS() {
@@ -36,7 +37,7 @@ export async function GET(
     return NextResponse.json(tracking, { headers: corsHeaders });
 
   } catch (error) {
-    console.error('GET /api/tracking/[id] error:', error);
+    logger.error('GET /api/tracking/[id] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders
@@ -74,7 +75,7 @@ export async function PUT(
     return NextResponse.json(updatedTracking, { headers: corsHeaders });
 
   } catch (error) {
-    console.error('PUT /api/tracking/[id] error:', error);
+    logger.error('PUT /api/tracking/[id] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders
@@ -110,7 +111,7 @@ export async function DELETE(
     return NextResponse.json({ message: 'Tracking deleted successfully' }, { headers: corsHeaders });
 
   } catch (error) {
-    console.error('DELETE /api/tracking/[id] error:', error);
+    logger.error('DELETE /api/tracking/[id] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders

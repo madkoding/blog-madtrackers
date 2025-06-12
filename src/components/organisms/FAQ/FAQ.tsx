@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button, Input } from "../../atoms";
 import { Card } from "../../molecules";
 import { cn } from "../../../utils/cn";
+import { logger } from "../../../lib/logger";
 
 // Simulamos la librería Typewriter (se puede instalar si es necesaria)
 const TypewriterEffect = ({ text }: { text: string }) => (
@@ -54,7 +55,7 @@ export const FAQ = React.memo<FAQProps>(({
         onQuestionSubmit(query, answerText);
       }
     } catch (error) {
-      console.error("Error fetching FAQ answer:", error);
+      logger.error("Error fetching FAQ answer:", error);
       setAnswer("Error al procesar la pregunta. Por favor, inténtalo de nuevo.");
     } finally {
       setLoading(false);

@@ -1,4 +1,5 @@
 import { EmailService } from './emailService';
+import { logger } from './logger';
 
 interface TokenData {
   token: string;
@@ -64,7 +65,7 @@ export class AuthTokenService {
         message: `Código enviado a ${userEmail}. Válido por ${this.TOKEN_EXPIRY_MINUTES} minutos.`
       };
     } catch (error) {
-      console.error('Error generando token de usuario:', error);
+      logger.error('Error generando token de usuario:', error);
       return {
         success: false,
         message: 'Error interno del servidor'
@@ -95,7 +96,7 @@ export class AuthTokenService {
       const isDev = process.env.NODE_ENV === 'development';
       
       if (isDev) {
-        console.log(`🔑 TOKEN ADMIN DESARROLLO: ${token}`);
+        logger.info(`🔑 TOKEN ADMIN DESARROLLO: ${token}`);
       }
 
       // Siempre enviar email al admin (tanto en desarrollo como en producción)
@@ -115,7 +116,7 @@ export class AuthTokenService {
         // NO devolvemos el token en la respuesta para mantener la seguridad
       };
     } catch (error) {
-      console.error('Error generando token de admin:', error);
+      logger.error('Error generando token de admin:', error);
       return {
         success: false,
         message: 'Error interno del servidor'

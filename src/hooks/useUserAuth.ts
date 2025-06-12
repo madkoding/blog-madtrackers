@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { logger } from '../lib/logger';
 
 interface UseUserAuthReturn {
   isAuthenticated: boolean;
@@ -47,7 +48,7 @@ export function useUserAuth(): UseUserAuthReturn {
           setShowAuthModal(true);
         }
       } catch (error) {
-        console.error('Error al verificar JWT:', error);
+        logger.error('Error al verificar JWT:', error);
         localStorage.removeItem('madtrackers_jwt');
         setJwtToken(null);
         setIsAuthenticated(false);

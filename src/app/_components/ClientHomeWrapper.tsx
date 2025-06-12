@@ -6,6 +6,7 @@ import { getAllPosts } from "@/lib/api";
 import WaveDivider from "../_components/common/wave-divider";
 import DeferredComponent from "../_components/common/DeferredLoading";
 import dynamic from "next/dynamic";
+import { logger } from '@/lib/logger';
 
 // Lazy load del componente de pricing que no es crítico para First Paint
 const Pricing = dynamic(() => import("../_components/pricing/pricing"), {
@@ -16,7 +17,7 @@ const Pricing = dynamic(() => import("../_components/pricing/pricing"), {
 });
 
 interface ClientHomeWrapperProps {
-  allPosts: ReturnType<typeof getAllPosts>;
+  readonly allPosts: ReturnType<typeof getAllPosts>;
 }
 
 class ClientErrorBoundary extends React.Component<
@@ -33,7 +34,7 @@ class ClientErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ClientErrorBoundary caught an error:', error, errorInfo);
+    logger.error('ClientErrorBoundary caught an error:', error, errorInfo);
   }
 
   render() {

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import OpenAI from 'openai';
 import { cosineSimilarity } from '@/lib/vectorUtils';
+import { logger } from '@/lib/logger';
 
 /** Configuración de OpenAI */
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
@@ -98,7 +99,7 @@ Genera una respuesta precisa, clara y detallada, limitándote únicamente a la i
 
     return NextResponse.json({ answer: refinedAnswer });
   } catch (error) {
-    console.error('Error en API de FAQ:', error);
+    logger.error('Error en API de FAQ:', error);
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }
 }

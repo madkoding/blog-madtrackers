@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { UserTracking } from "../../../interfaces/tracking";
 import { useAdminAuth } from "../../../hooks/useAdminAuth";
 import { PriceCalculator } from "../../../components/organisms";
+import { logger } from '@/lib/logger';
 
 const AdminDashboard = React.memo(() => {
   const router = useRouter();
@@ -45,7 +46,7 @@ const AdminDashboard = React.memo(() => {
       const data = await response.json();
       setUsers(data.users ?? []);
     } catch (error) {
-      console.error('Error loading users:', error);
+      logger.error('Error loading users:', error);
       setError(error instanceof Error ? error.message : 'Error desconocido');
     } finally {
       setLoading(false);

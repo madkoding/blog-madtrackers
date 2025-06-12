@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { logger } from '../lib/logger';
 
 interface UseAdminAuthReturn {
   isAuthenticated: boolean;
@@ -41,7 +42,7 @@ export function useAdminAuth(): UseAdminAuthReturn {
           setShowAuthModal(true);
         }
       } catch (error) {
-        console.error('Error al verificar JWT:', error);
+        logger.error('Error al verificar JWT:', error);
         localStorage.removeItem('madtrackers_jwt');
         setIsAuthenticated(false);
         setShowAuthModal(true);

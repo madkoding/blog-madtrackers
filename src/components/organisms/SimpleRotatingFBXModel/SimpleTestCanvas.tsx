@@ -7,8 +7,7 @@ import {
   FBX_MODEL_ROUGHNESS_MAIN,
   FBX_MODEL_ENV_INTENSITY,
   FBX_MODEL_NORMAL_SCALE,
-  FBX_MODEL_NORMAL_REPEAT,
-  FBX_MODEL_ROTATION_SPEED_Y
+  FBX_MODEL_NORMAL_REPEAT
 } from "../../../app/constants/fbx-model.constants";
 
 interface SimpleTestCanvasProps {
@@ -28,8 +27,9 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({
   colors,
   className = "",
   modelPath = "/models/SmolModel.fbx",
-  scale = 1.6,
-  rotationSpeed = { x: 0, y: FBX_MODEL_ROTATION_SPEED_Y, z: 0 },
+  scale = 2.0,
+  // Cambiar valores por defecto para rotar en los 3 ejes
+  rotationSpeed = { x: 0.01, y: 0.01, z: 0.01 },
   showLoadingText = true
 }) => {
   const [isClient, setIsClient] = useState(false);
@@ -136,7 +136,7 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({
 
         try {
           const scene = new THREE.Scene();
-          const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+          const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
           const renderer = new THREE.WebGLRenderer({ 
             alpha: true, 
             antialias: true,
@@ -159,8 +159,14 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({
           containerRef.current.innerHTML = '';
           containerRef.current.appendChild(renderer.domElement);
 
-          camera.position.set(0, 0, 2.5);
+          // Posicionar la cámara para una vista óptima del modelo
+          camera.position.set(0, 0, 3.0);
           camera.lookAt(0, 0, 0);
+          
+          // Ajustar el near y far plane para mejor renderizado
+          camera.near = 0.1;
+          camera.far = 100;
+          camera.updateProjectionMatrix();
 
           const rgbeLoader = new RGBELoader();
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -195,16 +201,22 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({
             modelPath,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (fbx: any) => {
+              // Calcular el bounding box del modelo original
               const box = new THREE.Box3().setFromObject(fbx);
               const center = box.getCenter(new THREE.Vector3());
               const size = box.getSize(new THREE.Vector3());
-              
               const maxDim = Math.max(size.x, size.y, size.z);
-              const calculatedScale = scale / maxDim;
-              
+              const targetSize = scale * 0.90;
+              const calculatedScale = targetSize / maxDim;
               fbx.scale.setScalar(calculatedScale);
-              fbx.position.copy(center).multiplyScalar(-calculatedScale);
-              
+
+              // Centrar el modelo en el origen usando un Object3D contenedor
+              const wrapper = new THREE.Object3D();
+              box.setFromObject(fbx);
+              box.getCenter(center);
+              fbx.position.sub(center); // Llevar el modelo al origen
+              wrapper.add(fbx); // El wrapper será el que rote
+
               fbx.castShadow = true;
               fbx.receiveShadow = true;
               
@@ -268,14 +280,24 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({
                 }
               });
               
-              scene.add(fbx);
-              modelRef.current = fbx;
+              scene.add(wrapper);
+              modelRef.current = wrapper;
+
+              // Ajustar la cámara dinámicamente al modelo centrado
+              const finalBox = new THREE.Box3().setFromObject(fbx);
+              const finalSize = finalBox.getSize(new THREE.Vector3());
+              const maxModelDim = Math.max(finalSize.x, finalSize.y, finalSize.z);
+              
+              // Calcular distancia óptima de la cámara
+              const optimalDistance = maxModelDim * 1.5; // 1.5x el tamaño del modelo
+              camera.position.set(0, 0, Math.max(optimalDistance, 2.0)); // Mínimo 2.0 unidades
+              camera.lookAt(0, 0, 0);
 
               const animate = () => {
                 requestAnimationFrame(animate);
-                if (rotationSpeed.x) {fbx.rotation.x += rotationSpeed.x;}
-                if (rotationSpeed.y) {fbx.rotation.y += rotationSpeed.y;}
-                if (rotationSpeed.z) {fbx.rotation.z += rotationSpeed.z;}
+                if (rotationSpeed.x) {wrapper.rotation.x += rotationSpeed.x;}
+                if (rotationSpeed.y) {wrapper.rotation.y += rotationSpeed.y;}
+                if (rotationSpeed.z) {wrapper.rotation.z += rotationSpeed.z;}
                 renderer.render(scene, camera);
               };
 

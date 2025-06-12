@@ -12,8 +12,6 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: [
-      '@react-three/drei', 
-      '@react-three/fiber',
       'three',
       'react-simple-typewriter'
     ],
@@ -34,7 +32,7 @@ const nextConfig = {
           ...config.optimization.splitChunks.cacheGroups,
           three: {
             name: 'three',
-            test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
+            test: /[\\/]node_modules[\\/](three)[\\/]/,
             chunks: 'all',
             priority: 30,
             reuseExistingChunk: true,

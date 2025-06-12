@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '../../../../lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
       const custom = params.get('custom'); // Nuestro ID de transacción personalizado
       
       // Aquí puedes guardar la información en tu base de datos
-      console.log('Pago verificado:', {
+      logger.info('Pago verificado:', {
         paymentStatus,
         transactionId,
         payerEmail,
@@ -44,11 +45,11 @@ export async function POST(request: NextRequest) {
       
       return NextResponse.json({ status: 'success' });
     } else {
-      console.error('Notificación de PayPal no verificada');
+      logger.error('Notificación de PayPal no verificada');
       return NextResponse.json({ error: 'Invalid IPN' }, { status: 400 });
     }
   } catch (error) {
-    console.error('Error procesando IPN de PayPal:', error);
+    logger.error('Error procesando IPN de PayPal:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

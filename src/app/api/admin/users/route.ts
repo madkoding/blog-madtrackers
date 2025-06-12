@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FirebaseTrackingService } from '../../../../lib/firebaseTrackingService';
 import { validateApiKeyOrJWT, corsHeaders, jwtUnauthorizedResponse } from '../../../../lib/apiAuth';
+import { logger } from '../../../../lib/logger';
 
 // OPTIONS - Handle CORS preflight
 export async function OPTIONS() {
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ users: trackings }, { headers: corsHeaders });
 
   } catch (error) {
-    console.error('GET /api/admin/users error:', error);
+    logger.error('GET /api/admin/users error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('POST /api/admin/users error:', error);
+    logger.error('POST /api/admin/users error:', error);
     return NextResponse.json({ 
       error: 'Internal server error' 
     }, { 

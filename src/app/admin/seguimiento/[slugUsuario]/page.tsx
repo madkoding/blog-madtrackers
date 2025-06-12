@@ -7,6 +7,7 @@ import { useLang } from "@/app/lang-context";
 import { UserTracking, OrderStatus } from "@/interfaces/tracking";
 import UserForm from "@/app/_components/UserForm";
 import { isValidHash, generateUserHashClient } from "@/utils/hashUtils";
+import { logger } from '@/lib/logger';
 
 export default function AdminTrackingPage() {
   const { lang } = useLang();
@@ -71,7 +72,7 @@ export default function AdminTrackingPage() {
         throw new Error(t.trackingNotFound);
       }
     } catch (err) {
-      console.error('Error loading tracking data:', err);
+      logger.error('Error loading tracking data:', err);
       setError(err instanceof Error ? err.message : t.trackingError);
     } finally {
       setLoading(false);
@@ -122,7 +123,7 @@ export default function AdminTrackingPage() {
 
   const handleSaveUser = useCallback(async () => {
     if (!tracking || !tracking.id) {
-      console.error('No tracking data or ID available for update');
+      logger.error('No tracking data or ID available for update');
       setSaveStatus('error');
       return;
     }
@@ -171,7 +172,7 @@ export default function AdminTrackingPage() {
       lastSavedDataRef.current = updatedData;
       setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (error) {
-      console.error('Error saving tracking data:', error);
+      logger.error('Error saving tracking data:', error);
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
     } finally {

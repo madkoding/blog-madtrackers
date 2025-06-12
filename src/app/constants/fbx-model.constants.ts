@@ -1,10 +1,10 @@
 // Constantes para FBXModel y materiales 3D
 import { Vector2 } from 'three';
 
-export const FBX_MODEL_SCALE = 0.7;
-export const FBX_MODEL_ROTATION_SPEED_X = 0.005;
-export const FBX_MODEL_ROTATION_SPEED_Y = 0.005;
-export const FBX_MODEL_ROTATION_SPEED_Z = 0.005;
+export const FBX_MODEL_SCALE = 2.0;
+export const FBX_MODEL_ROTATION_SPEED_X = 0;
+export const FBX_MODEL_ROTATION_SPEED_Y = 0.003;
+export const FBX_MODEL_ROTATION_SPEED_Z = 0;
 
 export const FBX_MODEL_METALNESS_MAIN = 0.2;
 export const FBX_MODEL_ROUGHNESS_MAIN = 0.3;

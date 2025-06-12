@@ -3,6 +3,7 @@ import { JWTAuthService } from '../../../../lib/jwtAuthService';
 import { FirebaseTrackingService } from '../../../../lib/firebaseTrackingService';
 import { corsHeaders } from '../../../../lib/apiAuth';
 import { isHashFormat } from '../../../../utils/hashUtils';
+import { logger } from '../../../../lib/logger';
 
 // OPTIONS - Handle CORS preflight
 export async function OPTIONS() {
@@ -120,7 +121,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error en /api/auth/token:', error);
+    logger.error('Error en /api/auth/token:', error);
     return NextResponse.json({ 
       error: 'Error interno del servidor' 
     }, { 
@@ -168,7 +169,7 @@ export async function PUT(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error verificando token:', error);
+    logger.error('Error verificando token:', error);
     return NextResponse.json({ 
       error: 'Error interno del servidor' 
     }, { 

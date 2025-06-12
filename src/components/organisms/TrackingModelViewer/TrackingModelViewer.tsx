@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { colors as colorOptions } from "../../../app/constants";
-import { SimpleRotatingFBXModel } from "../SimpleRotatingFBXModel";
+import { UltraSafeThreeCanvas } from "../SimpleRotatingFBXModel";
 import { useLang } from "../../../app/lang-context";
 import { translations } from "../../../app/i18n";
 
@@ -62,10 +62,9 @@ const TrackingModelViewer: React.FC<TrackingModelViewerProps> = ({
       )}
       
       {/* Modelo 3D */}
-      <SimpleRotatingFBXModel 
+      <UltraSafeThreeCanvas 
         colors={modelColors} 
         modelPath={modelPath}
-        showLoadingText={false}
       />
     </div>
   );

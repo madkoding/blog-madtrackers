@@ -4,6 +4,7 @@ import { corsHeaders } from '../../../../../../lib/apiAuth';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { isHashFormat } from '../../../../../../utils/hashUtils';
+import { logger } from '@/lib/logger';
 
 // Helper function to try loading from JSON file fallback
 async function tryLoadFromJSON(identifier: string) {
@@ -79,7 +80,7 @@ export async function GET(
     return NextResponse.json(tracking, { headers: corsHeaders });
 
   } catch (error) {
-    console.error('GET /api/public/tracking/hash/[hash] error:', error);
+    logger.error('GET /api/public/tracking/hash/[hash] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders

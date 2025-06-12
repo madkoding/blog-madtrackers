@@ -8,7 +8,6 @@ interface UltraSafeThreeCanvasProps {
   colors: string[];
   className?: string;
   modelPath?: string;
-  scale?: number;
   rotationSpeed?: {
     x?: number;
     y?: number;
@@ -21,9 +20,9 @@ const UltraSafeThreeCanvas: React.FC<UltraSafeThreeCanvasProps> = ({
   colors,
   className = "",
   modelPath = "/models/SmolModel.fbx",
-  scale = 0.7,
+  // Cambiar valores por defecto para rotar en los 3 ejes
   rotationSpeed = { x: 0.005, y: 0.005, z: 0.005 },
-  loadingDelay = 500
+  loadingDelay = 50 // Reducir delay para carga más rápida
 }) => {
   const [isClient, setIsClient] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -33,7 +32,7 @@ const UltraSafeThreeCanvas: React.FC<UltraSafeThreeCanvasProps> = ({
     if (typeof window !== 'undefined') {
       setIsClient(true);
       
-      // Breve delay para asegurar hydratación
+      // Delay mínimo para asegurar hydratación
       const timer = setTimeout(() => {
         setIsReady(true);
       }, loadingDelay);
@@ -53,17 +52,16 @@ const UltraSafeThreeCanvas: React.FC<UltraSafeThreeCanvasProps> = ({
         }}
       >
         <LoadingSpinner />
-        <span className="sr-only">Preparando modelo 3D...</span>
+        <span className="sr-only">Preparando modelo 3D optimizado...</span>
       </div>
     );
   }
 
-  // Usar directamente SimpleTestCanvas ya que funciona bien
+  // Usar el canvas simple
   return (
     <SimpleTestCanvas 
       colors={colors}
       modelPath={modelPath}
-      scale={scale}
       rotationSpeed={rotationSpeed}
       className={className}
     />

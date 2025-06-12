@@ -6,6 +6,7 @@ import { useAdminAuth } from "../../../hooks/useAdminAuth";
 import { TokenAuthModal } from "../../../components/molecules";
 import { UserTracking, OrderStatus, SensorTypes, Colors } from "../../../interfaces/tracking";
 import UserForm from "../../_components/UserForm";
+import { logger } from '@/lib/logger';
 
 // Datos iniciales para nuevo usuario
 const initialUserData: Partial<UserTracking> = {
@@ -86,7 +87,7 @@ export default function AddUserPage() {
       setSaving(true);
       setSaveStatus('idle');
 
-      console.log("Debug: Creando nuevo usuario:", formData);
+      logger.info("Debug: Creando nuevo usuario:", formData);
 
       const response = await fetch('/api/admin/users', {
         method: 'POST',
@@ -102,14 +103,14 @@ export default function AddUserPage() {
       }
 
       const responseData = await response.json();
-      console.log("Debug: Usuario creado exitosamente:", responseData);
+      logger.info("Debug: Usuario creado exitosamente:", responseData);
 
       setSaveStatus('success');
       setTimeout(() => {
         router.push('/admin');
       }, 1500);
     } catch (err) {
-      console.error('Error creating user:', err);
+      logger.error('Error creating user:', err);
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
     } finally {

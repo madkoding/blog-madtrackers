@@ -3,6 +3,7 @@ import { FirebaseTrackingService } from '../../../../../lib/firebaseTrackingServ
 import { corsHeaders } from '../../../../../lib/apiAuth';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { logger } from '../../../../../lib/logger';
 
 // Helper function to try loading from JSON file fallback
 async function tryLoadFromJSON(username: string) {
@@ -58,7 +59,7 @@ export async function GET(
     return NextResponse.json(tracking, { headers: corsHeaders });
 
   } catch (error) {
-    console.error('GET /api/public/tracking/[username] error:', error);
+    logger.error('GET /api/public/tracking/[username] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { 
       status: 500,
       headers: corsHeaders
