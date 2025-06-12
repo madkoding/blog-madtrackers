@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",
-    "@react-three/fiber": "^8.18.0",
+    "@react-three/fiber": "^9.1.2",
     "@types/better-sqlite3": "^7.6.12",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/three": "^0.176.0",
