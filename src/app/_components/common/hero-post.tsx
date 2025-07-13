@@ -19,7 +19,7 @@ export function HeroPost({ title, subtitle }: Readonly<Props>) {
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
           {/* Modelo 3D */}
           <div className="w-full md:w-3/5 flex justify-center items-center">
-            <div className="w-full max-w-[600px] h-auto aspect-square">
+            <div className="w-full max-w-[500px] max-h-[500px] h-auto aspect-square">
               <ClientOnly3DModel
                 colors={["#444444", "#000000", "#FFFFFF", "#FFFFFF"]}
               />
