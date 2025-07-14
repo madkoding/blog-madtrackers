@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { quantities, countries, useTranslatedConstants } from "../../constants";
 import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
 import { Sensor, Currency, TrackerType } from "../../types";
+import { usePricing } from "../../../hooks/usePricing";
 import SensorSelector from "./sensor-selector";
 import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
@@ -28,23 +29,26 @@ const Pricing = () => {
     quantities[0]
   );
 
+  // Estado para el país seleccionado para cálculos de precio
+  const [countryCode, setCountryCode] = useState<string>("US");
+
   /** Moneda local (ej: "USD", "CLP", etc.) */
   const [currency, setCurrency] = useState<Currency>(countries.US.currency);
-  /** Tasa USD→moneda local */
-  const [exchangeRate, setExchangeRate] = useState<number>(
-    countries.US.exchangeRate
-  );
   /** Símbolo de la moneda local */
   const [currencySymbol, setCurrencySymbol] = useState<string>(
     countries.US.currencySymbol
   );
-  /** Costo de envío base en USD */
-  const [shippingCostUsd, setShippingCostUsd] = useState<number>(
-    countries.US.shippingCostUsd
-  );
 
   const { lang } = useLang();
   const t = translations[lang];
+
+  // Hook para obtener precios desde el backend
+  const { pricing } = usePricing({
+    sensorId: selectedSensor.id,
+    trackerId: selectedTrackerType.id,
+    quantity: selectedQuantity,
+    countryCode
+  });
 
   const formatPrice = (price: string) => {
     return new Intl.NumberFormat("es-ES").format(Number(price));
@@ -59,36 +63,38 @@ const Pricing = () => {
         if (stored) {
           const data = JSON.parse(stored) as {
             currency: Currency;
-            exchangeRate: number;
             currencySymbol: string;
-            shippingCostUsd: number;
             cachedAt: number;
+            countryCode: string;
           };
 
           // Si el cache no ha expirado, úsalo
           if (Date.now() - data.cachedAt < TTL) {
             setCurrency(data.currency);
-            setExchangeRate(data.exchangeRate);
             setCurrencySymbol(data.currencySymbol);
-            setShippingCostUsd(data.shippingCostUsd);
+            setCountryCode(data.countryCode);
             return;
           }
         }
 
         // Cache expirado o no existe, volver a fetch
         const res = await fetch("https://ipapi.co/json/");
-        const { country_code: countryCode } = await res.json();
-        const cfg = countries[countryCode];
+        const { country_code: fetchedCountryCode } = await res.json();
+        const cfg = countries[fetchedCountryCode];
         if (cfg) {
           setCurrency(cfg.currency);
-          setExchangeRate(cfg.exchangeRate);
           setCurrencySymbol(cfg.currencySymbol);
-          setShippingCostUsd(cfg.shippingCostUsd);
+          setCountryCode(fetchedCountryCode);
 
           // Guardar con timestamp
           localStorage.setItem(
             "currency",
-            JSON.stringify({ ...cfg, cachedAt: Date.now() })
+            JSON.stringify({ 
+              currency: cfg.currency, 
+              currencySymbol: cfg.currencySymbol,
+              countryCode: fetchedCountryCode,
+              cachedAt: Date.now() 
+            })
           );
         }
       } catch (error) {
@@ -100,7 +106,7 @@ const Pricing = () => {
   }, []);
 
   useEffect(() => {
-    // Si seleeciona el tracker pero el sensor no está disponible, selecciona el primero
+    // Si selecciona el tracker pero el sensor no está disponible, selecciona el primero
     if (
       !selectedSensor.available?.includes(selectedTrackerType.id) &&
       selectedTrackerType.id !== "none"
@@ -114,27 +120,10 @@ const Pricing = () => {
     setSelectedTrackerType(trackersT[0]);
   }, [sensorsT, trackersT, colorsT]);
 
-  // Precio total en USD (sin conversión de moneda)
-  const totalPriceUsd = useMemo(
-    () =>
-      selectedTrackerType.price *
-      selectedSensor.price *
-      selectedQuantity,
-    [selectedTrackerType, selectedSensor, selectedQuantity]
-  );
-
-  // Precio total (USD→local)
-  const totalPrice = useMemo(
-    () =>
-      (totalPriceUsd * exchangeRate).toFixed(0),
-    [totalPriceUsd, exchangeRate]
-  );
-
-  // Costo de envío (USD→local)
-  const shippingPrice = useMemo(
-    () => (shippingCostUsd * exchangeRate).toFixed(0),
-    [shippingCostUsd, exchangeRate]
-  );
+  // Precios desde el backend a través del hook
+  const totalPrice = pricing?.prices.totalLocal.toString() || "0";
+  const shippingPrice = pricing?.prices.shippingLocal.toString() || "0";
+  const exchangeRate = pricing?.currency.exchangeRate || 1;
 
   return (
     <section className="py-16 px-4 bg-white text-black" id="pricing">
@@ -239,7 +228,7 @@ const Pricing = () => {
           </div>
         ) : (
           <PaypalButton 
-            amount={totalPriceUsd / 4} // Pago del 25% como anticipo
+            amount={(pricing?.prices.totalUsd || 0) / 4} // Pago del 25% como anticipo
             description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity} (Anticipo 25%)`}
           />
         )}

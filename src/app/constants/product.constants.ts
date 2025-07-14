@@ -1,12 +1,14 @@
 import { Color, Sensor } from "../types";
 
+// NOTA: Los precios se han movido al backend por seguridad
+// Solo se exponen datos públicos necesarios para la UI
 export const sensors: Sensor[] = [
   {
     id: "sensor1",
     label: "LSM6DSR",
     description: "Buena calidad de seguimiento",
     drifting: "20 min",
-    price: 1,
+    // price removido - ahora se maneja en el backend
     available: ['rf','wifi']
   },
   {
@@ -14,7 +16,7 @@ export const sensors: Sensor[] = [
     label: "LSM6DSR + MMC5983MA",
     description: "Buena calidad de seguimiento con magnetómetro",
     drifting: "30 min",
-    price: 1.25,
+    // price removido - ahora se maneja en el backend
     available: ['rf']
   },
   {
@@ -22,7 +24,7 @@ export const sensors: Sensor[] = [
     label: "ICM45686",
     description: "Excelente calidad de seguimiento",
     drifting: "45 min",
-    price: 1.375,
+    // price removido - ahora se maneja en el backend
     available: ['rf','wifi']
   },
   {
@@ -30,7 +32,7 @@ export const sensors: Sensor[] = [
     label: "ICM45686 + MMC5983MA",
     description: "Excelente calidad de seguimiento con magnetómetro",
     drifting: "60 min",
-    price: 1.5,
+    // price removido - ahora se maneja en el backend
     available: ['rf']
   },
 ];
@@ -41,14 +43,14 @@ export const trackers = [
     label: "RF",
     description: "50 horas de batería. Utiliza receptor USB",
     size: "3.8 x 3.8 x 1.0 cm",
-    price: 40,
+    // price removido - ahora se maneja en el backend
   },
   // {
   //   id: "wifi",
   //   label: "WiFi",
   //   description: "10 horas de batería. Conecta a router WiFi",
   //   size: "4.5 x 4.5 x 1.5 cm",
-  //   price: 30,
+  //   // price removido - ahora se maneja en el backend
   // }
 ];
 

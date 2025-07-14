@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { Sensor, TrackerType } from "../../types";
-import { sensors, trackers, quantities } from "../../constants/product.constants";
+import { quantities } from "../../constants/product.constants";
 import { availableCountries, countries } from "../../constants/countries.constants";
 
 interface PriceCalculatorProps {
@@ -10,11 +10,38 @@ interface PriceCalculatorProps {
 }
 
 const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => {
+  // Estados para los datos con precios (cargados desde la API interna)
+  const [sensors, setSensors] = useState<(Sensor & { price: number })[]>([]);
+  const [trackers, setTrackers] = useState<(TrackerType & { price: number })[]>([]);
+  const [loading, setLoading] = useState(true);
+
   // Estados para las selecciones
-  const [selectedTracker, setSelectedTracker] = useState<TrackerType>(trackers[0]);
-  const [selectedSensor, setSelectedSensor] = useState<Sensor>(sensors[0]);
+  const [selectedTracker, setSelectedTracker] = useState<TrackerType & { price: number }>();
+  const [selectedSensor, setSelectedSensor] = useState<Sensor & { price: number }>();
   const [selectedQuantity, setSelectedQuantity] = useState<number>(quantities[0]);
   const [selectedCountry, setSelectedCountry] = useState<string>("CL");
+
+  // Cargar datos con precios para el admin
+  useEffect(() => {
+    const loadProductsWithPrices = async () => {
+      try {
+        const response = await fetch('/api/products?includePrices=true');
+        const data = await response.json();
+        
+        setSensors(data.sensors);
+        setTrackers(data.trackers);
+        
+        if (data.sensors.length > 0) setSelectedSensor(data.sensors[0]);
+        if (data.trackers.length > 0) setSelectedTracker(data.trackers[0]);
+      } catch (error) {
+        console.error('Error cargando productos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProductsWithPrices();
+  }, []);
 
   // Obtener configuración del país seleccionado
   const countryConfig = useMemo(() => 
@@ -22,8 +49,19 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
     [selectedCountry]
   );
 
-  // Calcular precios
+  // Calcular precios (solo si hay datos cargados)
   const calculations = useMemo(() => {
+    if (!selectedTracker || !selectedSensor) {
+      return {
+        basePrice: 0,
+        shippingUsd: 0,
+        totalUsd: 0,
+        basePriceLocal: 0,
+        shippingLocal: 0,
+        totalLocal: 0,
+      };
+    }
+
     // Precio base en USD
     const basePrice = selectedTracker.price * selectedSensor.price * selectedQuantity;
     const shippingUsd = countryConfig.shippingCostUsd;
@@ -59,15 +97,25 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
   // Filtrar sensores disponibles para el tracker seleccionado
   const availableSensors = useMemo(() =>
     sensors.filter(sensor => 
-      sensor.available?.includes(selectedTracker.id) ?? false
-    ), [selectedTracker.id]);
+      sensor.available?.includes(selectedTracker?.id || '') ?? false
+    ), [sensors, selectedTracker?.id]);
 
   // Actualizar sensor si no está disponible para el tracker seleccionado
-  React.useEffect(() => {
-    if (!selectedSensor.available?.includes(selectedTracker.id)) {
+  useEffect(() => {
+    if (selectedSensor && selectedTracker && !selectedSensor.available?.includes(selectedTracker.id)) {
       setSelectedSensor(availableSensors[0] || sensors[0]);
     }
-  }, [selectedTracker.id, selectedSensor.available, availableSensors]);
+  }, [selectedTracker?.id, selectedSensor?.available, availableSensors, selectedSensor, selectedTracker, sensors]);
+
+  if (loading) {
+    return (
+      <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
+        <div className="flex items-center justify-center h-32">
+          <div className="text-gray-500">Cargando cotizador...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
@@ -83,7 +131,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
             Tipo de Tracker
           </label>
           <select
-            value={selectedTracker.id}
+            value={selectedTracker?.id || ''}
             onChange={(e) => {
               const tracker = trackers.find(t => t.id === e.target.value);
               if (tracker) setSelectedTracker(tracker);
@@ -96,7 +144,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
               </option>
             ))}
           </select>
-          <p className="text-xs text-gray-500 mt-1">{selectedTracker.description}</p>
+          <p className="text-xs text-gray-500 mt-1">{selectedTracker?.description || ''}</p>
         </div>
 
         {/* Selector de Sensor */}
@@ -105,7 +153,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
             Sensor
           </label>
           <select
-            value={selectedSensor.id}
+            value={selectedSensor?.id || ''}
             onChange={(e) => {
               const sensor = availableSensors.find(s => s.id === e.target.value);
               if (sensor) setSelectedSensor(sensor);
@@ -119,7 +167,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
             ))}
           </select>
           <p className="text-xs text-gray-500 mt-1">
-            {selectedSensor.description} • Drift: {selectedSensor.drifting}
+            {selectedSensor?.description || ''} • Drift: {selectedSensor?.drifting || ''}
           </p>
         </div>
 

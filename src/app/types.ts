@@ -5,7 +5,7 @@ export interface Sensor {
   label: string;
   description: string;
   drifting: string;
-  price: number;
+  price?: number; // Opcional - solo se incluye en el backend
   available: string[];
 }
 export interface TrackerType {
@@ -13,7 +13,7 @@ export interface TrackerType {
   label: string;
   description: string;
   size: string;
-  price: number;
+  price?: number; // Opcional - solo se incluye en el backend
 }
 export interface Color {
   id: string;
