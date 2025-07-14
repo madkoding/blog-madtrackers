@@ -15,6 +15,14 @@ const Pricing = dynamic(() => import("../_components/pricing/pricing"), {
   ),
 });
 
+// Lazy load del componente de mantenimiento que no es crítico para First Paint
+const MaintenanceComponent = dynamic(() => import("../_components/maintenance/maintenance"), {
+  ssr: false,
+  loading: () => (
+    <div className="loading-skeleton h-96 mx-auto max-w-6xl rounded-lg bg-gray-200 animate-pulse"></div>
+  ),
+});
+
 interface ClientHomeWrapperProps {
   allPosts: ReturnType<typeof getAllPosts>;
 }
@@ -62,8 +70,11 @@ class ClientErrorBoundary extends React.Component<
   }
 }
 
-export default function ClientHomeWrapper({ allPosts }: ClientHomeWrapperProps) {
+export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapperProps>) {
   const heroPost = allPosts[0];
+  
+  // Determinar qué componente mostrar basado en la variable de entorno
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
 
   return (
     <ClientErrorBoundary>
@@ -79,7 +90,7 @@ export default function ClientHomeWrapper({ allPosts }: ClientHomeWrapperProps) 
           }
           threshold={0.1}
         >
-          <Pricing />
+          {isMaintenanceMode ? <MaintenanceComponent /> : <Pricing />}
         </DeferredComponent>
       </main>
     </ClientErrorBoundary>
