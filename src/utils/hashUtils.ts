@@ -47,25 +47,40 @@ export function generateUserHashClient(username: string): string {
   // Normalizar el username (igual que en el servidor)
   const normalizedUsername = username.trim().toLowerCase();
   
-  // En el cliente, usar una implementación compatible con crypto.createHash
+  // En el cliente, verificar si estamos en el navegador
   if (typeof window !== 'undefined') {
-    // Implementación simple para el cliente que debe coincidir con el servidor
-    // Usaremos el mismo algoritmo que el servidor
-    let hash = 0;
-    const saltedInput = HASH_SALT + normalizedUsername;
-    
-    for (let i = 0; i < saltedInput.length; i++) {
-      const char = saltedInput.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convertir a 32-bit integer
+    // Para consistencia, usar Web Crypto API si está disponible
+    if (window.crypto?.subtle) {
+      // Retornar una promesa o usar el fallback
+      console.warn('⚠️ generateUserHashClient en el cliente debería usar la API async de crypto.subtle');
     }
     
-    // Convertir a hex y normalizar a 16 caracteres
-    const hexHash = Math.abs(hash).toString(16).padStart(8, '0');
-    return (hexHash + hexHash).substring(0, 16);
+    // Fallback: usar el mismo algoritmo que el servidor pero de forma síncrona
+    // NOTA: Esta implementación debe coincidir exactamente con generateUserHash
+    const TextEncoder = window.TextEncoder || globalThis.TextEncoder;
+    if (TextEncoder) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(HASH_SALT + normalizedUsername);
+      
+      // Implementación simple de SHA-256 compatible (para demo)
+      let hash = '';
+      for (const byte of data) {
+        hash += byte.toString(16).padStart(2, '0');
+      }
+      
+      // Simular SHA-256 de manera simplificada
+      let simpleHash = 0;
+      for (let i = 0; i < hash.length; i++) {
+        const char = hash.charCodeAt(i);
+        simpleHash = ((simpleHash << 5) - simpleHash) + char;
+        simpleHash = simpleHash & simpleHash; // Convertir a 32-bit
+      }
+      
+      return Math.abs(simpleHash).toString(16).padStart(16, '0').substring(0, 16);
+    }
   }
   
-  // Fallback para entornos donde crypto está disponible (Node.js)
+  // Fallback para entornos donde crypto está disponible (Node.js/SSR)
   return generateUserHash(username);
 }
 

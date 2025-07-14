@@ -132,10 +132,19 @@ export default function AdminTrackingPage() {
     setValidationErrors({});
 
     try {
-      // Actualizar el userHash si se cambió el nombre de usuario
+      // Preservar el userHash existente - NO regenerar a menos que sea absolutamente necesario
       const updatedTracking = { ...tracking };
-      if (tracking.nombreUsuario && (!tracking.userHash || tracking.userHash !== generateUserHashClient(tracking.nombreUsuario))) {
-        updatedTracking.userHash = generateUserHashClient(tracking.nombreUsuario);
+      
+      // Solo verificar si el usuario tiene un hash válido
+      if (!tracking.userHash || !isValidHash(tracking.userHash)) {
+        // Solo en este caso extremo, generar un nuevo hash
+        if (tracking.nombreUsuario) {
+          updatedTracking.userHash = generateUserHashClient(tracking.nombreUsuario);
+          console.warn(`⚠️ Hash regenerado porque faltaba hash válido para: "${tracking.nombreUsuario}"`);
+        }
+      } else {
+        // Preservar el hash existente - NUNCA regenerar si ya existe
+        console.log(`✅ Hash preservado: ${tracking.userHash} para usuario: "${tracking.nombreUsuario}"`);
       }
 
       const response = await fetch(`/api/tracking?id=${encodeURIComponent(tracking.id)}`, {

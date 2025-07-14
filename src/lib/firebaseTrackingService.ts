@@ -119,11 +119,10 @@ export class FirebaseTrackingService {
       if (!tracking) {
         tracking = await this.getTrackingByUsername(identifier);
         
-        // Si se encuentra por username pero no tiene hash, generar y actualizar
-        if (tracking?.id && !tracking.userHash) {
-          const userHash = generateUserHash(tracking.nombreUsuario);
-          await this.updateTracking(tracking.id, { userHash });
-          tracking.userHash = userHash;
+        // IMPORTANTE: NO regenerar hash automáticamente durante consultas de solo lectura
+        // Solo mostrar warning si falta el hash, pero no modificar los datos
+        if (tracking && !tracking.userHash) {
+          console.warn(`⚠️ Usuario "${tracking.nombreUsuario}" no tiene userHash. Se debería regenerar manualmente.`);
         }
       }
       
