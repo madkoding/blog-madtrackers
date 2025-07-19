@@ -85,6 +85,7 @@ export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapp
         {/* Contenido no crítico con carga diferida más optimizada */}
         <WaveDivider />
         <DeferredComponent
+          className="bg-white"
           fallback={
             <div className="loading-skeleton h-96 mx-auto max-w-6xl rounded-lg mb-12 bg-gray-200 animate-pulse"></div>
           }

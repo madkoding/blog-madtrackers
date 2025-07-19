@@ -1,9 +1,9 @@
 // ColorSelector.tsx
 import React, { useState, useCallback, useMemo } from "react";
-import LazyRotatingFBXModel from "../LazyRotatingFBXModel";
 import { Color } from "../../types";
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
+import RotatingModel from "../RotatingModel";
 
 interface ColorSelectorProps {
   colors: Color[];
@@ -85,7 +85,7 @@ const ColorSelector: React.FC<ColorSelectorProps> = React.memo(({
       </div>
       <div className="mb-4">
         <div className="h-[350px] flex justify-center">
-          <LazyRotatingFBXModel colors={modelColors} />
+          <RotatingModel colors={modelColors} />
         </div>
       </div>
     </>

@@ -2,9 +2,9 @@
 
 import React, { useMemo } from "react";
 import { colors as colorOptions } from "../../constants";
-import LazyRotatingFBXModel from "../LazyRotatingFBXModel";
 import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
+import RotatingModel from "../RotatingModel";
 
 interface TrackingModelViewerProps {
   caseColor: string;
@@ -49,7 +49,7 @@ const TrackingModelViewer: React.FC<TrackingModelViewerProps> = ({
       </div>
       
       {/* Modelo 3D */}
-      <LazyRotatingFBXModel colors={modelColors} />
+      <RotatingModel colors={modelColors} />
     </div>
   );
 };
