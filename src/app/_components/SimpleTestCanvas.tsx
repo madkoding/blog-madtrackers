@@ -8,7 +8,9 @@ import {
   FBX_MODEL_ENV_INTENSITY,
   FBX_MODEL_NORMAL_SCALE,
   FBX_MODEL_NORMAL_REPEAT,
-  FBX_MODEL_ROTATION_SPEED_Y
+  FBX_MODEL_ROTATION_SPEED_X,
+  FBX_MODEL_ROTATION_SPEED_Y,
+  FBX_MODEL_ROTATION_SPEED_Z
 } from "../constants/fbx-model.constants";
 
 interface SimpleTestCanvasProps {
@@ -180,16 +182,20 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({ colors }) => {
             '/models/SmolModel.fbx',
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (fbx: any) => {
+              // Centrar el modelo en el origen REAL
               const box = new THREE.Box3().setFromObject(fbx);
               const center = box.getCenter(new THREE.Vector3());
               const size = box.getSize(new THREE.Vector3());
-              
               const maxDim = Math.max(size.x, size.y, size.z);
-              const scale = 1.6 / maxDim;
-              
+              const scale = 2 / maxDim;
               fbx.scale.setScalar(scale);
-              fbx.position.copy(center).multiplyScalar(-scale);
-              
+              // Mover todos los hijos para que el centro esté en el origen
+              fbx.traverse((child: any) => {
+                if (child.isMesh || child.isObject3D) {
+                  child.position.sub(center);
+                }
+              });
+              fbx.position.set(0, 0, 0);
               fbx.castShadow = true;
               fbx.receiveShadow = true;
               
@@ -256,9 +262,12 @@ const SimpleTestCanvas: React.FC<SimpleTestCanvasProps> = ({ colors }) => {
               scene.add(fbx);
               modelRef.current = fbx;
 
+              // Animación: rotar en X, Y y Z sobre el centro
               const animate = () => {
                 requestAnimationFrame(animate);
+                fbx.rotation.x += FBX_MODEL_ROTATION_SPEED_X;
                 fbx.rotation.y += FBX_MODEL_ROTATION_SPEED_Y;
+                fbx.rotation.z += FBX_MODEL_ROTATION_SPEED_Z;
                 renderer.render(scene, camera);
               };
 

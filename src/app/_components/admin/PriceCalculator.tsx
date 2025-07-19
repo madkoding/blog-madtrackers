@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { Sensor, TrackerType } from "../../types";
 import { quantities } from "../../constants/product.constants";
-import { availableCountries, countries } from "../../constants/countries.constants";
+import { availableCountries } from "../../constants/countries.constants";
 
 interface PriceCalculatorProps {
   className?: string;
@@ -20,6 +20,12 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
   const [selectedSensor, setSelectedSensor] = useState<Sensor & { price: number }>();
   const [selectedQuantity, setSelectedQuantity] = useState<number>(quantities[0]);
   const [selectedCountry, setSelectedCountry] = useState<string>("CL");
+
+  // Estados para la API de precios
+  const [apiPrices, setApiPrices] = useState<any>(null);
+  const [apiCurrency, setApiCurrency] = useState<any>(null);
+  const [calculating, setCalculating] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   // Cargar datos con precios para el admin
   useEffect(() => {
@@ -43,49 +49,45 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
     loadProductsWithPrices();
   }, []);
 
-  // Obtener configuración del país seleccionado
-  const countryConfig = useMemo(() => 
-    countries[selectedCountry] || countries.US, 
-    [selectedCountry]
-  );
-
-  // Calcular precios (solo si hay datos cargados)
-  const calculations = useMemo(() => {
-    if (!selectedTracker || !selectedSensor) {
-      return {
-        basePrice: 0,
-        shippingUsd: 0,
-        totalUsd: 0,
-        basePriceLocal: 0,
-        shippingLocal: 0,
-        totalLocal: 0,
-      };
-    }
-
-    // Precio base en USD
-    const basePrice = selectedTracker.price * selectedSensor.price * selectedQuantity;
-    const shippingUsd = countryConfig.shippingCostUsd;
-    const totalUsd = basePrice + shippingUsd;
-
-    // Convertir a moneda local
-    const basePriceLocal = basePrice * countryConfig.exchangeRate;
-    const shippingLocal = shippingUsd * countryConfig.exchangeRate;
-    const totalLocal = totalUsd * countryConfig.exchangeRate;
-
-    return {
-      basePrice,
-      shippingUsd,
-      totalUsd,
-      basePriceLocal: Math.round(basePriceLocal),
-      shippingLocal: Math.round(shippingLocal),
-      totalLocal: Math.round(totalLocal),
+  // Llamar a la API de precios cada vez que cambie una selección relevante
+  useEffect(() => {
+    const fetchPrices = async () => {
+      if (!selectedTracker || !selectedSensor || !selectedQuantity || !selectedCountry) {
+        setApiPrices(null);
+        setApiCurrency(null);
+        return;
+      }
+      setCalculating(true);
+      setApiError(null);
+      try {
+        const res = await fetch('/api/pricing/calculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sensorId: selectedSensor.id,
+            trackerId: selectedTracker.id,
+            quantity: selectedQuantity,
+            countryCode: selectedCountry,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error al calcular precios');
+        setApiPrices(data.prices);
+        setApiCurrency(data.currency);
+      } catch (err: any) {
+        setApiError(err.message || 'Error desconocido');
+        setApiPrices(null);
+        setApiCurrency(null);
+      } finally {
+        setCalculating(false);
+      }
     };
-  }, [selectedTracker, selectedSensor, selectedQuantity, countryConfig]);
+    fetchPrices();
+  }, [selectedTracker, selectedSensor, selectedQuantity, selectedCountry]);
 
   // Formatear números
   const formatNumber = useCallback((num: number) => 
     new Intl.NumberFormat("es-ES").format(num), []);
-
   const formatUsd = useCallback((num: number) => 
     new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -116,6 +118,13 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
       </div>
     );
   }
+  if (apiError) {
+    return (
+      <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
+        <div className="text-red-600">{apiError}</div>
+      </div>
+    );
+  }
 
   return (
     <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
@@ -127,10 +136,11 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {/* Selector de Tracker */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="tracker-select" className="block text-sm font-medium text-gray-700 mb-2">
             Tipo de Tracker
           </label>
           <select
+            id="tracker-select"
             value={selectedTracker?.id || ''}
             onChange={(e) => {
               const tracker = trackers.find(t => t.id === e.target.value);
@@ -140,7 +150,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
           >
             {trackers.map((tracker) => (
               <option key={tracker.id} value={tracker.id}>
-                {tracker.label} - ${tracker.price}
+                {tracker.label}
               </option>
             ))}
           </select>
@@ -149,10 +159,11 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
 
         {/* Selector de Sensor */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="sensor-select" className="block text-sm font-medium text-gray-700 mb-2">
             Sensor
           </label>
           <select
+            id="sensor-select"
             value={selectedSensor?.id || ''}
             onChange={(e) => {
               const sensor = availableSensors.find(s => s.id === e.target.value);
@@ -173,10 +184,11 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
 
         {/* Selector de Cantidad */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="quantity-select" className="block text-sm font-medium text-gray-700 mb-2">
             Cantidad
           </label>
           <select
+            id="quantity-select"
             value={selectedQuantity}
             onChange={(e) => setSelectedQuantity(Number(e.target.value))}
             className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
@@ -191,10 +203,11 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
 
         {/* Selector de País */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="country-select" className="block text-sm font-medium text-gray-700 mb-2">
             País de Envío
           </label>
           <select
+            id="country-select"
             value={selectedCountry}
             onChange={(e) => setSelectedCountry(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
@@ -206,91 +219,93 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
             ))}
           </select>
           <p className="text-xs text-gray-500 mt-1">
-            {countryConfig.currencySymbol} {countryConfig.currency} • Tasa: {countryConfig.exchangeRate}
+            {apiCurrency?.symbol || ''} {apiCurrency?.code || ''} • Tasa: {apiCurrency?.exchangeRate || ''}
           </p>
         </div>
       </div>
 
       {/* Resumen de Precios */}
       <div className="border-t border-gray-200 pt-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Precios en USD */}
-          <div className="bg-blue-50 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-800 mb-3 flex items-center">
-              <span className="mr-2">🇺🇸</span>
-              Precios en USD
-            </h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Trackers ({selectedQuantity}x):</span>
-                <span className="font-medium text-gray-800">{formatUsd(calculations.basePrice)}</span>
+        {calculating || !apiPrices || !apiCurrency ? (
+          <div className="flex items-center justify-center h-24 text-gray-500">Calculando precios...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Precios en USD */}
+            <div className="bg-blue-50 rounded-lg p-4">
+              <h3 className="font-semibold text-blue-800 mb-3 flex items-center">
+                <span className="mr-2">🇺🇸</span>Precios en USD
+              </h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Trackers ({selectedQuantity}x):</span>
+                  <span className="font-medium text-gray-800">{formatUsd(apiPrices.basePrice)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Envío:</span>
+                  <span className="font-medium text-gray-800">{formatUsd(apiPrices.shippingUsd)}</span>
+                </div>
+                <div className="border-t border-blue-200 pt-2 flex justify-between">
+                  <span className="font-semibold text-blue-800">Total:</span>
+                  <span className="font-bold text-blue-800">{formatUsd(apiPrices.totalUsd)}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Envío:</span>
-                <span className="font-medium text-gray-800">{formatUsd(calculations.shippingUsd)}</span>
-              </div>
-              <div className="border-t border-blue-200 pt-2 flex justify-between">
-                <span className="font-semibold text-blue-800">Total:</span>
-                <span className="font-bold text-blue-800">{formatUsd(calculations.totalUsd)}</span>
+            </div>
+            {/* Precios en Moneda Local */}
+            <div className="bg-green-50 rounded-lg p-4">
+              <h3 className="font-semibold text-green-800 mb-3 flex items-center">
+                <span className="mr-2">💵</span>Precios en {apiCurrency.code}
+              </h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Trackers ({selectedQuantity}x):</span>
+                  <span className="font-medium text-gray-800">
+                    {apiCurrency.symbol}{formatNumber(apiPrices.basePriceLocal)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Envío:</span>
+                  <span className="font-medium text-gray-800">
+                    {apiCurrency.symbol}{formatNumber(apiPrices.shippingLocal)}
+                  </span>
+                </div>
+                <div className="border-t border-green-200 pt-2 flex justify-between">
+                  <span className="font-semibold text-green-800">Total:</span>
+                  <span className="font-bold text-green-800">
+                    {apiCurrency.symbol}{formatNumber(apiPrices.totalLocal)} {apiCurrency.code}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Precios en Moneda Local */}
-          <div className="bg-green-50 rounded-lg p-4">
-            <h3 className="font-semibold text-green-800 mb-3 flex items-center">
-              <span className="mr-2">💵</span>
-              Precios en {countryConfig.currency}
-            </h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Trackers ({selectedQuantity}x):</span>
-                <span className="font-medium text-gray-800">
-                  {countryConfig.currencySymbol}{formatNumber(calculations.basePriceLocal)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Envío:</span>
-                <span className="font-medium text-gray-800">
-                  {countryConfig.currencySymbol}{formatNumber(calculations.shippingLocal)}
-                </span>
-              </div>
-              <div className="border-t border-green-200 pt-2 flex justify-between">
-                <span className="font-semibold text-green-800">Total:</span>
-                <span className="font-bold text-green-800">
-                  {countryConfig.currencySymbol}{formatNumber(calculations.totalLocal)} {countryConfig.currency}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        )}
         {/* Información Adicional */}
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div>
-              <span className="font-medium text-gray-700">Precio por tracker:</span>
-              <div className="text-gray-700">
-                {formatUsd(calculations.basePrice / selectedQuantity)} / 
-                {countryConfig.currencySymbol}{formatNumber(calculations.basePriceLocal / selectedQuantity)}
+        {apiPrices && apiCurrency && !calculating && (
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div>
+                <span className="font-medium text-gray-700">Precio por tracker:</span>
+                <div className="text-gray-700">
+                  {formatUsd(apiPrices.basePrice / selectedQuantity)} /
+                  {apiCurrency.symbol}{formatNumber(apiPrices.basePriceLocal / selectedQuantity)}
+                </div>
               </div>
-            </div>
-            <div>
-              <span className="font-medium text-gray-700">Anticipo (25%):</span>
-              <div className="text-gray-700">
-                {formatUsd(calculations.totalUsd / 4)} / 
-                {countryConfig.currencySymbol}{formatNumber(calculations.totalLocal / 4)}
+              <div>
+                <span className="font-medium text-gray-700">Anticipo (25%):</span>
+                <div className="text-gray-700">
+                  {formatUsd(apiPrices.totalUsd / 4)} /
+                  {apiCurrency.symbol}{formatNumber(apiPrices.totalLocal / 4)}
+                </div>
               </div>
-            </div>
-            <div>
-              <span className="font-medium text-gray-700">Saldo (75%):</span>
-              <div className="text-gray-700">
-                {formatUsd(calculations.totalUsd * 0.75)} / 
-                {countryConfig.currencySymbol}{formatNumber(calculations.totalLocal * 0.75)}
+              <div>
+                <span className="font-medium text-gray-700">Saldo (75%):</span>
+                <div className="text-gray-700">
+                  {formatUsd(apiPrices.totalUsd * 0.75)} /
+                  {apiCurrency.symbol}{formatNumber(apiPrices.totalLocal * 0.75)}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

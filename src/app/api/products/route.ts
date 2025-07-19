@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Datos de productos con información sensible (precios) en el backend
 const SENSORS_DATA = [
-  {
-    id: "sensor1",
-    label: "LSM6DSR",
-    description: "Buena calidad de seguimiento",
-    drifting: "20 min",
-    price: 1,
-    available: ['rf','wifi']
-  },
+  // {
+  //   id: "sensor1",
+  //   label: "LSM6DSR",
+  //   description: "Buena calidad de seguimiento",
+  //   drifting: "20 min",
+  //   price: 1,
+  //   available: ['rf','wifi']
+  // },
   {
     id: "sensor2", 
     label: "LSM6DSR + MMC5983MA",
@@ -18,14 +18,14 @@ const SENSORS_DATA = [
     price: 1.25,
     available: ['rf']
   },
-  {
-    id: "sensor3",
-    label: "ICM45686", 
-    description: "Excelente calidad de seguimiento",
-    drifting: "45 min",
-    price: 1.375,
-    available: ['rf','wifi']
-  },
+  // {
+  //   id: "sensor3",
+  //   label: "ICM45686", 
+  //   description: "Excelente calidad de seguimiento",
+  //   drifting: "45 min",
+  //   price: 1.375,
+  //   available: ['rf','wifi']
+  // },
   {
     id: "sensor4",
     label: "ICM45686 + MMC5983MA",
@@ -42,14 +42,12 @@ const TRACKERS_DATA = [
     label: "RF",
     description: "50 horas de batería. Utiliza receptor USB",
     size: "3.8 x 3.8 x 1.0 cm",
-    price: 40,
   },
   // {
   //   id: "wifi",
   //   label: "WiFi", 
   //   description: "10 horas de batería. Conecta a router WiFi",
   //   size: "4.5 x 4.5 x 1.5 cm",
-  //   price: 30,
   // }
 ];
 
@@ -105,7 +103,7 @@ export async function GET(request: NextRequest) {
       case 'sensors':
         return NextResponse.json({ sensors: sanitizeForPublic(SENSORS_DATA) });
       case 'trackers':
-        return NextResponse.json({ trackers: sanitizeForPublic(TRACKERS_DATA) });
+        return NextResponse.json({ trackers: TRACKERS_DATA });
       case 'colors':
         return NextResponse.json({ colors: COLORS_DATA });
       case 'quantities':
@@ -114,7 +112,7 @@ export async function GET(request: NextRequest) {
       default:
         return NextResponse.json({
           sensors: sanitizeForPublic(SENSORS_DATA),
-          trackers: sanitizeForPublic(TRACKERS_DATA),
+          trackers: TRACKERS_DATA,
           colors: COLORS_DATA,
           quantities: QUANTITIES_DATA
         });

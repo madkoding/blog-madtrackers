@@ -222,24 +222,12 @@ const AdminDashboard = React.memo(() => {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Usuario
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Email
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estado
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Progreso
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Total
-                      </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Acciones
-                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Case</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tapa</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Días</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Faltan</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -251,14 +239,33 @@ const AdminDashboard = React.memo(() => {
                       </tr>
                     ) : (
                       filteredUsers.map((user) => {
-                        // Calcular progreso total
-                        const totalProgress = Math.round((
-                          (user.porcentajes?.placa ?? 0) + 
-                          (user.porcentajes?.straps ?? 0) + 
-                          (user.porcentajes?.cases ?? 0) + 
-                          (user.porcentajes?.baterias ?? 0)
-                        ) / 4);
-                        
+                        // Calcular días restantes
+                        let diasRestantes = '-';
+                        if (user.fechaEntrega) {
+                          const hoy = new Date();
+                          const entrega = new Date(user.fechaEntrega);
+                          const diff = Math.ceil((entrega.setHours(0,0,0,0) - hoy.setHours(0,0,0,0)) / (1000 * 60 * 60 * 24));
+                          diasRestantes = diff > 0 ? String(diff) : '0';
+                        }
+                        // Calcular faltan
+                        const total = user.totalUsd ?? (user.total ? user.total / 1000 : 0);
+                        const abonado = user.abonadoUsd ?? (user.abonado ? user.abonado / 1000 : 0);
+                        const faltan = Math.max(0, total - abonado).toFixed(2);
+                        // Función para obtener el nombre del color
+                        const getColorName = (colorKey: string): string => {
+                          if (!colorKey) return '-';
+                          const colorMap: Record<string, string> = {
+                            black: 'Negro',
+                            white: 'Blanco',
+                            blue: 'Azul',
+                            red: 'Rojo',
+                            green: 'Verde',
+                            yellow: 'Amarillo',
+                            orange: 'Naranjo',
+                            purple: 'Morado'
+                          };
+                          return colorMap.hasOwnProperty(colorKey) ? colorMap[colorKey] : colorKey;
+                        };
                         return (
                           <tr key={user.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -271,39 +278,43 @@ const AdminDashboard = React.memo(() => {
                                   </div>
                                 </div>
                                 <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">
-                                    {user.nombreUsuario}
-                                  </div>
+                                  <div className="text-sm font-medium text-gray-900"
+  style={user.abonadoUsd && user.totalUsd && user.abonadoUsd >= user.totalUsd ? { color: '#16a34a', fontWeight: 700 } : {}}>
+  {user.nombreUsuario}
+</div>
                                   <div className="text-xs text-gray-500">
                                     {user.numeroTrackers} tracker{user.numeroTrackers !== 1 ? 's' : ''}
                                   </div>
+                                  <div className="text-xs text-gray-400">
+                                    {user.sensor ?? '-'}
+                                  </div>
+                                  <div className="text-xs text-gray-400">
+                                    {user.paisEnvio ?? '-'}
+                                  </div>
                                 </div>
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{user.contacto}</div>
-                              <div className="text-xs text-gray-500">{user.paisEnvio}</div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                {user.estadoPedido ?? 'waiting'}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                  <div
-                                    className="bg-blue-600 h-2 rounded-full"
-                                    style={{ width: `${totalProgress}%` }}
-                                  ></div>
-                                </div>
-                                <span className="text-sm text-gray-600">{totalProgress}%</span>
+                              <div className="flex items-center gap-2">
+                                <span style={{backgroundColor: user.colorCase || '#eee'}} className="inline-block w-5 h-5 rounded-full border border-gray-300"></span>
+                                <span className="text-xs text-gray-700">{getColorName(user.colorCase)}</span>
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">
-                                ${user.totalUsd ?? (user.total ? (user.total / 1000).toFixed(2) : '0.00')}
+                              <div className="flex items-center gap-2">
+                                <span style={{backgroundColor: user.colorTapa || '#eee'}} className="inline-block w-5 h-5 rounded-full border border-gray-300"></span>
+                                <span className="text-xs text-gray-700">{getColorName(user.colorTapa)}</span>
                               </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">{diasRestantes}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              {faltan === '0.00' ? (
+                                <span className="text-green-600 font-bold">completo</span>
+                              ) : (
+                                <div className="text-sm text-gray-900">${faltan}</div>
+                              )}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <button
