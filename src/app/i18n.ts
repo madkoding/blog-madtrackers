@@ -10,6 +10,15 @@ export const translations = {
     heroSlogan: "Made by a VRChat fan for VRChat fans",
     heroExcerpt: "Wireless motion capture sensors for real-time animation",
     heroButton: "Order a pack now!",
+    heroSubtitles: [
+      "SlimeVR-Compatible",
+      "Wireless motion capture",
+      "RealTime animation",
+      "Less latency, More presition",
+      "No WiFi required",
+      "50 hours battery",
+      "New generation sensors"
+    ],
     welcomeFaq: "Welcome to the AI-powered FAQ",
     colorCover: "Select the cover color:",
     colorCase: "Select the case color:",
@@ -142,6 +151,15 @@ export const translations = {
     heroSlogan: "Hecho por un fan de VRChat para fans de VRChat",
     heroExcerpt: "Sensores de captura de movimiento inalámbricos para animación en tiempo real",
     heroButton: "¡Encargar un pack ahora!",
+    heroSubtitles: [
+      "Compatible con SlimeVR",
+      "Captura de movimiento inalámbrico",
+      "Animación en tiempo real",
+      "Menos latencia, más precisión",
+      "No requiere WiFi",
+      "50 horas de batería",
+      "Sensores de nueva generación"
+    ],
     welcomeFaq: "Bienvenido al FAQ con Inteligencia Artificial",
     colorCover: "Selecciona el color de la cubierta:",
     colorCase: "Selecciona el color del case:",

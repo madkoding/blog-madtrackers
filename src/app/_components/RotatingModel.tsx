@@ -23,7 +23,31 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   const modelRef = useRef<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const normalTextureRef = useRef<any>(null);
+  const rendererRef = useRef<any>(null); // Referencia al renderer
+  const cameraRef = useRef<any>(null); // Referencia a la cámara
   const [loading, setLoading] = React.useState(true);
+
+  // ResizeObserver para ajustar el renderer y la cámara
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const container = containerRef.current;
+    const handleResize = () => {
+      if (rendererRef.current && cameraRef.current) {
+        const width = container.offsetWidth;
+        const height = container.offsetHeight;
+        rendererRef.current.setSize(width, height, false);
+        rendererRef.current.domElement.style.width = '100%';
+        rendererRef.current.domElement.style.height = '100%';
+        cameraRef.current.aspect = width / height;
+        cameraRef.current.updateProjectionMatrix();
+      }
+    };
+    // Llamar al menos una vez al montar
+    handleResize();
+    const resizeObserver = new window.ResizeObserver(handleResize);
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -109,6 +133,8 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.physicallyCorrectLights = true;
     renderer.domElement.style.backgroundColor = 'transparent';
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
     return renderer;
@@ -228,7 +254,9 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       const height = containerSize.height || 300;
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      cameraRef.current = camera; // Guardar referencia a la cámara
       const renderer = setupRenderer(THREE, containerRef.current, width, height);
+      rendererRef.current = renderer; // Guardar referencia al renderer
       camera.position.set(0, 0, 2.5);
       camera.lookAt(0, 0, 0);
       loadEnvironment(RGBELoader, THREE, scene);
@@ -257,10 +285,8 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
 
   return (
     <div 
-      className="three-canvas-container relative aspect-square flex items-center justify-center" 
+      className="three-canvas-container relative aspect-square flex items-center justify-center w-full h-full" 
       style={{ 
-        minHeight: "300px", 
-        minWidth: "300px",
         backgroundColor: "transparent",
         background: "transparent",
         backgroundImage: "none",
@@ -277,8 +303,10 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
         ref={containerRef} 
         className="three-canvas-container w-full h-full absolute inset-0"
         style={{ 
-          minWidth: "300px", 
-          minHeight: "300px", 
+          width: "100%",
+          height: "100%",
+          minWidth: 0,
+          minHeight: 0,
           backgroundColor: "transparent",
           background: "transparent",
           backgroundImage: "none",

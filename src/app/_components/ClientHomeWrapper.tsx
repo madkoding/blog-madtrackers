@@ -80,7 +80,7 @@ export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapp
     <ClientErrorBoundary>
       <main>
         {/* Contenido crítico above-the-fold */}
-        <HeroPost title={heroPost.title} subtitle={heroPost.subtitle} />
+        <HeroPost title={heroPost.title} subtitle={heroPost.subtitle} isMaintenanceMode={isMaintenanceMode} />
         
         {/* Contenido no crítico con carga diferida más optimizada */}
         <WaveDivider />
