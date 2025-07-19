@@ -6,7 +6,7 @@ import { sensors, trackers, colors } from "./product.constants";
 // Hook para obtener sensores, trackers y colores traducidos
 export function useTranslatedConstants() {
   const { lang } = useLang();
-  const t = translations[lang] as Record<string, string>;
+  const t = translations[lang] as unknown as Record<string, string>;
 
   const translatedSensors = useMemo(
     () =>

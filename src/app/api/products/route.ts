@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Datos de productos con información sensible (precios) en el backend
+// Datos de productos (sin exponer precios)
 const SENSORS_DATA = [
   // {
   //   id: "sensor1",
   //   label: "LSM6DSR",
   //   description: "Buena calidad de seguimiento",
   //   drifting: "20 min",
-  //   price: 1,
   //   available: ['rf','wifi']
   // },
   {
@@ -15,7 +14,6 @@ const SENSORS_DATA = [
     label: "LSM6DSR + MMC5983MA",
     description: "Buena calidad de seguimiento con magnetómetro",
     drifting: "30 min",
-    price: 1.25,
     available: ['rf']
   },
   // {
@@ -23,7 +21,6 @@ const SENSORS_DATA = [
   //   label: "ICM45686", 
   //   description: "Excelente calidad de seguimiento",
   //   drifting: "45 min",
-  //   price: 1.375,
   //   available: ['rf','wifi']
   // },
   {
@@ -31,7 +28,6 @@ const SENSORS_DATA = [
     label: "ICM45686 + MMC5983MA",
     description: "Excelente calidad de seguimiento con magnetómetro", 
     drifting: "60 min",
-    price: 1.5,
     available: ['rf']
   },
 ];
@@ -66,42 +62,14 @@ const COLORS_DATA = [
 
 const QUANTITIES_DATA = [6, 8, 10, 20];
 
-// Función para remover precios de los datos públicos
-function sanitizeForPublic<T extends { price?: number }>(items: T[]): Omit<T, 'price'>[] {
-  return items.map(({ price, ...item }) => item);
-}
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const includePrices = searchParams.get('includePrices') === 'true';
     const type = searchParams.get('type');
 
-    // Solo incluir precios si se especifica explícitamente (para uso interno)
-    if (includePrices) {
-      // En un entorno de producción, aquí deberías validar que la petición viene de una fuente autorizada
-      // Por ejemplo, validando un token de API o verificando que viene del servidor
-      
-      switch (type) {
-        case 'sensors':
-          return NextResponse.json({ sensors: SENSORS_DATA });
-        case 'trackers':
-          return NextResponse.json({ trackers: TRACKERS_DATA });
-        case 'all':
-        default:
-          return NextResponse.json({
-            sensors: SENSORS_DATA,
-            trackers: TRACKERS_DATA,
-            colors: COLORS_DATA,
-            quantities: QUANTITIES_DATA
-          });
-      }
-    }
-
-    // Para el cliente, devolver datos sin precios
     switch (type) {
       case 'sensors':
-        return NextResponse.json({ sensors: sanitizeForPublic(SENSORS_DATA) });
+        return NextResponse.json({ sensors: SENSORS_DATA });
       case 'trackers':
         return NextResponse.json({ trackers: TRACKERS_DATA });
       case 'colors':
@@ -111,13 +79,12 @@ export async function GET(request: NextRequest) {
       case 'all':
       default:
         return NextResponse.json({
-          sensors: sanitizeForPublic(SENSORS_DATA),
+          sensors: SENSORS_DATA,
           trackers: TRACKERS_DATA,
           colors: COLORS_DATA,
           quantities: QUANTITIES_DATA
         });
     }
-
   } catch (error) {
     console.error('Error en API de productos:', error);
     return NextResponse.json(

@@ -3,7 +3,7 @@
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
 import RotatingModel from "../RotatingModel";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 type Props = {
   title: string;
@@ -20,13 +20,13 @@ export function HeroPost({ title, isMaintenanceMode = false }: Readonly<Props & 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Extraer la función para evitar anidamiento excesivo
-  const nextSubtitle = () => {
+  const nextSubtitle = useCallback(() => {
     setFade(false);
     setTimeout(() => {
       setSubtitleIndex((prev) => (prev + 1) % subtitles.length);
       setFade(true);
     }, 400); // Duración del fade out
-  };
+  }, [subtitles.length]);
 
   useEffect(() => {
     setFade(true); // Asegura que el primer render sea visible
@@ -34,7 +34,7 @@ export function HeroPost({ title, isMaintenanceMode = false }: Readonly<Props & 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [subtitles.length]);
+  }, [subtitles.length, nextSubtitle]);
 
   // Si no hay subtítulos, no renderizar nada
   const currentSubtitle = subtitles[subtitleIndex] || "";

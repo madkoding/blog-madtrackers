@@ -9,6 +9,22 @@ interface PriceCalculatorProps {
   className?: string;
 }
 
+// Tipos para la respuesta de precios y moneda
+interface ApiPrices {
+  basePrice: number;
+  shippingUsd: number;
+  totalUsd: number;
+  basePriceLocal: number;
+  shippingLocal: number;
+  totalLocal: number;
+}
+
+interface ApiCurrency {
+  symbol: string;
+  code: string;
+  exchangeRate: number;
+}
+
 const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => {
   // Estados para los datos con precios (cargados desde la API interna)
   const [sensors, setSensors] = useState<(Sensor & { price: number })[]>([]);
@@ -22,8 +38,8 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
   const [selectedCountry, setSelectedCountry] = useState<string>("CL");
 
   // Estados para la API de precios
-  const [apiPrices, setApiPrices] = useState<any>(null);
-  const [apiCurrency, setApiCurrency] = useState<any>(null);
+  const [apiPrices, setApiPrices] = useState<ApiPrices | null>(null);
+  const [apiCurrency, setApiCurrency] = useState<ApiCurrency | null>(null);
   const [calculating, setCalculating] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -74,8 +90,12 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
         if (!res.ok) throw new Error(data.error || 'Error al calcular precios');
         setApiPrices(data.prices);
         setApiCurrency(data.currency);
-      } catch (err: any) {
-        setApiError(err.message || 'Error desconocido');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setApiError(err.message || 'Error desconocido');
+        } else {
+          setApiError('Error desconocido');
+        }
         setApiPrices(null);
         setApiCurrency(null);
       } finally {

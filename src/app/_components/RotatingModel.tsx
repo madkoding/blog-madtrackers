@@ -19,12 +19,11 @@ interface RotatingModelProps {
 
 const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const modelRef = useRef<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const normalTextureRef = useRef<any>(null);
-  const rendererRef = useRef<any>(null); // Referencia al renderer
-  const cameraRef = useRef<any>(null); // Referencia a la cámara
+  // Referencias tipadas a Three.js
+  const modelRef = useRef<import('three').Group | null>(null);
+  const normalTextureRef = useRef<import('three').Texture | null>(null);
+  const rendererRef = useRef<import('three').WebGLRenderer | null>(null);
+  const cameraRef = useRef<import('three').PerspectiveCamera | null>(null);
   const [loading, setLoading] = React.useState(true);
 
   // ResizeObserver para ajustar el renderer y la cámara
@@ -62,40 +61,43 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     }
   }, [colors]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateModelColors = async (fbx: any, normalTexture: any, newColors: string[]) => {
+  // Tipar argumentos y variables en funciones internas
+  const updateModelColors = async (
+    fbx: import('three').Group,
+    normalTexture: import('three').Texture,
+    newColors: string[]
+  ) => {
     const THREE = await import('three');
-    
     let materialIndex = 0;
-    
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fbx.traverse((child: any) => {
-      if (child.isMesh && child.material) {
-        if (Array.isArray(child.material)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          child.material.forEach((mat: any, index: number) => {
+    fbx.traverse((child: import('three').Object3D) => {
+      if ((child as import('three').Mesh).isMesh && (child as import('three').Mesh).material) {
+        const mesh = child as import('three').Mesh;
+        if (Array.isArray(mesh.material)) {
+          mesh.material.forEach((mat, index: number) => {
+            const material = mat as import('three').MeshStandardMaterial;
             const globalMaterialIndex = materialIndex + index;
             const colorToUse = newColors[globalMaterialIndex] || newColors[globalMaterialIndex % newColors.length] || '#8B5CF6';
-            mat.color = new THREE.Color(colorToUse);
-            mat.metalness = FBX_MODEL_METALNESS_MAIN;
-            mat.roughness = FBX_MODEL_ROUGHNESS_MAIN;
-            mat.envMapIntensity = FBX_MODEL_ENV_INTENSITY;
-            if (mat.normalScale) {
-              mat.normalScale.copy(FBX_MODEL_NORMAL_SCALE);
+            material.color = new THREE.Color(colorToUse);
+            material.metalness = FBX_MODEL_METALNESS_MAIN;
+            material.roughness = FBX_MODEL_ROUGHNESS_MAIN;
+            material.envMapIntensity = FBX_MODEL_ENV_INTENSITY;
+            if (material.normalScale) {
+              material.normalScale.copy(FBX_MODEL_NORMAL_SCALE);
             }
-            mat.needsUpdate = true;
+            material.needsUpdate = true;
           });
-          materialIndex += child.material.length;
+          materialIndex += mesh.material.length;
         } else {
+          const material = mesh.material as import('three').MeshStandardMaterial;
           const colorToUse = newColors[materialIndex] || newColors[materialIndex % newColors.length] || '#8B5CF6';
-          child.material.color = new THREE.Color(colorToUse);
-          child.material.metalness = FBX_MODEL_METALNESS_MAIN;
-          child.material.roughness = FBX_MODEL_ROUGHNESS_MAIN;
-          child.material.envMapIntensity = FBX_MODEL_ENV_INTENSITY;
-          if (child.material.normalScale) {
-            child.material.normalScale.copy(FBX_MODEL_NORMAL_SCALE);
+          material.color = new THREE.Color(colorToUse);
+          material.metalness = FBX_MODEL_METALNESS_MAIN;
+          material.roughness = FBX_MODEL_ROUGHNESS_MAIN;
+          material.envMapIntensity = FBX_MODEL_ENV_INTENSITY;
+          if (material.normalScale) {
+            material.normalScale.copy(FBX_MODEL_NORMAL_SCALE);
           }
-          child.material.needsUpdate = true;
+          material.needsUpdate = true;
           materialIndex++;
         }
       }
@@ -116,7 +118,12 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   };
 
   // Función auxiliar para inicializar el renderer
-  function setupRenderer(THREE: any, container: HTMLDivElement, width: number, height: number) {
+  function setupRenderer(
+    THREE: typeof import('three'),
+    container: HTMLDivElement,
+    width: number,
+    height: number
+  ): import('three').WebGLRenderer {
     const renderer = new THREE.WebGLRenderer({ 
       alpha: true, 
       antialias: true,
@@ -131,6 +138,7 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    // @ts-expect-error: propiedad experimental en Three.js
     renderer.physicallyCorrectLights = true;
     renderer.domElement.style.backgroundColor = 'transparent';
     renderer.domElement.style.width = '100%';
@@ -141,18 +149,26 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   }
 
   // Función auxiliar para cargar el entorno HDR
-  function loadEnvironment(RGBELoader: any, THREE: any, scene: any) {
+  function loadEnvironment(
+    RGBELoader: new () => { load: (url: string, onLoad: (texture: import('three').Texture) => void) => void },
+    THREE: typeof import('three'),
+    scene: import('three').Scene
+  ) {
     const rgbeLoader = new RGBELoader();
-    rgbeLoader.load('/assets/env.hdr', (texture: any) => {
+    rgbeLoader.load('/assets/env.hdr', (texture: import('three').Texture) => {
       texture.mapping = THREE.EquirectangularReflectionMapping;
       scene.environment = texture;
-      scene.backgroundIntensity = 0;
-      scene.environmentIntensity = 1.5;
+      // Las siguientes líneas pueden eliminarse si las propiedades no existen en la versión actual de Three.js
+      // scene.backgroundIntensity = 0;
+      // scene.environmentIntensity = 1.5;
     });
   }
 
   // Función auxiliar para añadir luces
-  function addLights(THREE: any, scene: any) {
+  function addLights(
+    THREE: typeof import('three'),
+    scene: import('three').Scene
+  ) {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
@@ -164,7 +180,10 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   }
 
   // Función auxiliar para cargar la textura normal
-  function loadNormalTexture(THREE: any, normalTextureRef: any) {
+  function loadNormalTexture(
+    THREE: typeof import('three'),
+    normalTextureRef: React.MutableRefObject<import('three').Texture | null>
+  ): import('three').Texture {
     const textureLoader = new THREE.TextureLoader();
     const normalTexture = textureLoader.load('/assets/noise-normal.webp');
     normalTexture.wrapS = THREE.RepeatWrapping;
@@ -176,15 +195,18 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   }
 
   // Función auxiliar para centrar y escalar el modelo
-  function centerAndScaleModel(THREE: any, fbx: any) {
+  function centerAndScaleModel(
+    THREE: typeof import('three'),
+    fbx: import('three').Group
+  ) {
     const box = new THREE.Box3().setFromObject(fbx);
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
     const scale = 2 / maxDim;
     fbx.scale.setScalar(scale);
-    fbx.traverse((child: any) => {
-      if (child.isMesh || child.isObject3D) {
+    fbx.traverse((child: import('three').Object3D) => {
+      if ((child as import('three').Mesh).isMesh || child.isObject3D) {
         child.position.sub(center);
       }
     });
@@ -194,20 +216,26 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   }
 
   // Refactorización de applyMaterials para reducir complejidad
-  function applyMaterials(THREE: any, fbx: any, normalTexture: any, colors: string[]) {
+  function applyMaterials(
+    THREE: typeof import('three'),
+    fbx: import('three').Group,
+    normalTexture: import('three').Texture,
+    colors: string[]
+  ) {
     let materialIndex = 0;
-    fbx.traverse((child: any) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        if (child.material) {
-          if (Array.isArray(child.material)) {
-            child.material = child.material.map((mat: any, index: number) => {
+    fbx.traverse((child: import('three').Object3D) => {
+      if ((child as import('three').Mesh).isMesh) {
+        const mesh = child as import('three').Mesh;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        if (mesh.material) {
+          if (Array.isArray(mesh.material)) {
+            mesh.material = mesh.material.map((mat, index: number) => {
               return createMaterialFrom(mat, THREE, normalTexture, colors, materialIndex + index);
             });
-            materialIndex += child.material.length;
+            materialIndex += mesh.material.length;
           } else {
-            child.material = createMaterialFrom(child.material, THREE, normalTexture, colors, materialIndex);
+            mesh.material = createMaterialFrom(mesh.material, THREE, normalTexture, colors, materialIndex);
             materialIndex++;
           }
         }
@@ -215,7 +243,13 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     });
   }
 
-  function createMaterialFrom(mat: any, THREE: any, normalTexture: any, colors: string[], colorIndex: number) {
+  function createMaterialFrom(
+    mat: import('three').Material,
+    THREE: typeof import('three'),
+    normalTexture: import('three').Texture,
+    colors: string[],
+    colorIndex: number
+  ): import('three').MeshStandardMaterial {
     const colorToUse = colors[colorIndex] || colors[colorIndex % colors.length] || '#8B5CF6';
     const newMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color(colorToUse),
@@ -226,15 +260,21 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       envMapIntensity: FBX_MODEL_ENV_INTENSITY,
       side: THREE.DoubleSide
     });
-    if (mat.map) newMat.map = mat.map;
-    if (mat.normalMap) newMat.normalMap = mat.normalMap;
+    const matStd = mat as import('three').MeshStandardMaterial;
+    if (matStd.map) newMat.map = matStd.map;
+    if (matStd.normalMap) newMat.normalMap = matStd.normalMap;
     if (mat.transparent !== undefined) newMat.transparent = mat.transparent;
     if (mat.opacity !== undefined) newMat.opacity = mat.opacity;
     return newMat;
   }
 
   // Función auxiliar para animar el modelo
-  function animateModel(fbx: any, renderer: any, scene: any, camera: any) {
+  function animateModel(
+    fbx: import('three').Group,
+    renderer: import('three').WebGLRenderer,
+    scene: import('three').Scene,
+    camera: import('three').PerspectiveCamera
+  ) {
     const animate = () => {
       requestAnimationFrame(animate);
       fbx.rotation.x += FBX_MODEL_ROTATION_SPEED_X;
@@ -246,7 +286,11 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   }
 
   // Refactorización de createBasicScene
-  const createBasicScene = (THREE: any, FBXLoader: any, RGBELoader: any) => {
+  const createBasicScene = (
+    THREE: typeof import('three'),
+    FBXLoader: new () => { load: (url: string, onLoad: (fbx: import('three').Group) => void, onProgress?: (event: ProgressEvent<EventTarget>) => void, onError?: (event: unknown) => void) => void },
+    RGBELoader: new () => { load: (url: string, onLoad: (texture: import('three').Texture) => void) => void }
+  ) => {
     try {
       if (!containerRef.current) return;
       const containerSize = containerRef.current.getBoundingClientRect();
@@ -265,7 +309,7 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       const loader = new FBXLoader();
       loader.load(
         '/models/SmolModel.fbx',
-        (fbx: any) => {
+        (fbx: import('three').Group) => {
           centerAndScaleModel(THREE, fbx);
           applyMaterials(THREE, fbx, normalTexture, colors);
           scene.add(fbx);
