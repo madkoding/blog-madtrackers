@@ -19,7 +19,7 @@ const comparativeData = [
 	{
 		label: "Sensor",
 		madTrackers: "ICM45686",
-		comunes: "BMI160/LSM6DSR",
+		comunes: "BMI160 / LSM6DSR",
 	},
 	{
 		label: "Magnetómetro",
@@ -63,26 +63,28 @@ export default function ComparativeTable() {
 				<h2 className="text-xl font-bold mb-4 text-center">
 					Comparativa de Trackers
 				</h2>
-				<table className="w-full">
-					<thead>
-						<tr className="bg-gray-100">
-							<th className="py-2 px-2 border-b"></th>
-							<th className="py-2 px-2 border-b">Comunes</th>
-							<th className="py-2 px-2 border-b">madTrackers</th>
-						</tr>
-					</thead>
-					<tbody>
-						{comparativeData.map((row) => (
-							<tr key={row.label} className="text-center">
-								<td className="py-2 px-2 border-b font-semibold text-left">
-									{row.label}
-								</td>
-								<td className="py-2 px-2 border-b">{row.comunes}</td>
-								<td className="py-2 px-2 border-b">{row.madTrackers}</td>
+				<div className="overflow-x-auto w-full">
+					<table className="w-full min-w-[320px] text-xs sm:text-sm">
+						<thead>
+							<tr className="bg-gray-100">
+								<th className="py-1 px-1 sm:py-2 sm:px-2 border-b"></th>
+								<th className="py-1 px-1 sm:py-2 sm:px-2 border-b">Comunes</th>
+								<th className="py-1 px-1 sm:py-2 sm:px-2 border-b">madTrackers</th>
 							</tr>
-						))}
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							{comparativeData.map((row) => (
+								<tr key={row.label} className="text-center">
+									<td className="py-1 px-1 sm:py-2 sm:px-2 border-b font-semibold text-left">
+										{row.label}
+									</td>
+									<td className="py-1 px-1 sm:py-2 sm:px-2 border-b">{row.comunes}</td>
+									<td className="py-1 px-1 sm:py-2 sm:px-2 border-b">{row.madTrackers}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
 				<div className="text-xs text-gray-500 mt-2">
 					(*) Algunos trackers comunes pueden tener magnetómetro,
 					pero generalmente no está habilitado por falta de soporte oficial
