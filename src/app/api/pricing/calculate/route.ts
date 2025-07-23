@@ -4,14 +4,14 @@ import { countries } from '../../../constants/countries.constants';
 // Datos de precios - Solo accesibles desde el servidor
 const SENSOR_PRICES = {
   // sensor1: 1,
-  sensor2: 1.25,
+  // sensor2: 1.25,
   // sensor3: 1.375,
   sensor4: 1.5,
 };
 
 const TRACKER_PRICES = {
-  rf: 50,
-  wifi: 40, // Para futuro uso
+  rf: 40,
+  // wifi: 40, // Para futuro uso
 };
 
 interface PriceCalculationRequest {

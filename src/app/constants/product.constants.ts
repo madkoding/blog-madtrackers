@@ -3,35 +3,35 @@ import { Color, Sensor } from "../types";
 // NOTA: Los precios se han movido al backend por seguridad
 // Solo se exponen datos públicos necesarios para la UI
 export const sensors: Sensor[] = [
-  {
-    id: "sensor1",
-    label: "LSM6DSR",
-    description: "Buena calidad de seguimiento",
-    drifting: "20 min",
-    // price removido - ahora se maneja en el backend
-    available: ['rf','wifi']
-  },
-  {
-    id: "sensor2",
-    label: "LSM6DSR + MMC5983MA",
-    description: "Buena calidad de seguimiento con magnetómetro",
-    drifting: "30 min",
-    // price removido - ahora se maneja en el backend
-    available: ['rf']
-  },
-  {
-    id: "sensor3",
-    label: "ICM45686",
-    description: "Excelente calidad de seguimiento",
-    drifting: "45 min",
-    // price removido - ahora se maneja en el backend
-    available: ['rf','wifi']
-  },
+  // {
+  //   id: "sensor1",
+  //   label: "LSM6DSR",
+  //   description: "Buena calidad de seguimiento",
+  //   drifting: "20 min",
+  //   // price removido - ahora se maneja en el backend
+  //   available: ['rf','wifi']
+  // },
+  // {
+  //   id: "sensor2",
+  //   label: "LSM6DSR + MMC5983MA",
+  //   description: "Buena calidad de seguimiento con magnetómetro",
+  //   drifting: "30 min",
+  //   // price removido - ahora se maneja en el backend
+  //   available: ['rf']
+  // },
+  // {
+  //   id: "sensor3",
+  //   label: "ICM45686",
+  //   description: "Excelente calidad de seguimiento",
+  //   drifting: "45 min",
+  //   // price removido - ahora se maneja en el backend
+  //   available: ['rf','wifi']
+  // },
   {
     id: "sensor4",
-    label: "ICM45686 + MMC5983MA",
+    label: "ICM45686 + QCM6309",
     description: "Excelente calidad de seguimiento con magnetómetro",
-    drifting: "60 min",
+    drifting: "~60 min",
     // price removido - ahora se maneja en el backend
     available: ['rf']
   },
@@ -40,8 +40,8 @@ export const sensors: Sensor[] = [
 export const trackers = [
   {
     id: "rf",
-    label: "RF",
-    description: "50 horas de batería. Utiliza receptor USB",
+    label: "ESB",
+    description: "~50 horas de batería. Utiliza receptor USB",
     size: "3.8 x 3.8 x 1.0 cm",
     // price removido - ahora se maneja en el backend
   },
