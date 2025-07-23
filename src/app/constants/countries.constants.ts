@@ -254,8 +254,8 @@ export interface CountryConfig {
  */
 export const countries: Record<string, CountryConfig> = {
   CL: { currency: "CLP", exchangeRate: 1000, currencySymbol: "$", shippingCostUsd: 0 },
-  PE: { currency: "PEN", exchangeRate: 4.56, currencySymbol: "S/", shippingCostUsd: 70 },
-  AR: { currency: "ARS", exchangeRate: 1404, currencySymbol: "$", shippingCostUsd: 70 },
-  MX: { currency: "MXN", exchangeRate: 24, currencySymbol: "$", shippingCostUsd: 70 },
-  US: { currency: "USD", exchangeRate: 1.2, currencySymbol: "US$", shippingCostUsd: 70 },
+  PE: { currency: "PEN", exchangeRate: 4.56 * 1.1, currencySymbol: "S/", shippingCostUsd: 70 },
+  AR: { currency: "ARS", exchangeRate: 1404 * 1.1, currencySymbol: "$", shippingCostUsd: 70 },
+  MX: { currency: "MXN", exchangeRate: 24 * 1.1, currencySymbol: "$", shippingCostUsd: 70 },
+  US: { currency: "USD", exchangeRate: 1.2 * 1.1, currencySymbol: "US$", shippingCostUsd: 70 },
 };
