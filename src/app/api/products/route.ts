@@ -9,13 +9,13 @@ const SENSORS_DATA = [
   //   drifting: "20 min",
   //   available: ['rf','wifi']
   // },
-  {
-    id: "sensor2", 
-    label: "LSM6DSR + QCM6309",
-    description: "Buena calidad de seguimiento con magnetómetro",
-    drifting: "30 min",
-    available: ['rf']
-  },
+  // {
+  //   id: "sensor2", 
+  //   label: "LSM6DSR + QCM6309",
+  //   description: "Buena calidad de seguimiento con magnetómetro",
+  //   drifting: "30 min",
+  //   available: ['rf']
+  // },
   // {
   //   id: "sensor3",
   //   label: "ICM45686", 

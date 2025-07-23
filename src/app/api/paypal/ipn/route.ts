@@ -38,10 +38,6 @@ export async function POST(request: NextRequest) {
         custom,
       });
       
-      // TODO: Guardar en Firebase/base de datos
-      // TODO: Enviar email de confirmación
-      // TODO: Actualizar estado del pedido
-      
       return NextResponse.json({ status: 'success' });
     } else {
       console.error('Notificación de PayPal no verificada');

@@ -13,7 +13,7 @@ export const sensors: Sensor[] = [
   // },
   // {
   //   id: "sensor2",
-  //   label: "LSM6DSR + MMC5983MA",
+  //   label: "LSM6DSR + QCM6309",
   //   description: "Buena calidad de seguimiento con magnetómetro",
   //   drifting: "30 min",
   //   // price removido - ahora se maneja en el backend
@@ -32,7 +32,6 @@ export const sensors: Sensor[] = [
     label: "ICM45686 + QCM6309",
     description: "Excelente calidad de seguimiento con magnetómetro",
     drifting: "~60 min",
-    // price removido - ahora se maneja en el backend
     available: ['rf']
   },
 ];
