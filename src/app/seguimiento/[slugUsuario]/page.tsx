@@ -143,11 +143,11 @@ export default function UserTrackingPage() {
   };
 
   const getSensorAndMagneto = () => {
-    if (tracking?.sensor?.includes('+ MMC5983MA')) {
-      const parts = tracking.sensor.split('+ MMC5983MA');
+    if (tracking?.sensor?.includes('+ QCM6309')) {
+      const parts = tracking.sensor.split('+ QCM6309');
       return {
         sensor: parts[0].trim(),
-        magneto: 'MMC5983MA'
+        magneto: 'QCM6309'
       };
     }
     return {

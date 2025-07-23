@@ -11,7 +11,7 @@ const SENSORS_DATA = [
   // },
   {
     id: "sensor2", 
-    label: "LSM6DSR + MMC5983MA",
+    label: "LSM6DSR + QCM6309",
     description: "Buena calidad de seguimiento con magnetómetro",
     drifting: "30 min",
     available: ['rf']
@@ -25,7 +25,7 @@ const SENSORS_DATA = [
   // },
   {
     id: "sensor4",
-    label: "ICM45686 + MMC5983MA",
+    label: "ICM45686 + QCM6309",
     description: "Excelente calidad de seguimiento con magnetómetro", 
     drifting: "60 min",
     available: ['rf']
