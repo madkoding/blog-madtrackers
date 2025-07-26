@@ -2,26 +2,6 @@ import React from "react";
 
 const comparativeData = [
 	{
-		label: "Precisión",
-		madTrackers: "Alta",
-		comunes: "Media",
-	},
-	{
-		label: "Latencia",
-		madTrackers: "Baja",
-		comunes: "Media",
-	},
-	{
-		label: "Soporte",
-		madTrackers: "Comunidad+Oficial",
-		comunes: "Desconocido",
-	},
-	{
-		label: "Sensor",
-		madTrackers: "ICM45686",
-		comunes: "BMI160 / LSM6DSR",
-	},
-	{
 		label: "Magnetómetro",
 		madTrackers: "Sí",
 		comunes: "No(*)",
@@ -68,7 +48,7 @@ export default function ComparativeTable() {
 						<thead>
 							<tr className="bg-gray-100">
 								<th className="py-1 px-1 sm:py-2 sm:px-2 border-b"></th>
-								<th className="py-1 px-1 sm:py-2 sm:px-2 border-b">Comunes</th>
+								<th className="py-1 px-1 sm:py-2 sm:px-2 border-b">Otros trackers</th>
 								<th className="py-1 px-1 sm:py-2 sm:px-2 border-b">madTrackers</th>
 							</tr>
 						</thead>

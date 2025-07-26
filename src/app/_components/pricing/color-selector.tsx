@@ -1,5 +1,5 @@
 // ColorSelector.tsx
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Color } from "../../types";
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
@@ -7,24 +7,29 @@ import RotatingModel from "../RotatingModel";
 
 interface ColorSelectorProps {
   colors: Color[];
+  selectedColorTapa: Color;
+  selectedColorCase: Color;
+  onColorTapaChange: (color: Color) => void;
+  onColorCaseChange: (color: Color) => void;
 }
 
 const ColorSelector: React.FC<ColorSelectorProps> = React.memo(({
   colors,
+  selectedColorTapa,
+  selectedColorCase,
+  onColorTapaChange,
+  onColorCaseChange,
 }) => {
   const { lang } = useLang();
   const t = translations[lang];
 
-  const [selectedColorTapa, setSelectedColorTapa] = useState(colors[0]);
-  const [selectedColorCase, setSelectedColorCase] = useState(colors[0]);
-
   const handleColorTapaSelect = useCallback((color: Color) => {
-    setSelectedColorTapa(color);
-  }, []);
+    onColorTapaChange(color);
+  }, [onColorTapaChange]);
 
   const handleColorCaseSelect = useCallback((color: Color) => {
-    setSelectedColorCase(color);
-  }, []);
+    onColorCaseChange(color);
+  }, [onColorCaseChange]);
 
   const isTapaBlanca = useMemo(() =>
     selectedColorTapa.hex.toLowerCase() === "#ffffff" ||
@@ -70,6 +75,16 @@ const ColorSelector: React.FC<ColorSelectorProps> = React.memo(({
 
   return (
     <>
+      <div className="mb-4">
+        <h1 className="text-3xl font-semibold">
+          {t.customizeTracker}
+        </h1>
+      </div>
+      <div className="mb-4">
+        <h3 className="text-sm font-semibold">
+          {t.customizeTrackerDesc}
+        </h3>
+      </div>
       <div className="mb-4">
         <h3 className="font-medium mb-2">{t.colorCover}</h3>
         <div className="grid grid-cols-5 gap-2 justify-center">

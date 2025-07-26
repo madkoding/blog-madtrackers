@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import Image from "next/image";
+import { useLang } from "../../lang-context";
+import { translations } from "../../i18n";
 
 /**
  * Props para el componente PaypalButton.
@@ -12,16 +14,24 @@ export interface PaypalButtonProps {
 }
 
 /**
- * Componente de botón de PayPal con cantidad dinámica.
- *
- * Renderiza el formulario de PayPal con la cantidad especificada.
- *
- * @param props - Props del componente
- * @returns {JSX.Element} El formulario de PayPal.
+ * Props para un botón individual de PayPal.
  */
-const PaypalButton: React.FC<PaypalButtonProps> = React.memo(({ 
+interface PaypalSingleButtonProps {
+  /** Cantidad en dólares USD */
+  readonly amount: number;
+  /** Descripción del producto */
+  readonly description: string;
+  /** Texto del botón */
+  readonly buttonText: string;
+}
+
+/**
+ * Componente de un botón individual de PayPal.
+ */
+const PaypalSingleButton: React.FC<PaypalSingleButtonProps> = React.memo(({ 
   amount, 
-  description = "Pago de MadTrackers",
+  description,
+  buttonText
 }) => {
   // Generar un ID único para la transacción
   const transactionId = useMemo(() => 
@@ -57,10 +67,6 @@ const PaypalButton: React.FC<PaypalButtonProps> = React.memo(({
     window.open(paypalUrl.toString(), '_blank');
   }, [amount, description, transactionId]);
 
-  const buttonLabel = useMemo(() => 
-    `Anticipo de $${amount.toFixed(2)} USD`,
-    [amount]
-  );
   return (
     <>
       <style jsx>{`
@@ -78,6 +84,11 @@ const PaypalButton: React.FC<PaypalButtonProps> = React.memo(({
           font-size: 1.125rem;
           line-height: 1.5rem;
           cursor: pointer;
+          width: 100%;
+        }
+        
+        .pp-6BPXHUKRZPK88:hover {
+          background-color: #ffcd00;
         }
       `}</style>
       <form
@@ -87,30 +98,167 @@ const PaypalButton: React.FC<PaypalButtonProps> = React.memo(({
           justifyItems: "center",
           alignContent: "start",
           gap: "0.5rem",
+          width: "100%",
         }}
       >
         <input
           className="pp-6BPXHUKRZPK88"
           type="submit"
-          value={buttonLabel}
+          value={buttonText}
         />
-        <Image
-          src="https://www.paypalobjects.com/images/Debit_Credit.svg"
-          alt="cards"
-          width={120}
-          height={24}
-        />
-        <section>
-          Con la tecnología de{" "}
-          <Image
-            src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg"
-            alt="paypal"
-            width={60}
-            height={14}
-            style={{ verticalAlign: "middle" }}
-          />
-        </section>
       </form>
+    </>
+  );
+});
+
+PaypalSingleButton.displayName = 'PaypalSingleButton';
+/**
+ * Componente principal de PayPal con dos opciones de pago.
+ *
+ * Renderiza dos formularios de PayPal: uno para anticipo (25%) y otro para total (100%).
+ */
+const PaypalButton: React.FC<PaypalButtonProps> = React.memo(({ 
+  amount, 
+  description = "Pago de MadTrackers",
+}) => {
+  const { lang } = useLang();
+  const t = translations[lang];
+  
+  return (
+    <>
+      <style jsx>{`
+        .paypal-payment-wrapper {
+          width: 100%;
+          max-width: 600px;
+          margin: 0 auto;
+        }
+        
+        .payment-title {
+          text-align: center;
+          font-size: 18px;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 20px;
+        }
+        
+        .payment-buttons {
+          display: flex;
+          flex-direction: row;
+          gap: 16px;
+          margin-top: 20px;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+        
+        .payment-card {
+          flex: 1;
+          min-width: 200px;
+          max-width: 280px;
+          background: white;
+          border: 2px solid #e5e7eb;
+          border-radius: 12px;
+          padding: 20px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          transition: all 0.2s ease;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+        
+        .payment-card:hover {
+          border-color: #ffd140;
+          box-shadow: 0 4px 16px rgba(255, 209, 64, 0.3);
+          transform: translateY(-2px);
+        }
+        
+        .card-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 8px;
+          text-align: center;
+        }
+        
+        .card-description {
+          font-size: 14px;
+          color: #666;
+          text-align: center;
+          margin-bottom: 16px;
+          line-height: 1.4;
+        }
+        
+        .card-highlight {
+          background: linear-gradient(135deg, #ffd140, #ffcd00);
+          color: #000;
+          padding: 8px 12px;
+          border-radius: 8px;
+          font-weight: 600;
+          text-align: center;
+          margin-bottom: 16px;
+          font-size: 15px;
+        }
+      `}</style>
+      
+      <div className="paypal-payment-wrapper">
+        <hr />
+        <br/>
+        <div className="payment-title">
+          {t.paymentSecure}
+        </div>
+        
+        <div className="payment-buttons">
+          <div className="payment-card">
+            <div className="card-title">{t.paymentAdvance}</div>
+            <div className="card-description">{t.paymentAdvanceDesc}</div>
+            <div className="card-highlight">${amount.toFixed(2)} USD</div>
+            <PaypalSingleButton
+              amount={amount}
+              description={`${description} (${t.paymentAdvance} 25%)`}
+              buttonText={t.payAdvanceBtn}
+            />
+          </div>
+          
+          <div className="payment-card">
+            <div className="card-title">{t.paymentFull}</div>
+            <div className="card-description">{t.paymentFullDesc}</div>
+            <div className="card-highlight">${(amount * 4).toFixed(2)} USD</div>
+            <PaypalSingleButton
+              amount={amount * 4}
+              description={`${description} (${t.paymentFull} 100%)`}
+              buttonText={t.payFullBtn}
+            />
+          </div>
+        </div>
+        
+        <div style={{ textAlign: 'center', marginTop: '16px' }}>
+          <section style={{ 
+            marginTop: '8px', 
+            fontSize: '14px', 
+            color: '#666',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            flexWrap: 'wrap'
+          }}>
+            <span>{t.poweredBy}</span>
+            <Image
+              src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg"
+              alt="paypal"
+              width={60}
+              height={14}
+              style={{ verticalAlign: "middle" }}
+            />
+            <Image
+              src="https://www.paypalobjects.com/images/Debit_Credit.svg"
+              alt="cards"
+              width={120}
+              height={24}
+              style={{ verticalAlign: "middle" }}
+            />
+          </section>
+        </div>
+      </div>
     </>
   );
 });

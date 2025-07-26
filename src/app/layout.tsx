@@ -10,6 +10,7 @@ import ResourceOptimizer from "./_components/common/ResourceOptimizer";
 import CriticalCSS from "./_components/common/CriticalCSS";
 import WebVitalsMonitor from "./_components/common/WebVitalsMonitor";
 import ConditionalAnalytics from "./_components/common/ConditionalAnalytics";
+import CountrySimulator from "./_components/dev/CountrySimulator";
 
 export const metadata: Metadata = {
   title: `madTrackers`,
@@ -76,6 +77,7 @@ export default function RootLayout({
         <ResourceOptimizer />
         <ConditionalAnalytics />
         <LangProvider>
+          <CountrySimulator />
           <NavBar />
           <div className="min-h-screen">{children}</div>
           <Footer />

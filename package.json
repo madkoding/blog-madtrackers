@@ -4,7 +4,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts"
+    "precompute:embeddings": "npx ts-node --project tsconfig.scripts.json scripts/precomputeEmbeddings.ts",
+    "test:flow": "node test-flow-integration.js"
   },
   "dependencies": {
     "@react-three/drei": "^9.105.6",

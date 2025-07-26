@@ -86,6 +86,7 @@ export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapp
         {/* Contenido no crítico con carga diferida más optimizada */}
         <WaveDivider />
         <ComparativeTable />
+        <div id="pricing" ></div>
         <DeferredComponent
           className="bg-white"
           fallback={

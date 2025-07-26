@@ -48,19 +48,47 @@ export async function POST(request: NextRequest) {
     // Obtener configuración del país
     const countryConfig = countries[countryCode] || countries.US;
 
-    // Calcular precios
+    // Calcular precios base en USD
     const basePrice = trackerPrice * sensorPrice * quantity;
     const shippingUsd = countryConfig.shippingCostUsd;
-    const totalUsd = basePrice + shippingUsd;
+    
+    // Para países que no son Chile, aplicar markup para cubrir comisiones de PayPal (~3.5% + $0.5)
+    let basePriceWithMarkup: number;
+    if (countryCode === 'CL') {
+      basePriceWithMarkup = basePrice;
+    } else {
+      // Calcular comisión de PayPal: 3.49% + $0.49 (solo sobre el precio base, no el envío)
+      const paypalFee = basePrice * 0.0349 + 0.49;
+      basePriceWithMarkup = basePrice + paypalFee;
+    }
+    const totalUsd = basePriceWithMarkup; // El envío no se suma al total
 
-    // Convertir a moneda local
-    const basePriceLocal = Math.round(basePrice * countryConfig.exchangeRate);
-    const shippingLocal = Math.round(shippingUsd * countryConfig.exchangeRate);
-    const totalLocal = Math.round(totalUsd * countryConfig.exchangeRate);
+    // Obtener la tasa de cambio real (sin markup adicional)
+    let realExchangeRate: number;
+    switch (countryCode) {
+      case 'CL':
+        realExchangeRate = 1000;
+        break;
+      case 'PE':
+        realExchangeRate = 4.56;
+        break;
+      case 'AR':
+        realExchangeRate = 1404;
+        break;
+      case 'MX':
+        realExchangeRate = 24;
+        break;
+      default:
+        realExchangeRate = 1;
+    }
+    
+    const basePriceLocal = Math.round(basePriceWithMarkup * realExchangeRate);
+    const shippingLocal = Math.round(shippingUsd * realExchangeRate);
+    const totalLocal = Math.round(totalUsd * realExchangeRate); // Total sin envío
 
     return NextResponse.json({
       prices: {
-        basePrice,
+        basePrice: basePriceWithMarkup,
         shippingUsd,
         totalUsd,
         basePriceLocal,
@@ -70,7 +98,7 @@ export async function POST(request: NextRequest) {
       currency: {
         code: countryConfig.currency,
         symbol: countryConfig.currencySymbol,
-        exchangeRate: countryConfig.exchangeRate,
+        exchangeRate: realExchangeRate,
       }
     });
 

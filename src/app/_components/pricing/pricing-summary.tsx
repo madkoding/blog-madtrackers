@@ -74,8 +74,12 @@ const PricingSummary: React.FC<PricingSummaryProps> = React.memo(({
   const formattedTotalPrice = useMemo(() => formatPrice(totalPrice), [totalPrice]);
   const formattedShippingPrice = useMemo(() => formatPrice(shippingPrice), [shippingPrice]);
   const formattedUsdTotal = useMemo(() => 
-    totalUsd && shippingUsd ? formatUsd(totalUsd + shippingUsd) : undefined,
-    [totalUsd, shippingUsd]
+    totalUsd ? formatUsd(totalUsd) : undefined,
+    [totalUsd]
+  );
+  const formattedUsdShipping = useMemo(() => 
+    shippingUsd ? formatUsd(shippingUsd) : undefined,
+    [shippingUsd]
   );
 
   return (
@@ -85,15 +89,22 @@ const PricingSummary: React.FC<PricingSummaryProps> = React.memo(({
         {formattedTotalPrice} {currency}
       </h2>
       <p className="text-center text-gray-600">
-        {t.shipping}: {currencySymbol}
+        + {t.shipping}: {currencySymbol}
         {formattedShippingPrice} {currency}
       </p>
-      {showUsdEquivalent && formattedUsdTotal && (
-        <div className="mt-2">
-          <p className="text-center text-gray-500">
-            {t.usdEquivalent || "Equivalente en USD"}:{" "}
-            {formattedUsdTotal}
-          </p>
+      {showUsdEquivalent && (
+        <div className="mt-2 space-y-1">
+          {formattedUsdTotal && (
+            <p className="text-center text-gray-500">
+              {t.usdEquivalent || "Equivalente en USD"}:{" "}
+              {formattedUsdTotal}
+            </p>
+          )}
+          {formattedUsdShipping && (
+            <p className="text-center text-gray-500">
+              + Shipping USD: {formattedUsdShipping}
+            </p>
+          )}
         </div>
       )}
     </div>

@@ -20,8 +20,8 @@ export const translations = {
       "New generation sensors"
     ],
     welcomeFaq: "Welcome to the AI-powered FAQ",
-    colorCover: "Select the cover color:",
-    colorCase: "Select the case color:",
+    colorCover: "Cover color:",
+    colorCase: "Case color:",
     color: "Color",
     quantity: "Quantity",
     sensor: "Sensor",
@@ -29,9 +29,9 @@ export const translations = {
     total: "Total",
     shipping: "Shipping",
     partialPayment: "If you don't have the full amount, you can make partial payments while your trackers are being prepared. The first payment is ",
-    buildTime: "Building a pack of trackers takes about 1 month",
-    includes: "All trackers include straps with silicone and batteries",
-    askNow: "Ask for yours now!",
+    buildTime: "Depending on stock availability, your tracker pack can be ready between 4 to 7 days. If out of stock, it may take around 30 days",
+    includes: "All trackers include straps, batteries, charging cable, USB receiver and instruction manual",
+    askNow: "Have questions? Make your inquiry via WhatsApp",
     payNow: "Pay now!",
     navigation: "Navigation",
     contact: "Contact",
@@ -45,6 +45,9 @@ export const translations = {
     footerDescription: "At madTrackers we build high-precision tracking devices with quality, innovation and personalized service.",
     usdEquivalent: "USD equivalent",
     quantitySelectorLabel: "Trackers quantity:",
+    // Customization
+    customizeTracker: "Customize your tracker",
+    customizeTrackerDesc: "You have 10 colors to choose from. You can also customize the tracker cover with your logo or name on request",
     // Tracking translations
     orderTracking: "Order Tracking",
     userInfo: "User Information",
@@ -139,7 +142,16 @@ export const translations = {
     month_8: "September",
     month_9: "October",
     month_10: "November",
-    month_11: "December"
+    month_11: "December",
+    // PayPal Payment
+    paymentSecure: "Pay securely with PayPal, credit and debit cards",
+    paymentAdvance: "Advance",
+    paymentAdvanceDesc: "Pay only 25% now and the rest later",
+    paymentFull: "Full Payment",
+    paymentFullDesc: "Pay the total and save on future management",
+    payAdvanceBtn: "Pay Advance",
+    payFullBtn: "Pay Total",
+    poweredBy: "Powered by"
   },
   es: {
     home: "Inicio",
@@ -161,8 +173,8 @@ export const translations = {
       "Sensores de nueva generación"
     ],
     welcomeFaq: "Bienvenido al FAQ con Inteligencia Artificial",
-    colorCover: "Selecciona el color de la cubierta:",
-    colorCase: "Selecciona el color del case:",
+    colorCover: "Color de la cubierta:",
+    colorCase: "Color del case:",
     color: "Color",
     quantity: "Cantidad",
     sensor: "Sensor",
@@ -170,9 +182,9 @@ export const translations = {
     total: "Total",
     shipping: "Envío",
     partialPayment: "Si no cuentas con el monto total, puedes realizar pagos parciales mientras se preparan los trackers. El primer abono es de ",
-    buildTime: "La construcción de un pack de trackers toma al rededor de 1 mes",
-    includes: "Todos los trackers incluen straps con silicona y baterías",
-    askNow: "¡Consulta por tuyos ahora!",
+    buildTime: "Dependiendo del stock disponible, tu pack de trackers puede estar listo entre 4 a 7 días. De no haber stock, puede tomar alrededor de 30 días",
+    includes: "Todos los trackers incluyen straps, baterías, cable de carga, receptor USB y manual de instrucciones",
+    askNow: "Tienes dudas? Realiza tu consulta via WhatsApp",
     payNow: "Abonar ahora!",
     navigation: "Navegación",
     contact: "Contacto",
@@ -186,6 +198,9 @@ export const translations = {
     footerDescription: "En madTrackers construimos dispositivos de seguimiento de alta precisión, calidad, innovación y servicio personalizado.",
     usdEquivalent: "Equivalente en USD",
     quantitySelectorLabel: "Cantidad de trackers:",
+    // Customization
+    customizeTracker: "Personaliza tu tracker",
+    customizeTrackerDesc: "Tienes 10 Colores para escoger. también puedes personalizar el la tapa del tracker con tu logo o nombre a pedido",
     // Tracking translations
     orderTracking: "Seguimiento de Pedido",
     userInfo: "Información del Usuario",
@@ -280,7 +295,16 @@ export const translations = {
     month_8: "Septiembre",
     month_9: "Octubre",
     month_10: "Noviembre",
-    month_11: "Diciembre"
+    month_11: "Diciembre",
+    // PayPal Payment
+    paymentSecure: "Paga de forma segura con PayPal, tarjetas de crédito y débito",
+    paymentAdvance: "Anticipo",
+    paymentAdvanceDesc: "Paga solo el 25% ahora y el resto después",
+    paymentFull: "Pago Completo",
+    paymentFullDesc: "Paga el total y ahorra en futuras gestiones",
+    payAdvanceBtn: "Pagar Anticipo",
+    payFullBtn: "Pagar Total",
+    poweredBy: "Con la tecnología de"
   }
 };
 
