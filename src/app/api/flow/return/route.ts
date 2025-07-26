@@ -28,7 +28,8 @@ export async function POST(request: NextRequest) {
     
     // Obtener parámetros de la URL
     const searchParams = request.nextUrl.searchParams;
-    const token = searchParams.get('token') || (body as any)?.token || null;
+    const bodyToken = (body as Record<string, unknown>)?.token;
+    const token = searchParams.get('token') || (typeof bodyToken === 'string' ? bodyToken : null);
     
     console.log('Flow POST redirect received:', {
       body,

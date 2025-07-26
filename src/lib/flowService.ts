@@ -53,7 +53,7 @@ export interface FlowPaymentStatusResponse {
   currency: string;
   amount: number;
   payer: string;
-  optional?: Record<string, any>;
+  optional?: Record<string, unknown>;
   pending_info?: {
     media: string;
     date: string;
@@ -85,8 +85,9 @@ export class FlowService {
   /**
    * Firma los parámetros con la secretKey usando HMAC-SHA256
    */
-  private signParams(params: Record<string, any>): string {
+  private signParams(params: Record<string, unknown>): string {
     // Excluir el parámetro 's' si existe
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { s, ...paramsToSign } = params;
     
     // Ordenar parámetros alfabéticamente
@@ -102,8 +103,8 @@ export class FlowService {
   /**
    * Realiza una petición GET a la API de Flow
    */
-  private async makeGetRequest(endpoint: string, params: Record<string, any>): Promise<any> {
-    const paramsWithAuth: Record<string, any> = {
+  private async makeGetRequest(endpoint: string, params: Record<string, unknown>): Promise<FlowPaymentStatusResponse> {
+    const paramsWithAuth: Record<string, unknown> = {
       ...params,
       apiKey: this.config.apiKey,
     };
@@ -135,8 +136,8 @@ export class FlowService {
   /**
    * Realiza una petición POST a la API de Flow
    */
-  private async makePostRequest(endpoint: string, params: Record<string, any>): Promise<any> {
-    const paramsWithAuth: Record<string, any> = {
+  private async makePostRequest(endpoint: string, params: Record<string, unknown>): Promise<FlowPaymentCreateResponse> {
+    const paramsWithAuth: Record<string, unknown> = {
       ...params,
       apiKey: this.config.apiKey,
     };
@@ -170,20 +171,20 @@ export class FlowService {
    * Crea una orden de pago en Flow
    */
   async createPayment(params: FlowPaymentCreateParams): Promise<FlowPaymentCreateResponse> {
-    return this.makePostRequest('/payment/create', params);
+    return this.makePostRequest('/payment/create', params as unknown as Record<string, unknown>);
   }
 
   /**
    * Obtiene el estado de un pago en Flow
    */
   async getPaymentStatus(params: FlowPaymentStatusParams): Promise<FlowPaymentStatusResponse> {
-    return this.makeGetRequest('/payment/getStatus', params);
+    return this.makeGetRequest('/payment/getStatus', params as unknown as Record<string, unknown>);
   }
 
   /**
    * Valida la firma de una notificación de Flow
    */
-  validateNotification(params: Record<string, any>): boolean {
+  validateNotification(params: Record<string, unknown>): boolean {
     if (!params.s) {
       return false;
     }

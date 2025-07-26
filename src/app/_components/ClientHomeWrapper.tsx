@@ -6,7 +6,7 @@ import { getAllPosts } from "@/lib/api";
 import WaveDivider from "../_components/common/wave-divider";
 import DeferredComponent from "../_components/common/DeferredLoading";
 import dynamic from "next/dynamic";
-import ComparativeTable from "../_components/common/ComparativeTable";
+import BrandBenefits from "../_components/common/BrandBenefits";
 
 // Lazy load del componente de pricing que no es crítico para First Paint
 const Pricing = dynamic(() => import("../_components/pricing/pricing"), {
@@ -83,9 +83,10 @@ export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapp
         {/* Contenido crítico above-the-fold */}
         <HeroPost title={heroPost.title} subtitle={heroPost.subtitle} isMaintenanceMode={isMaintenanceMode} />
         
-        {/* Contenido no crítico con carga diferida más optimizada */}
         <WaveDivider />
-        <ComparativeTable />
+       
+        <BrandBenefits />
+        
         <div id="pricing" ></div>
         <DeferredComponent
           className="bg-white"

@@ -54,9 +54,9 @@ export function HeroPost({ title, isMaintenanceMode = false }: Readonly<Props & 
 
           {/* Texto */}
           <div className="flex flex-col w-full md:w-3/6 justify-center md:justify-center items-center md:items-start text-center md:text-left">
-            {/* <p className="tracking-loose w-full text-center md:text-left">
-              {t?.heroSlogan || "Made by a VRChat fan for VRChat fans"}
-            </p> */}
+            <p className="tracking-loose w-full text-center md:text-left text-white font-medium mb-2">
+              {t?.heroBrandText || "Precision Engineered for VR Enthusiasts"}
+            </p>
 
             <div className="flex flex-col w-full">
               <h1 className="my-0 text-5xl font-bold leading-tight">{title}</h1>
