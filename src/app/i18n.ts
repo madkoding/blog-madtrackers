@@ -162,7 +162,16 @@ export const translations = {
     paymentFullDesc: "Pay the total and save on future management",
     payAdvanceBtn: "Pay Advance",
     payFullBtn: "Pay Total",
-    poweredBy: "Powered by"
+    poweredBy: "Powered by",
+    // Shipping Countries
+    shippingWorldwideTitle: "Worldwide Shipping",
+    shippingWorldwideDesc: "We ship to Spanish-speaking countries and beyond with secure and reliable delivery",
+    freeShippingTitle: "FREE Shipping",
+    freeShippingDesc: "Free shipping to Chile",
+    internationalShippingTitle: "International Shipping",
+    internationalShippingDesc: "Secure international shipping via UPS",
+    secureShipping: "Secure Shipping",
+    shippingNote: "Shipping costs calculated at checkout based on destination"
   },
   es: {
     home: "Inicio",
@@ -326,7 +335,16 @@ export const translations = {
     paymentFullDesc: "Paga el total y ahorra en futuras gestiones",
     payAdvanceBtn: "Pagar Anticipo",
     payFullBtn: "Pagar Total",
-    poweredBy: "Con la tecnología de"
+    poweredBy: "Con la tecnología de",
+    // Shipping Countries
+    shippingWorldwideTitle: "Envíos Mundiales",
+    shippingWorldwideDesc: "Enviamos a países hispanohablantes y más con entrega segura y confiable",
+    freeShippingTitle: "Envío GRATIS",
+    freeShippingDesc: "Envío gratuito a Chile",
+    internationalShippingTitle: "Envío Internacional", 
+    internationalShippingDesc: "Envío internacional seguro vía UPS",
+    secureShipping: "Envío Seguro",
+    shippingNote: "Costos de envío calculados al momento de pago según destino"
   }
 };
 

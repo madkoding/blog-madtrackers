@@ -2,6 +2,7 @@
 
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
+import ShippingCountries from "./ShippingCountries";
 
 const BrandBenefits = () => {
   const { lang } = useLang();
@@ -99,6 +100,9 @@ const BrandBenefits = () => {
           </div>
         </div>
       </div>
+      
+      {/* Componente de países de envío */}
+      <ShippingCountries />
     </section>
   );
 };
