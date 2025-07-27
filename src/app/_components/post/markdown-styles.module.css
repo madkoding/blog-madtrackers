@@ -1,20 +1,36 @@
 .markdown {
-  @apply text-lg leading-relaxed;
+  @apply text-lg leading-relaxed text-gray-800;
 }
 
 .markdown p,
 .markdown ul,
 .markdown ol,
 .markdown blockquote {
-  @apply my-6;
+  @apply my-6 text-gray-800;
+}
+
+.markdown h1 {
+  @apply text-4xl mt-12 mb-6 leading-snug font-bold text-accent-1;
 }
 
 .markdown h2 {
-  @apply text-3xl mt-12 mb-4 leading-snug font-bold text-accent-7;
+  @apply text-3xl mt-12 mb-4 leading-snug font-bold text-accent-1;
 }
 
 .markdown h3 {
-  @apply text-2xl mt-8 mb-4 leading-snug font-semibold text-accent-7;
+  @apply text-2xl mt-8 mb-4 leading-snug font-semibold text-accent-1;
+}
+
+.markdown h4 {
+  @apply text-xl mt-6 mb-3 leading-snug font-semibold text-accent-1;
+}
+
+.markdown h5 {
+  @apply text-lg mt-6 mb-3 leading-snug font-medium text-accent-1;
+}
+
+.markdown h6 {
+  @apply text-base mt-6 mb-3 leading-snug font-medium text-accent-1;
 }
 
 .markdown ul,
@@ -23,7 +39,7 @@
 }
 
 .markdown li {
-  @apply mb-2;
+  @apply mb-2 text-gray-800;
 }
 
 .markdown blockquote {
@@ -39,7 +55,7 @@
 }
 
 .markdown a {
-  @apply text-cyan hover:underline;
+  @apply text-accent-1 hover:underline font-semibold;
 }
 
 .markdown img {
@@ -60,5 +76,9 @@
 }
 
 .markdown th {
-  @apply bg-accent-2 text-accent-7;
+  @apply bg-accent-2 text-accent-7 font-semibold;
+}
+
+.markdown td {
+  @apply text-gray-800;
 }

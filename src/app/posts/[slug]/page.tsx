@@ -21,8 +21,8 @@ export default async function Post({ params }: Readonly<Params>) {
       <section>
         <div className="pt-8">
           <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
-            <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
-              <h1 className="my-4 text-5xl font-bold leading-tight py-24">
+            <div className="flex flex-col w-full justify-center items-start text-center md:text-left">
+              <h1 className="my-4 text-5xl font-bold leading-tight py-8 pb-16">
                 {post.title}
               </h1>
             </div>

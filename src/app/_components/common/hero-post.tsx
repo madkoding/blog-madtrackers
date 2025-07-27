@@ -59,7 +59,7 @@ export function HeroPost({ title, isMaintenanceMode = false }: Readonly<Props & 
             </p>
 
             <div className="flex flex-col w-full">
-              <h1 className="my-0 text-5xl font-bold leading-tight">{title}</h1>
+              <h1 className="my-0 text-5xl font-bold leading-tight">madTrackers</h1>
               <h3
                 className={`my-0 text-2xl font-bold leading-tight min-h-[2.5rem] transition-all duration-700 ease-in-out ${fade ? 'opacity-100' : 'opacity-0'}`}
                 style={{ transitionProperty: 'opacity' }}

@@ -97,7 +97,7 @@ export function NavBar() {
   if (scrollpos > 10 || isMenuOpen) {
     headerClass = "bg-white shadow";
   } else if (isNotHomePage) {
-    headerClass = "bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 shadow-lg";
+    headerClass = "bg-gradient-to-r from-blue-900 via-blue-700 to-purple-700 shadow-lg";
   }
 
   const navContentClass = scrollpos > 10 || isMenuOpen ? "bg-white" : "";
@@ -110,7 +110,7 @@ export function NavBar() {
   return (
     <nav
       id="header"
-      className={`fixed w-full z-30 top-0 ${headerClass} transition-all duration-300 ease-in-out`}
+      className={`fixed w-full z-10 top-0 ${headerClass} transition-all duration-300 ease-in-out`}
     >
       <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
         <div className="pl-4 flex items-center space-x-2">
