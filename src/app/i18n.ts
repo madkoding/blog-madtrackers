@@ -12,7 +12,7 @@ export const translations = {
     heroButton: "Order a pack now!",
     heroSubtitles: [
       "SlimeVR-Compatible",
-      "Wireless motion capture",
+      "Wireless capture",
       "RealTime animation",
       "Less latency",
       "More precision",
@@ -185,7 +185,7 @@ export const translations = {
     heroButton: "¡Encargar un pack ahora!",
     heroSubtitles: [
       "Compatible con SlimeVR",
-      "Captura de movimiento inalámbrico",
+      "Captura inalámbrica",
       "Animación en tiempo real",
       "Menos latencia",
       "Más precisión",
