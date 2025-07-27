@@ -5,7 +5,7 @@ import { useRef, useEffect, useState } from "react";
 
 const ShippingCountries = () => {
   const { lang } = useLang();
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLButtonElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [currentTransform, setCurrentTransform] = useState(0);
@@ -128,13 +128,14 @@ const ShippingCountries = () => {
           </div>
 
           {/* Carrusel infinito de banderas */}
-          <div className="relative overflow-hidden rounded-lg">
-            <div 
+          <section 
+            className="relative overflow-hidden rounded-lg"
+            aria-label={lang === 'es' ? 'Carrusel de países con envío disponible' : 'Carousel of countries with shipping available'}
+          >
+            <button
               ref={carouselRef}
-              className="flex select-none cursor-grab"
-              role="slider"
-              aria-label={lang === 'es' ? 'Carrusel de países con envío disponible' : 'Carousel of countries with shipping available'}
-              tabIndex={0}
+              className="flex select-none cursor-grab w-full border-0 p-0 bg-transparent"
+              aria-label={lang === 'es' ? 'Carrusel interactivo de países. Use las flechas del teclado o arrastre para navegar' : 'Interactive countries carousel. Use arrow keys or drag to navigate'}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -201,8 +202,8 @@ const ShippingCountries = () => {
                   )}
                 </div>
               ))}
-            </div>
-          </div>
+            </button>
+          </section>
         </div>
       </div>
     </div>

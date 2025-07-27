@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface PriceCalculation {
   basePrice: number;
@@ -33,13 +33,13 @@ export function usePricing({ sensorId, trackerId, quantity, countryCode }: UsePr
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 
-  const scheduleRetry = () => {
+  const scheduleRetry = useCallback(() => {
     if (retryCount < 3) {
       setTimeout(() => {
         setRetryCount(prev => prev + 1);
       }, 2000);
     }
-  };
+  }, [retryCount]);
 
   useEffect(() => {
     const calculatePricing = async () => {
@@ -93,7 +93,7 @@ export function usePricing({ sensorId, trackerId, quantity, countryCode }: UsePr
     };
 
     calculatePricing();
-  }, [sensorId, trackerId, quantity, countryCode, retryCount]);
+  }, [sensorId, trackerId, quantity, countryCode, retryCount, scheduleRetry]);
 
   return {
     pricing,

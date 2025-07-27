@@ -11,7 +11,7 @@ type Props = {
   subtitle?: string;
 };
 
-export function HeroPost({ title, isMaintenanceMode = false }: Readonly<Props & { isMaintenanceMode?: boolean }>) {
+export function HeroPost({ isMaintenanceMode = false }: Readonly<Props & { isMaintenanceMode?: boolean }>) {
   const { lang } = useLang();
   const t = translations[lang];
   const subtitles = t.heroSubtitles || [];
