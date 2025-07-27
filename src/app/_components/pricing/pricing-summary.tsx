@@ -17,6 +17,10 @@ export interface PricingSummaryProps {
   currencySymbol: string;
   /** Tasa de conversión de 1 USD a moneda local. */
   exchangeRate: number;
+  /** Indica si los precios están cargando. */
+  isLoading?: boolean;
+  /** Indica si los precios son válidos. */
+  isValid?: boolean;
 }
 
 /**
@@ -56,13 +60,16 @@ const PricingSummary: React.FC<PricingSummaryProps> = React.memo(({
   currency,
   currencySymbol,
   exchangeRate,
+  isLoading = false,
+  isValid = true,
 }) => {
   const { lang } = useLang();
   const t = translations[lang];
 
+  // Calcular valores solo si tenemos datos válidos
   const { totalLocal, shippingLocal, showUsdEquivalent } = useMemo(() => ({
-    totalLocal: Number(totalPrice),
-    shippingLocal: Number(shippingPrice),
+    totalLocal: Number(totalPrice) || 0,
+    shippingLocal: Number(shippingPrice) || 0,
     showUsdEquivalent: currency !== "USD"
   }), [totalPrice, shippingPrice, currency]);
 
@@ -71,8 +78,8 @@ const PricingSummary: React.FC<PricingSummaryProps> = React.memo(({
     shippingUsd: showUsdEquivalent ? shippingLocal / exchangeRate : undefined
   }), [showUsdEquivalent, totalLocal, shippingLocal, exchangeRate]);
 
-  const formattedTotalPrice = useMemo(() => formatPrice(totalPrice), [totalPrice]);
-  const formattedShippingPrice = useMemo(() => formatPrice(shippingPrice), [shippingPrice]);
+  const formattedTotalPrice = useMemo(() => formatPrice(totalPrice || "0"), [totalPrice]);
+  const formattedShippingPrice = useMemo(() => formatPrice(shippingPrice || "0"), [shippingPrice]);
   const formattedUsdTotal = useMemo(() => 
     totalUsd ? formatUsd(totalUsd) : undefined,
     [totalUsd]
@@ -81,6 +88,30 @@ const PricingSummary: React.FC<PricingSummaryProps> = React.memo(({
     shippingUsd ? formatUsd(shippingUsd) : undefined,
     [shippingUsd]
   );
+
+  // Si está cargando, mostrar placeholders
+  if (isLoading) {
+    return (
+      <div className="text-center mt-6 animate-pulse">
+        <div className="h-6 bg-gray-300 rounded mb-2 w-48 mx-auto"></div>
+        <div className="h-4 bg-gray-300 rounded w-32 mx-auto"></div>
+      </div>
+    );
+  }
+
+  // Si no es válido, mostrar mensaje de error o placeholder
+  if (!isValid) {
+    return (
+      <div className="text-center mt-6">
+        <h2 className="text-xl font-semibold text-gray-400">
+          {t.total}: ---
+        </h2>
+        <p className="text-center text-gray-400">
+          + {t.shipping}: ---
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="text-center mt-6">

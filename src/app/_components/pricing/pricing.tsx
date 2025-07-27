@@ -44,7 +44,7 @@ const Pricing = () => {
   const t = translations[lang];
 
   // Hook para obtener precios desde el backend
-  const { pricing } = usePricing({
+  const { pricing, loading: pricingLoading, error: pricingError } = usePricing({
     sensorId: selectedSensor.id,
     trackerId: selectedTrackerType.id,
     quantity: selectedQuantity,
@@ -54,6 +54,13 @@ const Pricing = () => {
   const formatPrice = (price: string) => {
     return new Intl.NumberFormat("es-ES").format(Number(price));
   };
+
+  // Validar que los precios sean válidos antes de mostrar los botones de pago
+  const isPricingValid = pricing && 
+    pricing.prices.totalLocal > 0 && 
+    pricing.prices.totalUsd > 0 && 
+    !pricingLoading && 
+    !pricingError;
 
   useEffect(() => {
     const TTL = 2 * 60 * 1000; // 2 minutos en milisegundos
@@ -128,6 +135,9 @@ const Pricing = () => {
   const shippingPrice = pricing?.prices.shippingLocal.toString() || "0";
   const exchangeRate = pricing?.currency.exchangeRate || 1;
 
+  // Validación adicional para asegurar que los precios sean válidos y no sean cero
+  const isPricingValidAndNonZero = isPricingValid && parseFloat(totalPrice) > 0;
+
   return (
     <section className="py-4 px-4 bg-white text-black">
       <div className="bg-gray-100 p-4 rounded-lg shadow-lg max-w-2xl mx-auto text-center">
@@ -176,21 +186,33 @@ const Pricing = () => {
           currency={currency}
           currencySymbol={currencySymbol}
           exchangeRate={exchangeRate}
+          isLoading={pricingLoading}
+          isValid={Boolean(isPricingValidAndNonZero)}
         />
 
         <h3 className="p-5 text-sm font-semibold">{t.buildTime}</h3>
         <h3 className="p-3 text-sm font-semibold">{t.includes}</h3>
         <h3 className="p-3 text-sm font-semibold">
           {t.partialPayment}
-          {currencySymbol +
+          {isPricingValidAndNonZero ? (
+            currencySymbol +
             formatPrice((parseFloat(totalPrice) / 4).toString()) +
             " " +
-            currency}
+            currency
+          ) : (
+            "..."
+          )}
           , {t.continuePayment}.
         </h3>
         <button
-          className="mx-auto hover:underline bg-green-500 hover:bg-green-600 text-white font-bold rounded-full mt-4 py-4 px-8 shadow opacity-100 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out flex items-center justify-center gap-2"
+          className={`mx-auto hover:underline font-bold rounded-full mt-4 py-4 px-8 shadow focus:outline-none focus:shadow-outline transform transition duration-300 ease-in-out flex items-center justify-center gap-2 ${
+            isPricingValidAndNonZero 
+              ? 'bg-green-500 hover:bg-green-600 text-white opacity-100 hover:scale-105' 
+              : 'bg-gray-400 text-gray-600 opacity-50 cursor-not-allowed'
+          }`}
           onClick={() => {
+            if (!isPricingValidAndNonZero) return;
+            
             const message = encodeURIComponent(
               `Hola, quiero encargar estos trackers.
 - País: ${currency}
@@ -204,6 +226,7 @@ const Pricing = () => {
 
             window.open(`https://wa.me/56975746099?text=${message}`, "_blank");
           }}
+          disabled={!isPricingValidAndNonZero}
         >
           <svg 
             width="20" 
@@ -218,17 +241,47 @@ const Pricing = () => {
         </button>
 
         <br />
-        {currency === "CLP" ? (
-          <FlowPayment
-            amount={(parseFloat(totalPrice) / 4)}
-            description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
-          />
-        ) : (
-          <PaypalButton 
-            amount={(pricing?.prices.totalUsd || 0) / 4} // Precio del anticipo (25%) en USD
-            description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
-          />
-        )}
+        {(() => {
+          if (pricingLoading) {
+            return (
+              <div className="flex justify-center items-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <span className="ml-2 text-gray-600">Calculando precios...</span>
+              </div>
+            );
+          }
+          
+          if (pricingError) {
+            return (
+              <div className="text-red-600 text-center py-4">
+                Error al calcular precios. Por favor, recarga la página.
+              </div>
+            );
+          }
+          
+          if (!isPricingValidAndNonZero) {
+            return null;
+          }
+          
+          const advanceAmount = Math.round(parseFloat(totalPrice) / 4);
+          const advanceAmountUsd = Math.round((pricing?.prices.totalUsd || 0) / 4 * 100) / 100;
+          
+          if (currency === "CLP") {
+            return (
+              <FlowPayment
+                amount={advanceAmount}
+                description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
+              />
+            );
+          }
+          
+          return (
+            <PaypalButton 
+              amount={advanceAmountUsd}
+              description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
+            />
+          );
+        })()}
       </div>
     </section>
   );

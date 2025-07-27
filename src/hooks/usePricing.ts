@@ -29,17 +29,29 @@ interface UsePricingParams {
 
 export function usePricing({ sensorId, trackerId, quantity, countryCode }: UsePricingParams) {
   const [pricing, setPricing] = useState<PriceResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Empezar en true para evitar flash de contenido
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+
+  const scheduleRetry = () => {
+    if (retryCount < 3) {
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1);
+      }, 2000);
+    }
+  };
 
   useEffect(() => {
     const calculatePricing = async () => {
+      // Validar que tenemos todos los parámetros necesarios
       if (!sensorId || !trackerId || !quantity || !countryCode) {
+        setLoading(false);
         return;
       }
 
       setLoading(true);
       setError(null);
+      // No limpiar pricing aquí para evitar flash de datos vacíos
 
       try {
         const response = await fetch('/api/pricing/calculate', {
@@ -60,17 +72,28 @@ export function usePricing({ sensorId, trackerId, quantity, countryCode }: UsePr
         }
 
         const data: PriceResponse = await response.json();
-        setPricing(data);
+        
+        // Validar que los datos recibidos son válidos
+        if (data?.prices?.totalLocal > 0 && data?.prices?.totalUsd > 0) {
+          setPricing(data);
+          setRetryCount(0); // Reset retry count on success
+        } else {
+          throw new Error('Datos de precios inválidos recibidos del servidor');
+        }
       } catch (err) {
+        console.error('Error calculando precios:', err);
         setError(err instanceof Error ? err.message : 'Error desconocido');
-        setPricing(null);
+        
+        // Retry automático después de 2 segundos, máximo 3 intentos
+        scheduleRetry();
+        // No limpiar pricing en caso de error para mantener los últimos valores válidos
       } finally {
         setLoading(false);
       }
     };
 
     calculatePricing();
-  }, [sensorId, trackerId, quantity, countryCode]);
+  }, [sensorId, trackerId, quantity, countryCode, retryCount]);
 
   return {
     pricing,
@@ -78,8 +101,9 @@ export function usePricing({ sensorId, trackerId, quantity, countryCode }: UsePr
     error,
     refresh: () => {
       if (sensorId && trackerId && quantity && countryCode) {
-        // Trigger recalculation
-        setPricing(null);
+        // Forzar recálculo manteniendo el estado de carga
+        setLoading(true);
+        setError(null);
       }
     }
   };
