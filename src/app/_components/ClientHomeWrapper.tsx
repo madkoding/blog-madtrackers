@@ -7,6 +7,7 @@ import WaveDivider from "../_components/common/wave-divider";
 import DeferredComponent from "../_components/common/DeferredLoading";
 import dynamic from "next/dynamic";
 import BrandBenefits from "../_components/common/BrandBenefits";
+import { useLang } from "@/app/lang-context";
 
 // Lazy load del componente de pricing que no es crítico para First Paint
 const Pricing = dynamic(() => import("../_components/pricing/pricing"), {
@@ -72,16 +73,24 @@ class ClientErrorBoundary extends React.Component<
 }
 
 export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapperProps>) {
+  const { lang } = useLang();
   const heroPost = allPosts[0];
   
   // Determinar qué componente mostrar basado en la variable de entorno
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
 
+  // Obtener contenido según el idioma
+  const heroContent = lang === 'es' ? heroPost.es : heroPost.en;
+
   return (
     <ClientErrorBoundary>
       <main>
         {/* Contenido crítico above-the-fold */}
-        <HeroPost title={heroPost.title} subtitle={heroPost.subtitle} isMaintenanceMode={isMaintenanceMode} />
+        <HeroPost 
+          title={heroContent.title} 
+          subtitle={heroContent.subtitle} 
+          isMaintenanceMode={isMaintenanceMode} 
+        />
         
         <WaveDivider />
        

@@ -2,9 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/api";
 import markdownToHtml from "@/lib/markdownToHtml";
-import Container from "@/app/_components/common/container";
-import { PostBody } from "@/app/_components/post/post-body";
-import WaveDivider from "@/app/_components/common/wave-divider";
+import PostClientWrapper from "./PostClientWrapper";
 
 export default async function Post({ params }: Readonly<Params>) {
   const resolvedParams = await params;
@@ -14,28 +12,16 @@ export default async function Post({ params }: Readonly<Params>) {
     return notFound();
   }
 
-  const content = await markdownToHtml(post.content || "");
+  // Pre-renderizar contenido en ambos idiomas
+  const esContent = await markdownToHtml(post.es.content || "");
+  const enContent = await markdownToHtml(post.en.content || "");
 
   return (
-    <main>
-      <section>
-        <div className="pt-8">
-          <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
-            <div className="flex flex-col w-full justify-center items-start text-center md:text-left">
-              <h1 className="my-4 text-5xl font-bold leading-tight py-8 pb-16">
-                {post.title}
-              </h1>
-            </div>
-          </div>
-        </div>
-      </section>
-      <WaveDivider />
-      <Container>
-        <article className="mb-32">
-          <PostBody content={content} />
-        </article>
-      </Container>
-    </main>
+    <PostClientWrapper 
+      post={post}
+      esContent={esContent}
+      enContent={enContent}
+    />
   );
 }
 
@@ -50,10 +36,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const post = getPostBySlug(resolvedParams.slug);
 
   if (!post) {
-    return notFound();
+    return {};
   }
 
-  const title = `${post.title}`;
+  // Usar el título en español por defecto para metadata
+  const title = post.es.title;
 
   return {
     title,

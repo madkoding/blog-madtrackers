@@ -48,8 +48,23 @@ const Footer: React.FC<FooterProps> = () => {
               </Link>
             </li>
             <li>
-              <Link href="/contacto" className="hover:text-white">
-                {t.contact}
+              <Link href="/posts/Configuracion_Inicial" className="hover:text-white">
+                {t.firstConfig}
+              </Link>
+            </li>
+            <li>
+              <Link href="/posts/politica_retorno" className="hover:text-white">
+                {lang === 'es' ? 'Política de Devolución' : 'Return Policy'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/posts/terminos_y_condiciones" className="hover:text-white">
+                {lang === 'es' ? 'Términos y Condiciones' : 'Terms & Conditions'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/posts/politica_privacidad" className="hover:text-white">
+                {lang === 'es' ? 'Política de Privacidad' : 'Privacy Policy'}
               </Link>
             </li>
           </ul>

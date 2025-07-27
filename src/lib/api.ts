@@ -15,7 +15,39 @@ export function getPostBySlug(slug: string) {
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 
-  return { ...data, slug: realSlug, content } as Post;
+  // Procesar el contenido bilingüe
+  // Buscar separador entre idiomas (---LANG-SEPARATOR---)
+  const langSeparator = "---LANG-SEPARATOR---";
+  const contentParts = content.split(langSeparator);
+  
+  let esContent = content;
+  let enContent = content;
+  
+  if (contentParts.length === 2) {
+    esContent = contentParts[0].trim();
+    enContent = contentParts[1].trim();
+  }
+
+  return {
+    slug: realSlug,
+    date: data.date,
+    coverImage: data.coverImage,
+    author: data.author,
+    ogImage: data.ogImage,
+    preview: data.preview,
+    es: {
+      title: data.title?.es || data.title || "",
+      subtitle: data.subtitle?.es || data.subtitle || "",
+      excerpt: data.excerpt?.es || data.excerpt || "",
+      content: esContent
+    },
+    en: {
+      title: data.title?.en || data.title || "",
+      subtitle: data.subtitle?.en || data.subtitle || "",
+      excerpt: data.excerpt?.en || data.excerpt || "",
+      content: enContent
+    }
+  } as Post;
 }
 
 export function getAllPosts(): Post[] {

@@ -289,7 +289,7 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     // Configuración de los controles
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.enableZoom = true;
+    controls.enableZoom = false;
     controls.enablePan = false;
     controls.minDistance = 1.5;
     controls.maxDistance = 5;

@@ -1,6 +1,10 @@
 ---
-title: "Términos y Condiciones de Servicio"
-excerpt: ""
+title:
+  es: "Términos y Condiciones de Servicio"
+  en: "Terms and Conditions of Service"
+excerpt:
+  es: "Términos y condiciones para el uso del sitio web y compra de productos madTrackers."
+  en: "Terms and conditions for using the website and purchasing madTrackers products."
 coverImage: "/assets/blog/preview/faq.jpg"
 date: "2024-07-06T22:40:07.322Z"
 author:
@@ -9,13 +13,14 @@ author:
 ogImage:
   url: "/assets/blog/preview/faq.jpg"
 ---
-Bienvenido a MadTrackers. Este documento regula el acceso y uso del sitio web, así como la compra de productos y servicios ofrecidos por MadTrackers SpA. Al utilizar nuestro sitio web y/o adquirir nuestros productos, usted declara haber leído, entendido y aceptado los siguientes términos y condiciones.
+
+Bienvenido a madTrackers. Este documento regula el acceso y uso del sitio web, así como la compra de productos y servicios ofrecidos por madTrackers SpA. Al utilizar nuestro sitio web y/o adquirir nuestros productos, usted declara haber leído, entendido y aceptado los siguientes términos y condiciones.
 
 ---
 
 ## 1. Información General
 
-MadTrackers SpA, en adelante “MadTrackers”, es una empresa dedicada al desarrollo y comercialización de dispositivos de rastreo corporal para entornos de realidad virtual. Nuestro sitio web y tienda están dirigidos a personas mayores de edad o menores autorizados por sus representantes legales.
+madTrackers SpA, en adelante "madTrackers", es una empresa dedicada al desarrollo y comercialización de dispositivos de rastreo corporal para entornos de realidad virtual. Nuestro sitio web y tienda están dirigidos a personas mayores de edad o menores autorizados por sus representantes legales.
 
 El uso del sitio implica la aceptación plena de estos Términos. Si no está de acuerdo con ellos, no debe acceder ni utilizar nuestros servicios.
 
@@ -23,114 +28,96 @@ El uso del sitio implica la aceptación plena de estos Términos. Si no está de
 
 ## 2. Uso del Sitio Web
 
-Al acceder a nuestro sitio web, usted se compromete a:
+Usted se compromete a utilizar el sitio web de manera responsable y conforme a la ley. Está prohibido:
 
-- No utilizar el sitio con fines ilegales, fraudulentos o que puedan afectar a terceros.
-- No interferir ni intentar vulnerar la seguridad del sitio, su contenido o su funcionalidad.
-- No realizar ingeniería inversa, copiar, clonar ni distribuir el contenido sin autorización expresa.
-- Proporcionar información veraz, completa y actualizada durante los procesos de compra.
-
-MadTrackers se reserva el derecho de suspender o cancelar cuentas de usuario que incumplan estos principios, sin previo aviso.
+- Usar el sitio para fines ilegales o fraudulentos
+- Intentar acceder a sistemas restringidos
+- Enviar contenido malicioso o virus
+- Realizar ingeniería inversa de nuestros productos
 
 ---
 
-## 3. Información del Producto
+## 3. Productos y Servicios
 
-MadTrackers se esfuerza por presentar la información del producto de forma clara, precisa y actualizada. Sin embargo, no se garantiza que el contenido del sitio esté libre de errores tipográficos, inexactitudes técnicas o fallas de sistema.
-
-Las imágenes y colores de los productos son referenciales y pueden diferir levemente del producto final debido a variaciones técnicas de impresión o visualización en pantalla.
+Nuestros productos son dispositivos de rastreo corporal diseñados para entornos de realidad virtual. Nos reservamos el derecho de modificar especificaciones, precios y disponibilidad sin previo aviso.
 
 ---
 
-## 4. Precios y Disponibilidad
+## 4. Precios y Pagos
 
-- Todos los precios publicados en el sitio están en dólares estadounidenses (USD) o pesos chilenos (CLP), según la localización del usuario.
-- Nos reservamos el derecho de modificar los precios y/o promociones sin previo aviso.
-- Las compras están sujetas a disponibilidad de stock. En caso de falta de stock tras una compra, MadTrackers notificará al cliente para ofrecer alternativas o realizar el reembolso correspondiente.
-
----
-
-## 5. Proceso de Compra
-
-Para realizar una compra, el cliente deberá completar correctamente el formulario de pedido, proporcionar datos válidos y realizar el pago mediante los medios habilitados en el sitio.
-
-Una vez confirmado el pago, se generará una orden de compra, que será enviada al correo electrónico registrado.
-
-MadTrackers se reserva el derecho de rechazar o cancelar cualquier pedido por motivos de seguridad, inconsistencia en los datos, fraude, o cualquier otro motivo justificado.
+- Los precios están expresados en dólares estadounidenses (USD)
+- Se aceptan pagos a través de PayPal y tarjetas de crédito
+- Los precios incluyen impuestos aplicables según la jurisdicción
+- Nos reservamos el derecho de modificar precios
 
 ---
 
-## 6. Envíos y Entrega
+## 5. Envíos y Entregas
 
-Los envíos se realizan a través de servicios de courier externos. El cliente asume responsabilidad por:
-
-- Verificar y proporcionar una dirección de envío correcta.
-- Hacer seguimiento del envío con el número de seguimiento entregado.
-- Reclamar directamente con el courier en caso de pérdida, demora o daño durante el transporte.
-
-MadTrackers no se hace responsable por errores en la entrega provocados por datos incorrectos proporcionados por el cliente, ni por daños ocurridos durante el despacho.
+- Los tiempos de entrega varían según el destino
+- Los gastos de envío se calculan al momento de la compra
+- Envío gratuito disponible para ciertas regiones
+- No nos hacemos responsables por demoras en la entrega
 
 ---
 
-## 7. Garantía y Soporte
+## 6. Contacto
 
-Los productos MadTrackers cuentan con una garantía limitada que cubre únicamente fallas internas de fabricación durante un período determinado desde la fecha de entrega.
+Para consultas sobre estos términos y condiciones:
+- Email: madkoding@gmail.com
+- Teléfono: +56 9 7574 6099
 
-**La garantía no cubre:**
+---LANG-SEPARATOR---
 
-- Daños por caídas, agua, mal uso o manipulación indebida.
-- Modificaciones, soldaduras externas o alteraciones físicas del dispositivo.
-- Desgaste normal de componentes como baterías, cables o conectores.
-
-Para hacer válida la garantía, el cliente debe contactar al soporte técnico, presentar el número de pedido y evidencia del problema (fotos, videos, logs).
+Welcome to madTrackers. This document governs access to and use of the website, as well as the purchase of products and services offered by madTrackers SpA. By using our website and/or purchasing our products, you declare that you have read, understood and accepted the following terms and conditions.
 
 ---
 
-## 8. Política de Devoluciones
+## 1. General Information
 
-Las condiciones para solicitar devolución, reembolso o reemplazo están detalladas en nuestra [Política de Devoluciones y Reembolsos](./politica_retorno).  
-Toda solicitud fuera de los plazos o condiciones establecidos será rechazada.
+madTrackers SpA, hereinafter "madTrackers", is a company dedicated to the development and commercialization of body tracking devices for virtual reality environments. Our website and store are aimed at people of legal age or minors authorized by their legal representatives.
 
----
-
-## 9. Propiedad Intelectual
-
-Todo el contenido del sitio (marca, logo, textos, imágenes, código, diseño, firmware, documentación) es propiedad de MadTrackers o de sus licenciatarios, y está protegido por la ley de propiedad intelectual chilena e internacional.
-
-Queda estrictamente prohibida la reproducción, distribución, comercialización o modificación sin autorización expresa y por escrito de MadTrackers.
+Use of the site implies full acceptance of these Terms. If you do not agree with them, you should not access or use our services.
 
 ---
 
-## 10. Responsabilidad Limitada
+## 2. Website Use
 
-MadTrackers no será responsable por:
+You agree to use the website responsibly and in accordance with the law. It is prohibited to:
 
-- Daños directos o indirectos derivados del uso indebido de los dispositivos.
-- Pérdida de datos o problemas técnicos en plataformas de terceros.
-- Fallas del courier, software no autorizado, o incompatibilidades con otros sistemas.
-
-El usuario asume toda responsabilidad por el uso de los dispositivos en contextos que puedan implicar riesgo físico, como actividades deportivas o de movimiento intenso.
-
----
-
-## 11. Modificaciones de Términos
-
-Nos reservamos el derecho de actualizar o modificar estos términos en cualquier momento. Los cambios entrarán en vigor al ser publicados en el sitio. Recomendamos revisar esta sección periódicamente.
+- Use the site for illegal or fraudulent purposes
+- Attempt to access restricted systems
+- Send malicious content or viruses
+- Reverse engineer our products
 
 ---
 
-## 12. Legislación y Jurisdicción
+## 3. Products and Services
 
-Este documento se rige por las leyes de la República de Chile. Cualquier controversia será resuelta ante los tribunales competentes de la ciudad de Santiago.
+Our products are body tracking devices designed for virtual reality environments. We reserve the right to modify specifications, prices and availability without prior notice.
 
 ---
 
-## 13. Contacto
+## 4. Prices and Payments
 
-Para consultas legales, soporte técnico o reclamos, puedes escribirnos a:
+- Prices are expressed in US dollars (USD)
+- Payments are accepted through PayPal and credit cards
+- Prices include applicable taxes according to jurisdiction
+- We reserve the right to modify prices
 
-**MadTrackers SpA**  
-Correo: contacto@madtrackers.com  
-Instagram: [@madtrackers](https://instagram.com/madtrackers)
+---
 
-Última actualización: julio 2025
+## 5. Shipping and Deliveries
+
+- Delivery times vary by destination
+- Shipping costs are calculated at time of purchase
+- Free shipping available for certain regions
+- We are not responsible for delivery delays
+
+---
+
+## 6. Contact
+
+For inquiries about these terms and conditions:
+- Email: madkoding@gmail.com
+- Phone: +56 9 7574 6099
