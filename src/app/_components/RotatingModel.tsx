@@ -24,7 +24,9 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   const normalTextureRef = useRef<import('three').Texture | null>(null);
   const rendererRef = useRef<import('three').WebGLRenderer | null>(null);
   const cameraRef = useRef<import('three').PerspectiveCamera | null>(null);
+  const controlsRef = useRef<import('three/examples/jsm/controls/OrbitControls.js').OrbitControls | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const isUserInteractingRef = useRef(false);
 
   // ResizeObserver para ajustar el renderer y la cámara
   useEffect(() => {
@@ -52,6 +54,13 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     if (typeof window !== 'undefined') {
       testThreeJS();
     }
+    
+    // Cleanup function para limpiar los controles al desmontar
+    return () => {
+      if (controlsRef.current) {
+        controlsRef.current.dispose();
+      }
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -106,12 +115,13 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
 
   const testThreeJS = async () => {
     try {
-      const [THREE, { FBXLoader }, { RGBELoader }] = await Promise.all([
+      const [THREE, { FBXLoader }, { RGBELoader }, { OrbitControls }] = await Promise.all([
         import('three'),
         import('three/examples/jsm/loaders/FBXLoader.js'),
-        import('three/examples/jsm/loaders/RGBELoader.js')
+        import('three/examples/jsm/loaders/RGBELoader.js'),
+        import('three/examples/jsm/controls/OrbitControls.js')
       ]);
-      createBasicScene(THREE, FBXLoader, RGBELoader);
+      createBasicScene(THREE, FBXLoader, RGBELoader, OrbitControls);
     } catch {
       // error silencioso
     }
@@ -268,18 +278,58 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     return newMat;
   }
 
+  // Función auxiliar para configurar los controles de órbita
+  function setupOrbitControls(
+    OrbitControls: new (camera: import('three').Camera, domElement: HTMLElement) => import('three/examples/jsm/controls/OrbitControls.js').OrbitControls,
+    camera: import('three').PerspectiveCamera,
+    renderer: import('three').WebGLRenderer
+  ): import('three/examples/jsm/controls/OrbitControls.js').OrbitControls {
+    const controls = new OrbitControls(camera, renderer.domElement);
+    
+    // Configuración de los controles
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = true;
+    controls.enablePan = false;
+    controls.minDistance = 1.5;
+    controls.maxDistance = 5;
+    
+    // Eventos para detectar cuando el usuario está interactuando
+    controls.addEventListener('start', () => {
+      isUserInteractingRef.current = true;
+    });
+    
+    controls.addEventListener('end', () => {
+      isUserInteractingRef.current = false;
+    });
+    
+    return controls;
+  }
+
   // Función auxiliar para animar el modelo
   function animateModel(
     fbx: import('three').Group,
     renderer: import('three').WebGLRenderer,
     scene: import('three').Scene,
-    camera: import('three').PerspectiveCamera
+    camera: import('three').PerspectiveCamera,
+    isUserInteractingRef: React.MutableRefObject<boolean>,
+    controls?: import('three/examples/jsm/controls/OrbitControls.js').OrbitControls
   ) {
     const animate = () => {
       requestAnimationFrame(animate);
-      fbx.rotation.x += FBX_MODEL_ROTATION_SPEED_X;
-      fbx.rotation.y += FBX_MODEL_ROTATION_SPEED_Y;
-      fbx.rotation.z += FBX_MODEL_ROTATION_SPEED_Z;
+      
+      // Solo rotar automáticamente si el usuario no está interactuando
+      if (!isUserInteractingRef.current) {
+        fbx.rotation.x += FBX_MODEL_ROTATION_SPEED_X;
+        fbx.rotation.y += FBX_MODEL_ROTATION_SPEED_Y;
+        fbx.rotation.z += FBX_MODEL_ROTATION_SPEED_Z;
+      }
+      
+      // Actualizar controles si existen
+      if (controls) {
+        controls.update();
+      }
+      
       renderer.render(scene, camera);
     };
     animate();
@@ -289,7 +339,8 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   const createBasicScene = (
     THREE: typeof import('three'),
     FBXLoader: new () => { load: (url: string, onLoad: (fbx: import('three').Group) => void, onProgress?: (event: ProgressEvent<EventTarget>) => void, onError?: (event: unknown) => void) => void },
-    RGBELoader: new () => { load: (url: string, onLoad: (texture: import('three').Texture) => void) => void }
+    RGBELoader: new () => { load: (url: string, onLoad: (texture: import('three').Texture) => void) => void },
+    OrbitControls: new (camera: import('three').Camera, domElement: HTMLElement) => import('three/examples/jsm/controls/OrbitControls.js').OrbitControls
   ) => {
     try {
       if (!containerRef.current) return;
@@ -306,6 +357,11 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       loadEnvironment(RGBELoader, THREE, scene);
       addLights(THREE, scene);
       const normalTexture = loadNormalTexture(THREE, normalTextureRef);
+      
+      // Configurar controles de órbita
+      const controls = setupOrbitControls(OrbitControls, camera, renderer);
+      controlsRef.current = controls;
+      
       const loader = new FBXLoader();
       loader.load(
         '/models/SmolModel.fbx',
@@ -314,7 +370,7 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
           applyMaterials(THREE, fbx, normalTexture, colors);
           scene.add(fbx);
           modelRef.current = fbx;
-          animateModel(fbx, renderer, scene, camera);
+          animateModel(fbx, renderer, scene, camera, isUserInteractingRef, controls);
           setLoading(false);
         },
         undefined,

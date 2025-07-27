@@ -1,13 +1,76 @@
 "use client";
 
 import { useLang } from "../../lang-context";
+import { useRef, useEffect, useState } from "react";
 
 const ShippingCountries = () => {
   const { lang } = useLang();
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [currentTransform, setCurrentTransform] = useState(0);
+
+  // Auto-scroll animation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isDragging && carouselRef.current) {
+        setCurrentTransform(prev => {
+          const newValue = prev - 1;
+          const maxScroll = carouselRef.current!.scrollWidth / 2;
+          return Math.abs(newValue) >= maxScroll ? 0 : newValue;
+        });
+      }
+    }, 16);
+
+    return () => clearInterval(interval);
+  }, [isDragging]);
+
+  // Apply transform
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.style.transform = `translateX(${currentTransform}px)`;
+    }
+  }, [currentTransform]);
+
+  // Drag handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setStartX(e.clientX - currentTransform);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const newX = e.clientX - startX;
+    setCurrentTransform(newX);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  // Touch handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    setStartX(e.touches[0].clientX - currentTransform);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const newX = e.touches[0].clientX - startX;
+    setCurrentTransform(newX);
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
 
   const countries = [
-    // Chile - envío gratis
-    { name: "Chile", flag: "🇨🇱", shipping: "free" },
     // Países hispanohablantes
     { name: "España", flag: "🇪🇸", shipping: "ups" },
     { name: "México", flag: "🇲🇽", shipping: "ups" },
@@ -17,8 +80,9 @@ const ShippingCountries = () => {
     { name: "Venezuela", flag: "🇻🇪", shipping: "ups" },
     { name: "Ecuador", flag: "🇪🇨", shipping: "ups" },
     { name: "Guatemala", flag: "🇬🇹", shipping: "ups" },
-    { name: "Cuba", flag: "🇨🇺", shipping: "ups" },
     { name: "Bolivia", flag: "🇧🇴", shipping: "ups" },
+    // Chile - envío gratis
+    { name: "Chile", flag: "🇨🇱", shipping: "free" },
     { name: "República Dominicana", flag: "🇩🇴", shipping: "ups" },
     { name: "Honduras", flag: "🇭🇳", shipping: "ups" },
     { name: "Paraguay", flag: "🇵🇾", shipping: "ups" },
@@ -65,25 +129,40 @@ const ShippingCountries = () => {
 
           {/* Carrusel infinito de banderas */}
           <div className="relative overflow-hidden rounded-lg">
-            <div className="flex animate-scroll">
+            <div 
+              ref={carouselRef}
+              className="flex select-none cursor-grab"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              style={{ 
+                userSelect: 'none',
+                cursor: isDragging ? 'grabbing' : 'grab',
+                touchAction: 'none' // Previene el scroll nativo en móviles
+              }}
+            >
               {/* Primera copia de países */}
               {countries.map((country) => (
                 <div
                   key={`first-${country.name}`}
-                  className={`flex flex-col items-center rounded-lg transition-all duration-300 hover:scale-105 mx-3 min-w-[160px] ${
+                  className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] ${
                     country.shipping === "free" 
                       ? "bg-green-50" 
                       : "bg-gray-50"
                   }`}
                 >
-                  <div className="text-8xl mb-2">
+                  <div className="text-6xl sm:text-8xl mb-1 sm:mb-2">
                     {country.flag}
                   </div>
-                  <p className="text-sm text-center font-medium text-gray-700 whitespace-nowrap">
+                  <p className="text-xs sm:text-sm text-center font-medium text-gray-700 whitespace-nowrap px-1">
                     {country.name}
                   </p>
                   {country.shipping === "free" && (
-                    <span className="text-sm text-green-600 font-bold mt-2">
+                    <span className="text-xs sm:text-sm text-green-600 font-bold mt-1 sm:mt-2">
                       {lang === 'es' ? 'GRATIS' : 'FREE'}
                     </span>
                   )}
@@ -93,20 +172,20 @@ const ShippingCountries = () => {
               {countries.map((country) => (
                 <div
                   key={`second-${country.name}`}
-                  className={`flex flex-col items-center rounded-lg transition-all duration-300 hover:scale-105 mx-3 min-w-[160px] ${
+                  className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] ${
                     country.shipping === "free" 
                       ? "bg-green-50" 
                       : "bg-gray-50"
                   }`}
                 >
-                  <div className="text-8xl mb-2">
+                  <div className="text-6xl sm:text-8xl mb-1 sm:mb-2">
                     {country.flag}
                   </div>
-                  <p className="text-sm text-center font-medium text-gray-700 whitespace-nowrap">
+                  <p className="text-xs sm:text-sm text-center font-medium text-gray-700 whitespace-nowrap px-1">
                     {country.name}
                   </p>
                   {country.shipping === "free" && (
-                    <span className="text-sm text-green-600 font-bold mt-2">
+                    <span className="text-xs sm:text-sm text-green-600 font-bold mt-1 sm:mt-2">
                       {lang === 'es' ? 'GRATIS' : 'FREE'}
                     </span>
                   )}
@@ -114,21 +193,6 @@ const ShippingCountries = () => {
               ))}
             </div>
           </div>
-
-          <style jsx>{`
-            @keyframes scroll {
-              0% {
-                transform: translateX(0);
-              }
-              100% {
-                transform: translateX(-50%);
-              }
-            }
-            
-            .animate-scroll {
-              animation: scroll 30s linear infinite;
-            }
-          `}</style>
         </div>
       </div>
     </div>
