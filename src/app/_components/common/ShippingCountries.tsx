@@ -101,7 +101,7 @@ const ShippingCountries = () => {
   ];
 
   return (
-    <div className="bg-gray-50 py-8">
+    <div className="bg-white py-8">
       <div className="container mx-auto px-4">
         <div className="bg-white rounded-xl shadow-lg p-8">
           {/* Títulos de envío */}
@@ -147,26 +147,27 @@ const ShippingCountries = () => {
             >
               {/* Primera copia de países */}
               {countries.map((country) => (
-                <div
-                  key={`first-${country.name}`}
-                  className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] ${
-                    country.shipping === "free" 
-                      ? "bg-green-50" 
-                      : "bg-gray-50"
-                  }`}
-                >
-                  <div className="text-6xl sm:text-8xl mb-1 sm:mb-2">
-                    {country.flag}
-                  </div>
-                  <p className="text-xs sm:text-sm text-center font-medium text-gray-700 whitespace-nowrap px-1">
-                    {country.name}
-                  </p>
-                  {country.shipping === "free" && (
-                    <span className="text-xs sm:text-sm text-green-600 font-bold mt-1 sm:mt-2">
-                      {lang === 'es' ? 'GRATIS' : 'FREE'}
-                    </span>
-                  )}
-                </div>
+								<div
+									key={`first-${country.name}`}
+									className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] ${
+									country.shipping === "free" 
+										? "bg-green-50" 
+										: "bg-gray-50"
+									}`}
+								>
+									<div className="text-6xl sm:text-8xl mb-1 sm:mb-2">
+									{country.flag}
+									</div>
+									<p className="text-xs sm:text-sm text-center font-medium text-gray-700 whitespace-nowrap px-1 mb-0">
+										{country.name}
+										{country.shipping === "free" && (
+									<p className="text-xs sm:text-sm text-green-600 font-bold mt-0.5 sm:mt-1">
+										{lang === 'es' ? 'GRATIS' : 'FREE'}
+									</p>
+									)}
+									</p>
+									
+								</div>
               ))}
               {/* Segunda copia para efecto infinito */}
               {countries.map((country) => (
