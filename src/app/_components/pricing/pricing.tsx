@@ -6,7 +6,6 @@ import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
 import { Sensor, Currency, TrackerType } from "../../types";
 import { usePricing } from "../../../hooks/usePricing";
-import SensorSelector from "./sensor-selector";
 import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
 import PricingSummary from "./pricing-summary";
@@ -130,22 +129,22 @@ const Pricing = () => {
   const exchangeRate = pricing?.currency.exchangeRate || 1;
 
   return (
-    <section className="py-16 px-4 bg-white text-black">
+    <section className="py-4 px-4 bg-white text-black">
       <div className="bg-gray-100 p-4 rounded-lg shadow-lg max-w-2xl mx-auto text-center">
         <h1 className="text-3xl font-semibold">
           {t.buildYourTrackers}
         </h1>
         <h3 className="text-sm font-semibold">{t.precisionWithTrackers}</h3>
         <br />
-        <SensorSelector
+        {/* <SensorSelector
           sensors={sensorsT.filter(
             (sensor) =>
               sensor.available?.includes(selectedTrackerType.id) ?? false
           )}
           selectedSensor={selectedSensor}
           setSelectedSensor={setSelectedSensor}
-        />
-        <hr /><br /><br />
+        /> */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center items-center">
           {/* <TrackerTypeSelector
             trackerTypes={trackers}

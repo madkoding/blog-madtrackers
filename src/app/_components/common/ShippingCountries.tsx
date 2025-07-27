@@ -132,6 +132,9 @@ const ShippingCountries = () => {
             <div 
               ref={carouselRef}
               className="flex select-none cursor-grab"
+              role="slider"
+              aria-label={lang === 'es' ? 'Carrusel de países con envío disponible' : 'Carousel of countries with shipping available'}
+              tabIndex={0}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -139,6 +142,13 @@ const ShippingCountries = () => {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
+              onKeyDown={(e) => {
+                if (e.key === 'ArrowLeft') {
+                  setCurrentTransform(prev => prev + 50);
+                } else if (e.key === 'ArrowRight') {
+                  setCurrentTransform(prev => prev - 50);
+                }
+              }}
               style={{ 
                 userSelect: 'none',
                 cursor: isDragging ? 'grabbing' : 'grab',
@@ -160,13 +170,12 @@ const ShippingCountries = () => {
 									</div>
 									<p className="text-xs sm:text-sm text-center font-medium text-gray-700 whitespace-nowrap px-1 mb-0">
 										{country.name}
-										{country.shipping === "free" && (
-									<p className="text-xs sm:text-sm text-green-600 font-bold mt-0.5 sm:mt-1">
-										{lang === 'es' ? 'GRATIS' : 'FREE'}
 									</p>
+									{country.shipping === "free" && (
+										<span className="text-xs sm:text-sm text-green-600 font-bold mt-0.5 sm:mt-1">
+											{lang === 'es' ? 'ENVIO GRATIS' : 'FREE SHIPPING'}
+										</span>
 									)}
-									</p>
-									
 								</div>
               ))}
               {/* Segunda copia para efecto infinito */}
