@@ -94,7 +94,7 @@ Una vez que todos los trackers están conectados:
 
 **1. Install the SlimeVR Server**
 
-- **Download the latest installer:** From the [official SlimeVR page](https://slimevr.dev/download).
+- **Download the latest installer:** From the [official SlimeVR page](https://slimevr.dev/#download).
 - **During installation:**
   - If you're going to use it without SteamVR (e.g., via OSC), you can uncheck:
     - SteamVR Driver

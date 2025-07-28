@@ -227,13 +227,14 @@ const AdminDashboard = React.memo(() => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tapa</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Días</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Faltan</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredUsers.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                        <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
                           {searchTerm ? 'No se encontraron usuarios que coincidan con la búsqueda' : 'No hay usuarios registrados'}
                         </td>
                       </tr>
@@ -251,6 +252,14 @@ const AdminDashboard = React.memo(() => {
                         const total = user.totalUsd ?? (user.total ? user.total / 1000 : 0);
                         const abonado = user.abonadoUsd ?? (user.abonado ? user.abonado / 1000 : 0);
                         const faltan = Math.max(0, total - abonado).toFixed(2);
+                        
+                        // Calcular porcentaje de progreso
+                        const porcentajeProgreso = total > 0 ? Math.min(100, (abonado / total) * 100) : 0;
+                        
+                        // Calcular progreso de fabricación
+                        const progresoFabricacion = user.porcentajes ? 
+                          ((user.porcentajes.placa + user.porcentajes.straps + user.porcentajes.cases + user.porcentajes.baterias) / 4) : 0;
+                        
                         // Función para obtener el nombre del color
                         const getColorName = (colorKey: string): string => {
                           if (!colorKey) return '-';
@@ -310,11 +319,75 @@ const AdminDashboard = React.memo(() => {
                               <div className="text-sm text-gray-900">{diasRestantes}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              {faltan === '0.00' ? (
-                                <span className="text-green-600 font-bold">completo</span>
-                              ) : (
-                                <div className="text-sm text-gray-900">${faltan}</div>
-                              )}
+                              <div>
+                                {faltan === '0.00' ? (
+                                  <span className="text-green-600 font-bold">completo</span>
+                                ) : (
+                                  <div className="text-sm text-gray-900">${faltan}</div>
+                                )}
+                                {/* Progreso de pago */}
+                                <div className="mt-1">
+                                  <div className="flex items-center">
+                                    <div className="flex-1 mr-2">
+                                      <div className="w-full bg-gray-200 rounded-full h-1">
+                                        <div 
+                                          className={`h-1 rounded-full transition-all duration-300 ${
+                                            porcentajeProgreso === 100 
+                                              ? 'bg-green-500' 
+                                              : porcentajeProgreso >= 75 
+                                                ? 'bg-blue-500' 
+                                                : porcentajeProgreso >= 50 
+                                                  ? 'bg-yellow-500' 
+                                                  : 'bg-red-500'
+                                          }`}
+                                          style={{ width: `${porcentajeProgreso}%` }}
+                                        ></div>
+                                      </div>
+                                    </div>
+                                    <span className="text-xs text-gray-500">
+                                      {porcentajeProgreso.toFixed(0)}%
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                {/* Estado del pedido */}
+                                <div className="text-xs text-gray-600 mb-1">
+                                  {user.estadoPedido === 'waiting' && '⏳ En espera'}
+                                  {user.estadoPedido === 'manufacturing' && '🔧 Fabricando'}
+                                  {user.estadoPedido === 'testing' && '🧪 Probando'}
+                                  {user.estadoPedido === 'shipping' && '📦 Enviando'}
+                                  {user.estadoPedido === 'received' && '✅ Recibido'}
+                                  {user.estadoPedido === 'DELIVERED' && '✅ Entregado'}
+                                  {user.estadoPedido === 'PRODUCTION' && '🔧 Producción'}
+                                </div>
+                                {/* Progreso de fabricación */}
+                                <div className="flex items-center">
+                                  <div className="flex-1 mr-2">
+                                    <div className="w-full bg-gray-200 rounded-full h-2">
+                                      <div 
+                                        className={`h-2 rounded-full transition-all duration-300 ${
+                                          progresoFabricacion === 100 
+                                            ? 'bg-green-500' 
+                                            : progresoFabricacion >= 75 
+                                              ? 'bg-blue-500' 
+                                              : progresoFabricacion >= 50 
+                                                ? 'bg-yellow-500' 
+                                                : progresoFabricacion >= 25
+                                                  ? 'bg-orange-500'
+                                                  : 'bg-red-500'
+                                        }`}
+                                        style={{ width: `${progresoFabricacion}%` }}
+                                      ></div>
+                                    </div>
+                                  </div>
+                                  <span className="text-xs text-gray-600 min-w-[35px]">
+                                    {progresoFabricacion.toFixed(0)}%
+                                  </span>
+                                </div>
+                              </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <button
