@@ -17,11 +17,6 @@ ogImage:
 **1. Instala el Servidor de SlimeVR**
 
 - **Descarga el instalador más reciente:** Desde la [página oficial de SlimeVR](https://slimevr.dev/download).
-- **Durante la instalación:**
-  - Si vas a usarlo sin SteamVR (por ejemplo, vía OSC), puedes desmarcar:
-    - SteamVR Driver
-    - SlimeVR Feeder App
-    - Controladores USB
 - **Nota:** Asegúrate de haber ejecutado SteamVR al menos una vez antes de instalar, para evitar errores.
 
 ![Instalación SlimeVR](/assets/blog/inicio/paso0.png)
@@ -35,7 +30,7 @@ ogImage:
 3. Enciende los trackers uno por uno. Cada tracker debería aparecer automáticamente en el servidor unos segundos después de encenderlo.
 4. Si un tracker no aparece:
    - Revisa que tenga batería.
-   - Intenta mantener presionado su botón hasta que parpadee el LED y luego soltar.
+   - Intenta hacer 1 click a su botón (Reset) hasta que parpadee el LED rojo.
 
 ---
 
