@@ -18,11 +18,53 @@ const nextConfig = {
       'react-simple-typewriter'
     ],
   },
-  // Configuración mejorada para el manejo de chunks
+  // SEO and Performance optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
       exclude: ['error', 'warn'],
     } : false,
+  },
+  // Headers para SEO
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+        ],
+      },
+    ]
+  },
+  // Redirects para SEO
+  async redirects() {
+    return [
+      {
+        source: '/tracker',
+        destination: '/trackers-slimevr-chile',
+        permanent: true,
+      },
+      {
+        source: '/slimevr',
+        destination: '/trackers-slimevr-chile',
+        permanent: true,
+      },
+      {
+        source: '/chile',
+        destination: '/trackers-slimevr-chile',
+        permanent: true,
+      },
+    ]
   },
   webpack: (config, { isServer, dev }) => {
     // Configuración mejorada para evitar errores de chunk loading

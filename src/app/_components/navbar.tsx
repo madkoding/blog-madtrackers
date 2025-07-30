@@ -155,6 +155,11 @@ export function NavBar() {
           >
             <NavButton href="/" label={t.home} className={textColorClass} />
             <NavButton
+              href="/trackers-slimevr-chile"
+              label="SlimeVR Compatible"
+              className={textColorClass}
+            />
+            <NavButton
               href="/seguimiento"
               label={t.tracking}
               className={textColorClass}
