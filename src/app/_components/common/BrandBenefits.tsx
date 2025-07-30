@@ -111,7 +111,7 @@ const BrandBenefits = () => {
               <div className="text-sm text-gray-600">{lang === 'es' ? 'Sensor IMU' : 'IMU Sensor'}</div>
             </div>
             <div className="group">
-              <div className="text-3xl font-bold text-red-600 mb-2">QCM-6309</div>
+              <div className="text-3xl font-bold text-red-600 mb-2">QMC-6309</div>
               <div className="text-sm text-gray-600">{lang === 'es' ? 'Magnetómetro' : 'Magnetometer'}</div>
             </div>
           </div>

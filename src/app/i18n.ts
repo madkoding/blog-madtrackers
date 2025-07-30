@@ -97,7 +97,7 @@ export const translations = {
     // Sensors
     sensor1_label: "LSM6DSR",
     sensor1_desc: "Good tracking quality",
-    sensor2_label: "LSM6DSR + QCM6309",
+    sensor2_label: "LSM6DSR + QMC6309",
     sensor2_desc: "Good tracking quality with magnetometer",
     sensor3_label: "ICM45686",
     sensor3_desc: "Excellent tracking quality",
@@ -272,11 +272,11 @@ export const translations = {
     // Sensores
     sensor1_label: "LSM6DSR",
     sensor1_desc: "Buena calidad de seguimiento",
-    sensor2_label: "LSM6DSR + QCM6309",
+    sensor2_label: "LSM6DSR + QMC6309",
     sensor2_desc: "Buena calidad de seguimiento con magnetómetro",
     sensor3_label: "ICM45686",
     sensor3_desc: "Excelente calidad de seguimiento",
-    sensor4_label: "ICM45686 + QCM6309",
+    sensor4_label: "ICM45686 + QMC6309",
     sensor4_desc: "Excelente calidad de seguimiento con magnetómetro",
     // Trackers
     rf_label: "RF",
