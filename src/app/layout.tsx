@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     description: "Trackers SlimeVR Compatible fabricados en Chile. Sensores de movimiento inalámbricos para VRChat y full body tracking.",
     images: [
       {
-        url: "https://www.madtrackers.com/assets/blog/preview/cover.jpg",
+        url: "https://www.madtrackers.com/assets/blog/preview/cover.png",
         width: 1200,
         height: 630,
         alt: "madTrackers - Trackers SlimeVR Chile",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "madTrackers - Trackers SlimeVR Compatible Chile",
     description: "Trackers SlimeVR Compatible fabricados en Chile para VRChat y full body tracking",
-    images: ["https://www.madtrackers.com/assets/blog/preview/cover.jpg"],
+    images: ["https://www.madtrackers.com/assets/blog/preview/cover.png"],
   },
 };
 
