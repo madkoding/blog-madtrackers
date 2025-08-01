@@ -4,7 +4,16 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export interface EmailOptions {
-  to: string;
+  to: string | string[];
+  subject: string;
+  html: string;
+  from?: string;
+  bcc?: string | string[];
+}
+
+export interface BulkEmailOptions {
+  to: string; // Email principal (madkoding@gmail.com)
+  bcc: string[]; // Lista de emails en copia oculta
   subject: string;
   html: string;
   from?: string;
@@ -19,24 +28,68 @@ export class EmailService {
   /**
    * Envía un email usando Resend
    */
-  static async sendEmail({ to, subject, html, from }: EmailOptions): Promise<boolean> {
+  static async sendEmail({ to, subject, html, from, bcc }: EmailOptions): Promise<boolean> {
     try {
       if (!process.env.RESEND_API_KEY) {
         console.error('RESEND_API_KEY no está configurado');
         return false;
       }
 
-      const result = await resend.emails.send({
+      const emailData: any = {
         from: from ?? this.FROM_EMAIL,
         to,
         subject,
         html,
-      });
+      };
+
+      // Agregar BCC si se proporciona
+      if (bcc) {
+        emailData.bcc = bcc;
+      }
+
+      const result = await resend.emails.send(emailData);
 
       console.log('Email enviado exitosamente:', result.data?.id);
       return true;
     } catch (error) {
       console.error('Error enviando email:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Envía un correo masivo usando BCC para evitar spam
+   */
+  static async sendBulkEmail({ to, bcc, subject, html, from }: BulkEmailOptions): Promise<boolean> {
+    try {
+      if (!process.env.RESEND_API_KEY) {
+        console.error('RESEND_API_KEY no está configurado');
+        return false;
+      }
+
+      // Filtrar emails válidos
+      const validEmails = bcc.filter(email => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      });
+
+      if (validEmails.length === 0) {
+        console.warn('No hay emails válidos para enviar');
+        return false;
+      }
+
+      const result = await resend.emails.send({
+        from: from ?? this.FROM_EMAIL,
+        to: to, // Email principal (madkoding@gmail.com)
+        bcc: validEmails, // Todos los destinatarios en BCC
+        subject,
+        html,
+      });
+
+      console.log(`Email masivo enviado exitosamente a ${validEmails.length} destinatarios:`, result.data?.id);
+      return true;
+    } catch (error) {
+      console.error('Error enviando email masivo:', error);
       return false;
     }
   }

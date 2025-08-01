@@ -228,6 +228,17 @@ p {
   @apply animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full;
 }
 
+/* Estilos para formularios en admin layout - asegurar texto legible */
+.admin-layout label {
+  @apply text-gray-900;
+}
+
+.admin-layout input,
+.admin-layout textarea,
+.admin-layout select {
+  @apply text-gray-900;
+}
+
 /* Clase para componentes 3D que necesitan transparencia completa */
 .three-canvas-container {
   background: transparent !important;
@@ -251,4 +262,12 @@ p {
 .three-canvas-container canvas {
   background: transparent !important;
   background-color: transparent !important;
+}
+
+/* Estilos para formularios en admin layout - asegurar texto legible */
+.admin-layout label,
+.admin-layout input,
+.admin-layout textarea,
+.admin-layout select {
+  color: #111827 !important; /* text-gray-900 */
 }
