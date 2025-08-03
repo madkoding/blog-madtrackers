@@ -1,14 +1,37 @@
 import Script from 'next/script'
 
+interface ProductData {
+  name: string
+  description: string
+  url: string
+  price: string
+}
+
+interface FAQData {
+  questions: Array<{
+    question: string
+    answer: string
+  }>
+}
+
 interface StructuredDataProps {
   type: 'product' | 'organization' | 'breadcrumb' | 'faq'
-  data: any
+  data: ProductData | FAQData | Record<string, unknown>
 }
 
 export default function StructuredData({ type, data }: Readonly<StructuredDataProps>) {
+  const isProductData = (data: unknown): data is ProductData => {
+    return typeof data === 'object' && data !== null && 'name' in data && 'description' in data
+  }
+
+  const isFAQData = (data: unknown): data is FAQData => {
+    return typeof data === 'object' && data !== null && 'questions' in data
+  }
+
   const generateSchema = () => {
     switch (type) {
       case 'product':
+        if (!isProductData(data)) return {}
         return {
           "@context": "https://schema.org",
           "@type": "Product",
@@ -70,10 +93,11 @@ export default function StructuredData({ type, data }: Readonly<StructuredDataPr
         }
       
       case 'faq':
+        if (!isFAQData(data)) return {}
         return {
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          "mainEntity": data.questions.map((q: any) => ({
+          "mainEntity": data.questions.map((q) => ({
             "@type": "Question",
             "name": q.question,
             "acceptedAnswer": {
