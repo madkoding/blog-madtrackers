@@ -57,7 +57,7 @@ const Breadcrumbs = () => {
   const breadcrumbs = generateBreadcrumbs();
 
   return (
-    <nav aria-label="Navegación de migas de pan" className="py-4 bg-gray-50 border-b border-gray-200">
+    <nav aria-label="Navegación de migas de pan" className="pt-20 pb-4 bg-gray-50 border-b border-gray-200">
       <div className="container mx-auto px-4">
         <ol className="flex items-center space-x-2 text-sm">
           {breadcrumbs.map((item, index) => (

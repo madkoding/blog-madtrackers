@@ -11,7 +11,6 @@ import CriticalCSS from "./_components/common/CriticalCSS";
 import WebVitalsMonitor from "./_components/common/WebVitalsMonitor";
 import ConditionalAnalytics from "./_components/common/ConditionalAnalytics";
 import CountrySimulator from "./_components/dev/CountrySimulator";
-import Breadcrumbs from "./_components/common/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "madTrackers - Trackers SlimeVR Compatible Chile | Sensores de Movimiento VR",
@@ -182,7 +181,6 @@ export default function RootLayout({
         <LangProvider>
           <CountrySimulator />
           <NavBar />
-          <Breadcrumbs />
           <div className="min-h-screen">{children}</div>
           <Footer />
         </LangProvider>
