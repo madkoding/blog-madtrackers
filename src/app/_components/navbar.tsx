@@ -71,6 +71,7 @@ LanguageSelector.displayName = 'LanguageSelector';
 export function NavBar() {
   const [scrollpos, setScrollpos] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCountryMenuOpen, setIsCountryMenuOpen] = useState(false);
   const pathname = usePathname();
 
   const { lang, setLang } = useLang();
@@ -159,6 +160,43 @@ export function NavBar() {
               label="SlimeVR Compatible"
               className={textColorClass}
             />
+            {/* Menú desplegable de países */}
+            <li className="mr-3 relative">
+              <button
+                className={`inline-block ${textColorClass} no-underline hover:text-gray-800 hover:text-underline py-2 px-4 transition-all duration-300 ease-in-out flex items-center`}
+                onMouseEnter={() => setIsCountryMenuOpen(true)}
+                onMouseLeave={() => setIsCountryMenuOpen(false)}
+              >
+                {lang === 'es' ? 'Países' : 'Countries'}
+                <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+              {isCountryMenuOpen && (
+                <div 
+                  className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 z-50"
+                  onMouseEnter={() => setIsCountryMenuOpen(true)}
+                  onMouseLeave={() => setIsCountryMenuOpen(false)}
+                >
+                  <Link href="/trackers-slimevr-chile" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                    🇨🇱 Chile
+                  </Link>
+                  <Link href="/trackers-slimevr-espana" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                    🇪🇸 España
+                  </Link>
+                  <Link href="/trackers-slimevr-mexico" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                    🇲🇽 México
+                  </Link>
+                  <Link href="/trackers-slimevr-argentina" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                    🇦🇷 Argentina
+                  </Link>
+                  <div className="border-t border-gray-200 my-1"></div>
+                  <Link href="/posts/Envios_Internacionales_Trackers_SlimeVR" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                    🌎 {lang === 'es' ? 'Todos los Países' : 'All Countries'}
+                  </Link>
+                </div>
+              )}
+            </li>
             <NavButton
               href="/seguimiento"
               label={t.tracking}

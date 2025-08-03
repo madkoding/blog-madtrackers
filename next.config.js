@@ -64,6 +64,73 @@ const nextConfig = {
         destination: '/trackers-slimevr-chile',
         permanent: true,
       },
+      // Redirects para países hispanos
+      {
+        source: '/espana',
+        destination: '/trackers-slimevr-espana',
+        permanent: true,
+      },
+      {
+        source: '/españa',
+        destination: '/trackers-slimevr-espana',
+        permanent: true,
+      },
+      {
+        source: '/spain',
+        destination: '/trackers-slimevr-espana',
+        permanent: true,
+      },
+      {
+        source: '/mexico',
+        destination: '/trackers-slimevr-mexico',
+        permanent: true,
+      },
+      {
+        source: '/méxico',
+        destination: '/trackers-slimevr-mexico',
+        permanent: true,
+      },
+      {
+        source: '/mx',
+        destination: '/trackers-slimevr-mexico',
+        permanent: true,
+      },
+      {
+        source: '/argentina',
+        destination: '/trackers-slimevr-argentina',
+        permanent: true,
+      },
+      {
+        source: '/ar',
+        destination: '/trackers-slimevr-argentina',
+        permanent: true,
+      },
+      // Redirects para búsquedas comunes
+      {
+        source: '/slimevr-espana',
+        destination: '/trackers-slimevr-espana',  
+        permanent: true,
+      },
+      {
+        source: '/slimevr-mexico',
+        destination: '/trackers-slimevr-mexico',
+        permanent: true,
+      },
+      {
+        source: '/slimevr-argentina',
+        destination: '/trackers-slimevr-argentina',
+        permanent: true,
+      },
+      {
+        source: '/envios',
+        destination: '/posts/Envios_Internacionales_Trackers_SlimeVR',
+        permanent: true,
+      },
+      {
+        source: '/envios-internacionales',
+        destination: '/posts/Envios_Internacionales_Trackers_SlimeVR',
+        permanent: true,
+      },
     ]
   },
   webpack: (config, { isServer, dev }) => {

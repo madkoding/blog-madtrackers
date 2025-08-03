@@ -2,6 +2,7 @@
 
 import { useLang } from "../../lang-context";
 import { useRef, useEffect, useState } from "react";
+import Link from "next/link";
 
 const ShippingCountries = () => {
   const { lang } = useLang();
@@ -71,33 +72,33 @@ const ShippingCountries = () => {
   };
 
   const countries = [
-    // Países hispanohablantes
-    { name: "España", flag: "🇪🇸", shipping: "ups" },
-    { name: "México", flag: "🇲🇽", shipping: "ups" },
-    { name: "Argentina", flag: "🇦🇷", shipping: "ups" },
-    { name: "Colombia", flag: "🇨🇴", shipping: "ups" },
-    { name: "Perú", flag: "🇵🇪", shipping: "ups" },
-    { name: "Venezuela", flag: "🇻🇪", shipping: "ups" },
-    { name: "Ecuador", flag: "🇪🇨", shipping: "ups" },
-    { name: "Guatemala", flag: "🇬🇹", shipping: "ups" },
-    { name: "Bolivia", flag: "🇧🇴", shipping: "ups" },
+    // Países hispanohablantes con enlaces específicos
+    { name: "España", flag: "🇪🇸", shipping: "ups", link: "/trackers-slimevr-espana" },
+    { name: "México", flag: "🇲🇽", shipping: "ups", link: "/trackers-slimevr-mexico" },
+    { name: "Argentina", flag: "🇦🇷", shipping: "ups", link: "/trackers-slimevr-argentina" },
+    { name: "Colombia", flag: "🇨🇴", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Perú", flag: "🇵🇪", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Venezuela", flag: "🇻🇪", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Ecuador", flag: "🇪🇨", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Guatemala", flag: "🇬🇹", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Bolivia", flag: "🇧🇴", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
     // Chile - envío gratis
-    { name: "Chile", flag: "🇨🇱", shipping: "free" },
-    { name: "República Dominicana", flag: "🇩🇴", shipping: "ups" },
-    { name: "Honduras", flag: "🇭🇳", shipping: "ups" },
-    { name: "Paraguay", flag: "🇵🇾", shipping: "ups" },
-    { name: "Nicaragua", flag: "🇳🇮", shipping: "ups" },
-    { name: "El Salvador", flag: "🇸🇻", shipping: "ups" },
-    { name: "Costa Rica", flag: "🇨🇷", shipping: "ups" },
-    { name: "Panamá", flag: "🇵🇦", shipping: "ups" },
-    { name: "Uruguay", flag: "🇺🇾", shipping: "ups" },
-    { name: "Guinea Ecuatorial", flag: "🇬🇶", shipping: "ups" },
+    { name: "Chile", flag: "🇨🇱", shipping: "free", link: "/trackers-slimevr-chile" },
+    { name: "República Dominicana", flag: "🇩🇴", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Honduras", flag: "🇭🇳", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Paraguay", flag: "🇵🇾", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Nicaragua", flag: "🇳🇮", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "El Salvador", flag: "🇸🇻", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Costa Rica", flag: "🇨🇷", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Panamá", flag: "🇵🇦", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Uruguay", flag: "🇺🇾", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Guinea Ecuatorial", flag: "🇬🇶", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
     // Países adicionales
-    { name: "Estados Unidos", flag: "🇺🇸", shipping: "ups" },
-    { name: "Francia", flag: "🇫🇷", shipping: "ups" },
-    { name: "Italia", flag: "🇮🇹", shipping: "ups" },
-    { name: "Canadá", flag: "🇨🇦", shipping: "ups" },
-    { name: "Brasil", flag: "🇧🇷", shipping: "ups" },
+    { name: "Estados Unidos", flag: "🇺🇸", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Francia", flag: "🇫🇷", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Italia", flag: "🇮🇹", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Canadá", flag: "🇨🇦", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
+    { name: "Brasil", flag: "🇧🇷", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
   ];
 
   return (
@@ -158,12 +159,13 @@ const ShippingCountries = () => {
             >
               {/* Primera copia de países */}
               {countries.map((country) => (
-								<div
-									key={`first-${country.name}`}
-									className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] ${
+								<Link
+                  key={`first-${country.name}`}
+                  href={country.link}
+                  className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] hover:scale-105 transition-transform cursor-pointer ${
 									country.shipping === "free" 
-										? "bg-green-50" 
-										: "bg-gray-50"
+										? "bg-green-50 hover:bg-green-100" 
+										: "bg-gray-50 hover:bg-gray-100"
 									}`}
 								>
 									<div className="text-6xl sm:text-8xl mb-1 sm:mb-2">
@@ -177,16 +179,17 @@ const ShippingCountries = () => {
 											{lang === 'es' ? 'ENVIO GRATIS' : 'FREE SHIPPING'}
 										</span>
 									)}
-								</div>
+								</Link>
               ))}
               {/* Segunda copia para efecto infinito */}
               {countries.map((country) => (
-                <div
+                <Link
                   key={`second-${country.name}`}
-                  className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] ${
+                  href={country.link}
+                  className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] hover:scale-105 transition-transform cursor-pointer ${
                     country.shipping === "free" 
-                      ? "bg-green-50" 
-                      : "bg-gray-50"
+                      ? "bg-green-50 hover:bg-green-100" 
+                      : "bg-gray-50 hover:bg-gray-100"
                   }`}
                 >
                   <div className="text-6xl sm:text-8xl mb-1 sm:mb-2">
@@ -200,10 +203,45 @@ const ShippingCountries = () => {
                       {lang === 'es' ? 'GRATIS' : 'FREE'}
                     </span>
                   )}
-                </div>
+                </Link>
               ))}
             </button>
           </section>
+
+          {/* Call to action para países hispanos */}
+          <div className="mt-8 text-center">
+            <p className="text-gray-600 mb-4 text-center">
+              {lang === 'es' 
+                ? 'Descubre información específica de envío, precios y soporte para tu país' 
+                : 'Discover specific shipping information, prices and support for your country'}
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link 
+                href="/trackers-slimevr-espana" 
+                className="bg-gradient-to-r from-red-500 to-yellow-500 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-yellow-600 transition-all duration-300 transform hover:scale-105"
+              >
+                🇪🇸 España
+              </Link>
+              <Link 
+                href="/trackers-slimevr-mexico" 
+                className="bg-gradient-to-r from-green-600 to-red-600 text-white px-4 py-2 rounded-lg hover:from-green-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105"
+              >
+                🇲🇽 México
+              </Link>
+              <Link 
+                href="/trackers-slimevr-argentina" 
+                className="bg-gradient-to-r from-blue-500 to-white text-gray-900 px-4 py-2 rounded-lg hover:from-blue-600 hover:to-gray-100 transition-all duration-300 transform hover:scale-105"
+              >
+                🇦🇷 Argentina
+              </Link>
+              <Link 
+                href="/posts/Envios_Internacionales_Trackers_SlimeVR" 
+                className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
+              >
+                🌎 {lang === 'es' ? 'Todos los Países' : 'All Countries'}
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

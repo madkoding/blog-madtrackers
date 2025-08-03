@@ -40,6 +40,14 @@ Los **trackers SlimeVR Compatible** son dispositivos de seguimiento corporal que
 - **Precios en pesos chilenos** (también USD)
 - **Comunidad VRChat Chile** te ayuda con la configuración
 
+### 🌎 Envíos Internacionales Disponibles
+
+¿Vives fuera de Chile? También enviamos a países hispanos:
+- **[Trackers SlimeVR España](/trackers-slimevr-espana)**: Envío UPS 3-5 días
+- **[Trackers SlimeVR México](/trackers-slimevr-mexico)**: Envío UPS 2-4 días  
+- **[Trackers SlimeVR Argentina](/trackers-slimevr-argentina)**: Envío UPS 4-7 días
+- **[Otros países hispanos](/posts/Envios_Internacionales_Trackers_SlimeVR)**: Información completa de envíos
+
 ### 🏭 Fabricación Nacional
 
 Todos nuestros trackers se fabrican en Chile con:
@@ -292,6 +300,14 @@ Looking for **SlimeVR trackers in Chile**? You've come to the right place. In th
 - **No customs problems** or additional taxes
 - **Prices in Chilean pesos** (also USD)
 - **VRChat Chile community** helps you with configuration
+
+### 🌎 International Shipping Available
+
+Do you live outside Chile? We also ship to Hispanic countries:
+- **[SlimeVR Trackers Spain](/trackers-slimevr-espana)**: UPS shipping 3-5 days
+- **[SlimeVR Trackers Mexico](/trackers-slimevr-mexico)**: UPS shipping 2-4 days
+- **[SlimeVR Trackers Argentina](/trackers-slimevr-argentina)**: UPS shipping 4-7 days
+- **[Other Hispanic countries](/posts/Envios_Internacionales_Trackers_SlimeVR)**: Complete shipping information
 
 ### 🏭 National Manufacturing
 

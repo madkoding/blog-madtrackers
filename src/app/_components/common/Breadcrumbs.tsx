@@ -22,6 +22,12 @@ const Breadcrumbs = () => {
     // Casos específicos para mejorar SEO
     if (pathname === '/trackers-slimevr-chile') {
       breadcrumbs.push({ label: 'Trackers SlimeVR Chile', href: '/trackers-slimevr-chile' });
+    } else if (pathname === '/trackers-slimevr-espana') {
+      breadcrumbs.push({ label: 'Trackers SlimeVR España', href: '/trackers-slimevr-espana' });
+    } else if (pathname === '/trackers-slimevr-mexico') {
+      breadcrumbs.push({ label: 'Trackers SlimeVR México', href: '/trackers-slimevr-mexico' });
+    } else if (pathname === '/trackers-slimevr-argentina') {
+      breadcrumbs.push({ label: 'Trackers SlimeVR Argentina', href: '/trackers-slimevr-argentina' });
     } else if (pathname === '/faq') {
       breadcrumbs.push({ label: 'Preguntas Frecuentes', href: '/faq' });
     } else if (pathname === '/seguimiento') {
