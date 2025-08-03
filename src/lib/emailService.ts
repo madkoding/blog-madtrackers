@@ -35,7 +35,13 @@ export class EmailService {
         return false;
       }
 
-      const emailData: any = {
+      const emailData: {
+        from: string;
+        to: string | string[];
+        subject: string;
+        html: string;
+        bcc?: string[];
+      } = {
         from: from ?? this.FROM_EMAIL,
         to,
         subject,
@@ -44,7 +50,7 @@ export class EmailService {
 
       // Agregar BCC si se proporciona
       if (bcc) {
-        emailData.bcc = bcc;
+        emailData.bcc = Array.isArray(bcc) ? bcc : [bcc];
       }
 
       const result = await resend.emails.send(emailData);

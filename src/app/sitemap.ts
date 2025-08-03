@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
+      changeFrequency: 'daily' as const,
       priority: 1,
     },
     {
@@ -31,15 +31,41 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     },
+    {
+      url: `${baseUrl}/posts`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/payment-success`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly' as const,
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/payment-cancel`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly' as const,
+      priority: 0.3,
+    },
   ]
 
-  // URLs de posts del blog
-  const postRoutes = allPosts.map((post) => ({
-    url: `${baseUrl}/posts/${post.slug}`,
-    lastModified: new Date(post.date),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }))
+  // URLs de posts del blog con mejor priorización
+  const postRoutes = allPosts.map((post) => {
+    // Posts importantes tienen mayor prioridad
+    const isImportantPost = [
+      'Trackers_SlimeVR_Chile_Guia_Completa',
+      'Configuracion_Inicial'
+    ].includes(post.slug)
+    
+    return {
+      url: `${baseUrl}/posts/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: 'monthly' as const,
+      priority: isImportantPost ? 0.8 : 0.6,
+    }
+  })
 
   return [...routes, ...postRoutes]
 }

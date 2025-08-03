@@ -137,7 +137,7 @@ async function prepareBulkEmail(targetUsers: UserTracking[], subject: string, me
 
     // Caso múltiple: Envío masivo con BCC (método original)
     // Personalizar el mensaje con variables generalizadas
-    let generalMessage = replaceVariablesGeneral(message);
+    const generalMessage = replaceVariablesGeneral(message);
     
     // Crear HTML del email
     const htmlMessage = `
