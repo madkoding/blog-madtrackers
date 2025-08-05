@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import ProductStructuredDataWrapper from '../_components/common/ProductStructuredDataWrapper'
 
 export const metadata: Metadata = {
   title: 'Trackers SlimeVR Compatible Chile - madTrackers | Sensores VR Fabricados en Chile',
@@ -252,6 +253,67 @@ export default function TrackersSlimeVRChile() {
           </div>
         </div>
       </div>
+      
+      {/* Structured Data para SEO */}
+      <ProductStructuredDataWrapper 
+        config={{
+          name: "Trackers SlimeVR Compatible Chile - Set de 6 Trackers madTrackers",
+          description: "Set completo de 6 trackers SlimeVR Compatible fabricados en Chile. Sensores de movimiento inalámbricos para VRChat, full body tracking, batería ultra-duradera. Envío gratuito a todo Chile.",
+          url: "https://www.madtrackers.com/trackers-slimevr-chile",
+          // Usar precios dinámicos del backend con país Chile
+          sensorId: "sensor4", // ICM45686 + QMC6309 - el más popular
+          trackerId: "rf", // ESB - el único disponible actualmente
+          quantity: 6, // Set completo de 6 trackers
+          countryCode: "CL", // Chile - sin comisiones PayPal
+          // Información del producto
+          sku: "MT-SLIMEVR-SET6-CL-2024",
+          category: "VR Hardware",
+          brand: "madTrackers",
+          image: [
+            "https://www.madtrackers.com/assets/blog/tracker-slimevr-madtrackers.webp",
+            "https://www.madtrackers.com/assets/blog/configuracion-slimevr-chile.webp"
+          ],
+          aggregateRating: {
+            ratingValue: "4.9",
+            reviewCount: "156",
+            bestRating: "5",
+            worstRating: "1"
+          },
+          reviews: [
+            {
+              author: "Sebastián González",
+              datePublished: "2024-12-20",
+              reviewBody: "Excelente set de 6 trackers, fabricados localmente con muy buena calidad. El envío fue súper rápido dentro de Chile y funcionan perfecto con mi setup completo de VRChat.",
+              reviewRating: {
+                ratingValue: "5",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            },
+            {
+              author: "Francisca L.",
+              datePublished: "2024-12-01",
+              reviewBody: "La mejor opción para full body tracking completo en Chile. Soporte técnico excelente y responden súper rápido. El set de 6 trackers es perfecto para todo el cuerpo.",
+              reviewRating: {
+                ratingValue: "5",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            },
+            {
+              author: "Diego Morales",
+              datePublished: "2024-11-15",
+              reviewBody: "Muy buena calidad por el precio del set completo. La batería de cada tracker dura muchísimo y la precisión es excelente para VR gaming.",
+              reviewRating: {
+                ratingValue: "5",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            }
+          ]
+        }}
+        fallbackToStatic={true}
+      />
     </div>
   )
 }

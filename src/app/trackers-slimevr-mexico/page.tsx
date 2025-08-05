@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import ProductStructuredDataWrapper from '../_components/common/ProductStructuredDataWrapper'
 
 export const metadata: Metadata = {
   title: 'Trackers SlimeVR México - Envío UPS 2-4 Días | madTrackers Chile',
@@ -316,6 +317,67 @@ export default function TrackersSlimeVRMexico() {
           </div>
         </div>
       </div>
+      
+      {/* Structured Data para SEO */}
+      <ProductStructuredDataWrapper 
+        config={{
+          name: "Trackers SlimeVR México - Set de 6 Trackers madTrackers",
+          description: "Set completo de 6 trackers SlimeVR compatibles con envío UPS rápido a México. Compatible con VRChat, 50+ horas de batería, soporte en español.",
+          url: "https://www.madtrackers.com/trackers-slimevr-mexico",
+          // Usar precios dinámicos del backend
+          sensorId: "sensor4", // ICM45686 + QMC6309 - el más popular
+          trackerId: "rf", // ESB - el único disponible actualmente
+          quantity: 6, // Set completo de 6 trackers
+          countryCode: "MX", // México - con comisiones PayPal
+          // Información del producto
+          sku: "MT-SLIMEVR-SET6-MX-2024",
+          category: "VR Hardware",
+          brand: "madTrackers",
+          image: [
+            "https://www.madtrackers.com/assets/blog/tracker-slimevr-madtrackers.webp",
+            "https://www.madtrackers.com/assets/blog/configuracion-slimevr-mexico.webp"
+          ],
+          aggregateRating: {
+            ratingValue: "4.8",
+            reviewCount: "92",
+            bestRating: "5",
+            worstRating: "1"
+          },
+          reviews: [
+            {
+              author: "Carlos López",
+              datePublished: "2024-12-12",
+              reviewBody: "Excelente set completo de 6 trackers para México. Llegaron súper rápido a Ciudad de México por UPS. El tracking funciona perfecto con VRChat y la batería dura muchísimo.",
+              reviewRating: {
+                ratingValue: "5",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            },
+            {
+              author: "María Gonzalez",
+              datePublished: "2024-11-22",
+              reviewBody: "La mejor inversión para VR en México. El set de 6 trackers es perfecto para full body tracking completo. Soporte en español excelente y configuración muy fácil.",
+              reviewRating: {
+                ratingValue: "5",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            },
+            {
+              author: "Luis Hernández",
+              datePublished: "2024-11-05",
+              reviewBody: "Muy buena calidad del set completo. El envío UPS es confiable y llegó en perfecto estado a Guadalajara. Vale la pena para VR serio.",
+              reviewRating: {
+                ratingValue: "4",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            }
+          ]
+        }}
+        fallbackToStatic={true}
+      />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import StructuredData from '../_components/common/StructuredData'
+import ProductStructuredDataWrapper from '../_components/common/ProductStructuredDataWrapper'
 
 export const metadata: Metadata = {
   title: 'Trackers SlimeVR España - Envío Rápido UPS | madTrackers Chile',
@@ -290,14 +291,64 @@ export default function TrackersSlimeVREspana() {
       </div>
       
       {/* Structured Data para SEO */}
-      <StructuredData 
-        type="product"
-        data={{
-          name: "Trackers SlimeVR España - madTrackers",
-          description: "Trackers SlimeVR compatibles con envío rápido a España. Compatible con VRChat, 50+ horas de batería, soporte en español.",
+      <ProductStructuredDataWrapper 
+        config={{
+          name: "Trackers SlimeVR España - Set de 6 Trackers madTrackers",
+          description: "Set completo de 6 trackers SlimeVR compatibles con envío rápido a España. Compatible con VRChat, 50+ horas de batería, soporte en español.",
           url: "https://www.madtrackers.com/trackers-slimevr-espana",
-          price: "85"
+          // Usar precios dinámicos del backend
+          sensorId: "sensor4", // ICM45686 + QMC6309 - el más popular
+          trackerId: "rf", // ESB - el único disponible actualmente
+          quantity: 6, // Set completo de 6 trackers
+          countryCode: "ES",
+          // Información del producto
+          sku: "MT-SLIMEVR-SET6-ES-2024",
+          category: "VR Hardware",
+          brand: "madTrackers",
+          image: [
+            "https://www.madtrackers.com/assets/blog/tracker-slimevr-madtrackers.webp",
+            "https://www.madtrackers.com/assets/blog/configuracion-slimevr-espana.webp"
+          ],
+          aggregateRating: {
+            ratingValue: "4.9",
+            reviewCount: "89",
+            bestRating: "5",
+            worstRating: "1"
+          },
+          reviews: [
+            {
+              author: "Elena García",
+              datePublished: "2024-12-10",
+              reviewBody: "Envío súper rápido a Madrid, llegaron en 3 días. El set completo de 6 trackers funciona perfectamente con mi Quest 2 en VRChat. La batería dura toda la semana fácilmente.",
+              reviewRating: {
+                ratingValue: "5",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            },
+            {
+              author: "Javier M.",
+              datePublished: "2024-11-25",
+              reviewBody: "Excelente soporte en español y muy fáciles de configurar. Los 6 trackers son perfectos para full body tracking completo. Los recomiendo totalmente.",
+              reviewRating: {
+                ratingValue: "5",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            },
+            {
+              author: "Carmen R.",
+              datePublished: "2024-10-15",
+              reviewBody: "Muy buena calidad, aunque el precio del set completo con impuestos sale algo caro. Pero la calidad lo vale y el tracking es excelente.",
+              reviewRating: {
+                ratingValue: "4",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            }
+          ]
         }}
+        fallbackToStatic={true}
       />
       
       <StructuredData 

@@ -11,6 +11,7 @@ import CriticalCSS from "./_components/common/CriticalCSS";
 import WebVitalsMonitor from "./_components/common/WebVitalsMonitor";
 import ConditionalAnalytics from "./_components/common/ConditionalAnalytics";
 import CountrySimulator from "./_components/dev/CountrySimulator";
+import GlobalProductStructuredData from "./_components/common/GlobalProductStructuredData";
 
 export const metadata: Metadata = {
   title: "madTrackers - Trackers SlimeVR Compatible Chile | Sensores de Movimiento VR",
@@ -117,41 +118,8 @@ export default function RootLayout({
           }}
         />
         
-        {/* Structured Data para Producto */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Product",
-              "name": "madTrackers SlimeVR Compatible",
-              "description": "Trackers de movimiento inalámbricos compatibles con SlimeVR Compatible, fabricados en Chile para VRChat y aplicaciones de realidad virtual",
-              "brand": {
-                "@type": "Brand",
-                "name": "madTrackers"
-              },
-              "manufacturer": {
-                "@type": "Organization",
-                "name": "madTrackers",
-                "address": {
-                  "@type": "PostalAddress",
-                  "addressCountry": "CL"
-                }
-              },
-              "category": "VR Hardware",
-              "keywords": "trackers slimevr compatible chile, sensores vr, vrchat, full body tracking",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "USD",
-                "availability": "https://schema.org/InStock",
-                "seller": {
-                  "@type": "Organization",
-                  "name": "madTrackers"
-                }
-              }
-            })
-          }}
-        />
+        {/* Structured Data dinámico para Producto Principal */}
+        <GlobalProductStructuredData />
         
         <Script
           src="https://www.paypal.com/sdk/js?client-id=BAAeh6JHd00AdVhZOeXQzNBTbUJsl6pydxlxpvSOvzq4RdlRi4nwtYpYUS_DFVur0iBvF9U6vXkTIPEd7Y&components=hosted-buttons&disable-funding=venmo&currency=USD"

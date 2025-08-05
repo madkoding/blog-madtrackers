@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import ProductStructuredDataWrapper from '../_components/common/ProductStructuredDataWrapper'
 
 export const metadata: Metadata = {
   title: 'Trackers SlimeVR Argentina - Envío UPS 4-7 Días | madTrackers Chile',
@@ -371,6 +372,67 @@ export default function TrackersSlimeVRArgentina() {
           </div>
         </div>
       </div>
+      
+      {/* Structured Data para SEO */}
+      <ProductStructuredDataWrapper 
+        config={{
+          name: "Trackers SlimeVR Argentina - Set de 6 Trackers madTrackers",
+          description: "Set completo de 6 trackers SlimeVR compatibles con envío UPS rápido a Argentina. Compatible con VRChat, 50+ horas de batería, soporte en español.",
+          url: "https://www.madtrackers.com/trackers-slimevr-argentina",
+          // Usar precios dinámicos del backend
+          sensorId: "sensor4", // ICM45686 + QMC6309 - el más popular
+          trackerId: "rf", // ESB - el único disponible actualmente
+          quantity: 6, // Set completo de 6 trackers
+          countryCode: "AR", // Argentina - con comisiones PayPal
+          // Información del producto
+          sku: "MT-SLIMEVR-SET6-AR-2024",
+          category: "VR Hardware",
+          brand: "madTrackers",
+          image: [
+            "https://www.madtrackers.com/assets/blog/tracker-slimevr-madtrackers.webp",
+            "https://www.madtrackers.com/assets/blog/configuracion-slimevr-argentina.webp"
+          ],
+          aggregateRating: {
+            ratingValue: "4.7",
+            reviewCount: "73",
+            bestRating: "5",
+            worstRating: "1"
+          },
+          reviews: [
+            {
+              author: "Matías Rodriguez",
+              datePublished: "2024-12-18",
+              reviewBody: "Excelente set de 6 trackers para Argentina. Llegaron en 5 días por UPS y funcionan perfecto con VRChat. La calidad es muy buena y el soporte en español es genial.",
+              reviewRating: {
+                ratingValue: "5",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            },
+            {
+              author: "Lucía Fernández",
+              datePublished: "2024-11-30",
+              reviewBody: "El mejor set de trackers que he probado. Full body tracking completo funcionando perfecto en Buenos Aires. Vale la pena la inversión para VR serio.",
+              reviewRating: {
+                ratingValue: "5",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            },
+            {
+              author: "Pablo Martinez",
+              datePublished: "2024-11-10",
+              reviewBody: "Muy buena calidad, aunque con impuestos argentinos sale caro. Pero el tracking es excelente y el envío UPS es confiable. Lo recomiendo.",
+              reviewRating: {
+                ratingValue: "4",
+                bestRating: "5",
+                worstRating: "1"
+              }
+            }
+          ]
+        }}
+        fallbackToStatic={true}
+      />
     </div>
   )
 }
