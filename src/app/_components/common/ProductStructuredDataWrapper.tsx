@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import { useProductStructuredData } from '@/hooks/useProductStructuredData'
 import StructuredData from './StructuredData'
 
@@ -48,37 +49,39 @@ export default function ProductStructuredDataWrapper({
   config, 
   fallbackToStatic = true 
 }: Readonly<ProductStructuredDataWrapperProps>) {
-  const { structuredData, loading, error } = useProductStructuredData(config)
+  // Crear configuración de fallback si es necesario
+  const fallbackConfig = useMemo(() => {
+    if (fallbackToStatic && !config.staticPrice) {
+      return {
+        ...config,
+        staticPrice: '373.05',
+        priceCurrency: 'USD'
+      }
+    }
+    return config
+  }, [config, fallbackToStatic])
 
-  // Si hay error y se permite fallback estático, usar precio estático
-  if (error && fallbackToStatic && !config.staticPrice) {
-    const fallbackData = {
-      ...config,
-      staticPrice: '85.00',
-      priceCurrency: 'USD'
+  // Usar el hook una sola vez con la configuración apropiada
+  const { structuredData, loading, error } = useProductStructuredData(config)
+  const { structuredData: fallbackStructuredData } = useProductStructuredData(fallbackConfig)
+
+  // Determinar qué datos usar basado en si hay error
+  const finalData = useMemo(() => {
+    if (error && fallbackToStatic && fallbackStructuredData) {
+      return fallbackStructuredData
     }
-    
-    const { structuredData: fallbackStructuredData } = useProductStructuredData(fallbackData)
-    
-    if (fallbackStructuredData) {
-      return (
-        <StructuredData 
-          type="product"
-          data={fallbackStructuredData}
-        />
-      )
-    }
-  }
+    return structuredData
+  }, [error, fallbackToStatic, fallbackStructuredData, structuredData])
 
   // No renderizar nada mientras está cargando o si no hay datos
-  if (loading || !structuredData) {
+  if (loading || !finalData) {
     return null
   }
 
   return (
     <StructuredData 
       type="product"
-      data={structuredData}
+      data={finalData}
     />
   )
 }
