@@ -14,13 +14,13 @@ ogImage:
   url: "/assets/blog/preview/faq.jpg"
 ---
 
-Bienvenido a madTrackers. Este documento regula el acceso y uso del sitio web, así como la compra de productos y servicios ofrecidos por madTrackers SpA. Al utilizar nuestro sitio web y/o adquirir nuestros productos, usted declara haber leído, entendido y aceptado los siguientes términos y condiciones.
+Bienvenido a madTrackers. Este documento regula el acceso y uso del sitio web, así como la compra de productos y servicios ofrecidos por madTrackers. Al utilizar nuestro sitio web y/o adquirir nuestros productos, usted declara haber leído, entendido y aceptado los siguientes términos y condiciones.
 
 ---
 
 ## 1. Información General
 
-madTrackers SpA, en adelante "madTrackers", es una empresa dedicada al desarrollo y comercialización de dispositivos de rastreo corporal para entornos de realidad virtual. Nuestro sitio web y tienda están dirigidos a personas mayores de edad o menores autorizados por sus representantes legales.
+madTrackers es una empresa dedicada al desarrollo y comercialización de dispositivos de rastreo corporal para entornos de realidad virtual. Nuestro sitio web y tienda están dirigidos a personas mayores de edad o menores autorizados por sus representantes legales.
 
 El uso del sitio implica la aceptación plena de estos Términos. Si no está de acuerdo con ellos, no debe acceder ni utilizar nuestros servicios.
 
@@ -83,7 +83,7 @@ Nos comprometemos a responder todas las consultas relacionadas con garantía en 
 ## 7. Contacto
 
 Para consultas sobre estos términos y condiciones:
-- Email: madkoding@gmail.com
+- Email: contacto@madtrackers.com
 - Teléfono: +56 9 7574 6099
 
 **Políticas relacionadas:**
@@ -92,13 +92,13 @@ Para consultas sobre estos términos y condiciones:
 
 ---LANG-SEPARATOR---
 
-Welcome to madTrackers. This document governs access to and use of the website, as well as the purchase of products and services offered by madTrackers SpA. By using our website and/or purchasing our products, you declare that you have read, understood and accepted the following terms and conditions.
+Welcome to madTrackers. This document governs access to and use of the website, as well as the purchase of products and services offered by madTrackers. By using our website and/or purchasing our products, you declare that you have read, understood and accepted the following terms and conditions.
 
 ---
 
 ## 1. General Information
 
-madTrackers SpA, hereinafter "madTrackers", is a company dedicated to the development and commercialization of body tracking devices for virtual reality environments. Our website and store are aimed at people of legal age or minors authorized by their legal representatives.
+madTrackers is a company dedicated to the development and commercialization of body tracking devices for virtual reality environments. Our website and store are aimed at people of legal age or minors authorized by their legal representatives.
 
 Use of the site implies full acceptance of these Terms. If you do not agree with them, you should not access or use our services.
 
@@ -161,7 +161,7 @@ We commit to responding to all warranty-related inquiries within a maximum of 72
 ## 7. Contact
 
 For inquiries about these terms and conditions:
-- Email: madkoding@gmail.com
+- Email: contacto@madtrackers.com
 - Phone: +56 9 7574 6099
 
 **Related policies:**
