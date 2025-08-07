@@ -12,6 +12,7 @@ import WebVitalsMonitor from "./_components/common/WebVitalsMonitor";
 import ConditionalAnalytics from "./_components/common/ConditionalAnalytics";
 import CountrySimulator from "./_components/dev/CountrySimulator";
 import GlobalProductStructuredData from "./_components/common/GlobalProductStructuredData";
+import RecaptchaProvider from "./_components/RecaptchaProvider";
 
 export const metadata: Metadata = {
   title: "madTrackers - Trackers SlimeVR Compatible Chile | Sensores de Movimiento VR",
@@ -146,12 +147,14 @@ export default function RootLayout({
         <WebVitalsMonitor />
         <ResourceOptimizer />
         <ConditionalAnalytics />
-        <LangProvider>
-          <CountrySimulator />
-          <NavBar />
-          <div className="min-h-screen">{children}</div>
-          <Footer />
-        </LangProvider>
+        <RecaptchaProvider>
+          <LangProvider>
+            <CountrySimulator />
+            <NavBar />
+            <div className="min-h-screen">{children}</div>
+            <Footer />
+          </LangProvider>
+        </RecaptchaProvider>
       </body>
     </html>
   );

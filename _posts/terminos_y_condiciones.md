@@ -61,11 +61,34 @@ Nuestros productos son dispositivos de rastreo corporal diseñados para entornos
 
 ---
 
-## 6. Contacto
+## 6. Garantía y Responsabilidades
+
+madTrackers ofrece una garantía limitada de 30 días contra defectos de fabricación a partir de la fecha de entrega. Esta garantía cubre únicamente fallas en el funcionamiento normal del producto bajo condiciones de uso adecuadas.
+
+**Limitaciones de la garantía:**
+- No cubre daños por mal uso, caídas o exposición a líquidos
+- No incluye desgaste normal por uso
+- El cliente debe contactarnos antes de realizar cualquier devolución
+
+**Proceso de garantía:**
+1. Contactar a nuestro equipo de soporte
+2. Descripción detallada del problema
+3. Envío de evidencia fotográfica si es necesario
+4. Evaluación del caso por nuestro equipo técnico
+
+Nos comprometemos a responder todas las consultas relacionadas con garantía en un plazo máximo de 72 horas hábiles. madTrackers se reserva el derecho de determinar si un producto califica para reemplazo, reparación o reembolso según cada caso particular.
+
+---
+
+## 7. Contacto
 
 Para consultas sobre estos términos y condiciones:
 - Email: madkoding@gmail.com
 - Teléfono: +56 9 7574 6099
+
+**Políticas relacionadas:**
+- [Política de Privacidad](/posts/politica_privacidad)
+- [Política de Retorno](/posts/politica_retorno)
 
 ---LANG-SEPARATOR---
 
@@ -116,8 +139,31 @@ Our products are body tracking devices designed for virtual reality environments
 
 ---
 
-## 6. Contact
+## 6. Warranty and Responsibilities
+
+madTrackers offers a limited 30-day warranty against manufacturing defects from the delivery date. This warranty covers only failures in normal product operation under proper use conditions.
+
+**Warranty limitations:**
+- Does not cover damage from misuse, drops or liquid exposure
+- Does not include normal wear from use
+- Customer must contact us before making any returns
+
+**Warranty process:**
+1. Contact our support team
+2. Detailed description of the problem
+3. Send photographic evidence if necessary
+4. Case evaluation by our technical team
+
+We commit to responding to all warranty-related inquiries within a maximum of 72 business hours. madTrackers reserves the right to determine whether a product qualifies for replacement, repair or refund according to each particular case.
+
+---
+
+## 7. Contact
 
 For inquiries about these terms and conditions:
 - Email: madkoding@gmail.com
 - Phone: +56 9 7574 6099
+
+**Related policies:**
+- [Privacy Policy](/posts/politica_privacidad)
+- [Return Policy](/posts/politica_retorno)

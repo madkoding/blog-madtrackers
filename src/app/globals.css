@@ -271,3 +271,30 @@ p {
 .admin-layout select {
   color: #111827 !important; /* text-gray-900 */
 }
+
+/* Glass reflection animations */
+@keyframes shimmer {
+  0% { 
+    transform: translateX(-100%) skewX(-15deg); 
+    opacity: 0.5;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translateX(20%) skewX(-15deg); 
+    opacity: 0.9;
+  }
+  75% {
+    opacity: 0.7;
+  }
+  100% { 
+    transform: translateX(-100%) skewX(-15deg); 
+    opacity: 0.5;
+  }
+}
+
+/* Utility classes for glass effects */
+.glass-shimmer {
+  animation: shimmer 4s ease-in-out infinite;
+}

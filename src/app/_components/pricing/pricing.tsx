@@ -6,6 +6,7 @@ import { translations } from "../../i18n";
 import { useLang } from "../../lang-context";
 import { Sensor, Currency, TrackerType } from "../../types";
 import { usePricing } from "../../../hooks/usePricing";
+import { useRecaptcha } from "../../../hooks/useRecaptcha";
 import QuantitySelector from "./quantity-selector";
 import ColorSelector from "./color-selector";
 import PricingSummary from "./pricing-summary";
@@ -29,6 +30,14 @@ const Pricing = () => {
   );
   const [selectedColorTapa, setSelectedColorTapa] = useState(colorsT[0]);
   const [selectedColorCase, setSelectedColorCase] = useState(colorsT[0]);
+  const [acceptedTerms, setAcceptedTerms] = useState<boolean>(false);
+  
+  // Contact form states
+  const [email, setEmail] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Estado para el país seleccionado para cálculos de precio
   const [countryCode, setCountryCode] = useState<string>("US");
@@ -42,6 +51,7 @@ const Pricing = () => {
 
   const { lang } = useLang();
   const t = translations[lang];
+  const { executeRecaptcha } = useRecaptcha();
 
   // Hook para obtener precios desde el backend
   const { pricing, loading: pricingLoading, error: pricingError } = usePricing({
@@ -50,6 +60,22 @@ const Pricing = () => {
     quantity: selectedQuantity,
     countryCode
   });
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isModalOpen) {
+        setIsModalOpen(false);
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => {
+        document.removeEventListener('keydown', handleEscape);
+      };
+    }
+  }, [isModalOpen]);
 
   const formatPrice = (price: string) => {
     return new Intl.NumberFormat("es-ES").format(Number(price));
@@ -240,6 +266,194 @@ const Pricing = () => {
           {t.askNow}
         </button>
 
+        {/* Contact Form Button */}
+        <div className="mt-6">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="mx-auto hover:underline font-bold rounded-full py-4 px-8 shadow focus:outline-none focus:shadow-outline transform transition duration-300 ease-in-out flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white opacity-100 hover:scale-105"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="inline-block">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+            {t.contactFormButton}
+          </button>
+        </div>
+
+        {/* Modal */}
+        {isModalOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setIsModalOpen(false);
+              }
+            }}
+          >
+            <div 
+              className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200"
+              role="dialog"
+              aria-modal="true"
+              tabIndex={-1}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {t.contactFormTitle}
+                </h3>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  aria-label="Cerrar modal"
+                  title="Cerrar modal (Esc)"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 hover:text-gray-700">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6">
+                <p className="text-sm text-gray-600 mb-6 text-center">
+                  {t.contactFormDesc}
+                </p>
+                
+                <form 
+                  className="space-y-4"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!email || !message) return;
+                    
+                    setIsSubmitting(true);
+                    setSubmitStatus("idle");
+                    
+                    try {
+                      // Ejecutar reCAPTCHA
+                      const recaptchaToken = await executeRecaptcha('contact_form');
+                      
+                      if (!recaptchaToken) {
+                        throw new Error('Error en la verificación de seguridad. Por favor, recarga la página e intenta de nuevo.');
+                      }
+
+                      const response = await fetch('/api/contact', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          email,
+                          message,
+                          recaptchaToken
+                        })
+                      });
+
+                      const data = await response.json();
+
+                      if (!response.ok) {
+                        throw new Error(data.error || 'Error al enviar el mensaje');
+                      }
+                      
+                      setSubmitStatus("success");
+                      setEmail("");
+                      setMessage("");
+                      
+                      // Reset success message after 3 seconds and close modal
+                      setTimeout(() => {
+                        setSubmitStatus("idle");
+                        setIsModalOpen(false);
+                      }, 2000);
+                    } catch (error) {
+                      console.error('Error sending contact form:', error);
+                      setSubmitStatus("error");
+                      setTimeout(() => setSubmitStatus("idle"), 3000);
+                    } finally {
+                      setIsSubmitting(false);
+                    }
+                  }}
+                >
+                  <div>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder={t.emailPlaceholder}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-gray-900 placeholder-gray-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder={t.messagePlaceholder}
+                      required
+                      rows={4}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none text-gray-900 placeholder-gray-500"
+                    />
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !email || !message}
+                    className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
+                      isSubmitting || !email || !message
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white hover:scale-105 transform'
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                        {t.sendMessage}
+                      </>
+                    )}
+                  </button>
+                  
+                  {/* reCAPTCHA Notice */}
+                  <div className="text-xs text-gray-500 text-center mt-2 flex items-center justify-center gap-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-green-500">
+                      <path d="M12 2L4.09 6.31l1.42 1.42L12 4.13l6.49 3.6 1.42-1.42L12 2zM12 6L4.09 10.31l1.42 1.42L12 8.13l6.49 3.6 1.42-1.42L12 6zM12 10L4.09 14.31l1.42 1.42L12 12.13l6.49 3.6 1.42-1.42L12 10zM3 16l9 5 9-5-1.42-1.42L12 18.13l-7.58-3.55L3 16z"/>
+                    </svg>
+                    Protegido por reCAPTCHA
+                  </div>
+                  
+                  {/* Status Messages */}
+                  {submitStatus === "success" && (
+                    <div className="text-center p-3 bg-green-100 text-green-700 rounded-lg border border-green-200">
+                      <div className="flex items-center justify-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        {t.messageSent}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {submitStatus === "error" && (
+                    <div className="text-center p-3 bg-red-100 text-red-700 rounded-lg border border-red-200">
+                      <div className="flex items-center justify-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        {t.messageError}
+                      </div>
+                    </div>
+                  )}
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+
         <br />
         {(() => {
           if (pricingLoading) {
@@ -266,20 +480,165 @@ const Pricing = () => {
           const advanceAmount = Math.round(parseFloat(totalPrice) / 4);
           const advanceAmountUsd = Math.round((pricing?.prices.totalUsd || 0) / 4 * 100) / 100;
           
-          if (currency === "CLP") {
-            return (
-              <FlowPayment
-                amount={advanceAmount}
-                description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
-              />
-            );
-          }
-          
           return (
-            <PaypalButton 
-              amount={advanceAmountUsd}
-              description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
-            />
+            <div>
+              <div className="relative">
+                <div className={`transition-all duration-500 ${acceptedTerms ? 'transform scale-105' : 'transform scale-100'}`}>
+                  {currency === "CLP" ? (
+                    <FlowPayment
+                      amount={advanceAmount}
+                      description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
+                    />
+                  ) : (
+                    <PaypalButton 
+                      amount={advanceAmountUsd}
+                      description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
+                    />
+                  )}
+                </div>
+                
+                {/* Glass overlay with reflection effect */}
+                <div 
+                  className={`absolute inset-0 pointer-events-none transition-all duration-1000 ease-out ${
+                    acceptedTerms 
+                      ? 'opacity-0 scale-110 rotate-3' 
+                      : 'opacity-100 scale-100 rotate-0'
+                  }`}
+                  style={{
+                    background: `linear-gradient(
+                      135deg, 
+                      rgba(255, 255, 255, 0.9) 0%, 
+                      rgba(255, 255, 255, 0.6) 15%, 
+                      rgba(255, 255, 255, 0.2) 30%, 
+                      rgba(255, 255, 255, 0.1) 50%, 
+                      rgba(255, 255, 255, 0.3) 70%, 
+                      rgba(255, 255, 255, 0.7) 85%, 
+                      rgba(255, 255, 255, 0.95) 100%
+                    )`,
+                    backdropFilter: 'blur(3px) saturate(1.2)',
+                    borderRadius: '12px',
+                    boxShadow: acceptedTerms 
+                      ? 'none' 
+                      : `
+                        inset 0 2px 4px rgba(255, 255, 255, 0.9),
+                        inset 0 -2px 4px rgba(255, 255, 255, 0.5),
+                        0 8px 32px rgba(0, 0, 0, 0.15),
+                        0 0 0 1px rgba(255, 255, 255, 0.3)
+                      `
+                  }}
+                />
+                
+                {/* Primary moving reflection */}
+                <div 
+                  className={`absolute inset-0 pointer-events-none transition-all duration-1200 delay-100 ease-out ${
+                    acceptedTerms 
+                      ? 'opacity-0 translate-x-full scale-110' 
+                      : 'opacity-75 translate-x-0 scale-100'
+                  }`}
+                  style={{
+                    background: `linear-gradient(
+                      75deg, 
+                      transparent 0%, 
+                      transparent 25%,
+                      rgba(255, 255, 255, 0.2) 40%, 
+                      rgba(255, 255, 255, 0.7) 48%, 
+                      rgba(255, 255, 255, 0.9) 50%, 
+                      rgba(255, 255, 255, 0.7) 52%, 
+                      rgba(255, 255, 255, 0.2) 60%, 
+                      transparent 75%,
+                      transparent 100%
+                    )`,
+                    width: '50%',
+                    height: '100%',
+                    top: '0%',
+                    left: acceptedTerms ? '100%' : '-50%',
+                    transform: `skewX(-15deg) ${acceptedTerms ? 'translateX(50%)' : 'translateX(0)'}`,
+                    borderRadius: '12px',
+                    animation: acceptedTerms ? 'none' : 'shimmer 4s ease-in-out infinite',
+                  }}
+                />
+
+                {/* Secondary diagonal reflection */}
+                <div 
+                  className={`absolute inset-0 pointer-events-none transition-all duration-800 delay-300 ease-out ${
+                    acceptedTerms 
+                      ? 'opacity-0 translate-x-full rotate-12' 
+                      : 'opacity-70 translate-x-0 rotate-0'
+                  }`}
+                  style={{
+                    background: `linear-gradient(
+                      135deg, 
+                      transparent 0%, 
+                      transparent 20%,
+                      rgba(255, 255, 255, 0.3) 35%, 
+                      rgba(255, 255, 255, 0.8) 50%, 
+                      rgba(255, 255, 255, 0.3) 65%, 
+                      transparent 80%,
+                      transparent 100%
+                    )`,
+                    width: '80%',
+                    height: '100%',
+                    top: '0%',
+                    right: acceptedTerms ? '-80%' : '20%',
+                    transform: `skewX(-20deg) ${acceptedTerms ? 'translateX(100%)' : 'translateX(0)'}`,
+                    borderRadius: '12px',
+                  }}
+                />
+
+                {/* Disabled state overlay */}
+                {!acceptedTerms && (
+                  <div 
+                    className="absolute inset-0 bg-gray-300 bg-opacity-40 backdrop-blur-sm rounded-lg pointer-events-auto cursor-not-allowed flex items-center justify-center"
+                  >
+                    <div className="bg-white bg-opacity-95 px-6 py-3 rounded-full shadow-xl border-2 border-gray-200">
+                      <p className="text-gray-700 text-sm font-semibold flex items-center gap-2">
+                        <span className="text-blue-500 text-lg">🔒</span>{" "}
+                        Acepta los términos para continuar con tu compra
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Terms and Conditions Checkbox */}
+              <div className="mt-6 mb-4">
+                <label className="flex items-center justify-center gap-2 text-sm text-gray-700 cursor-pointer group">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={acceptedTerms}
+                      onChange={(e) => setAcceptedTerms(e.target.checked)}
+                      className="w-5 h-5 text-blue-600 bg-gray-100 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 transition-all duration-200 transform group-hover:scale-110"
+                    />
+                    {acceptedTerms && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <svg 
+                          className="w-3 h-3 text-white animate-bounce" 
+                          fill="currentColor" 
+                          viewBox="0 0 20 20"
+                        >
+                          <path 
+                            fillRule="evenodd" 
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
+                            clipRule="evenodd" 
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <span className="group-hover:text-blue-600 transition-colors duration-200">
+                    {t.agreeToTerms}{" "}
+                    <a 
+                      href="/posts/terminos_y_condiciones" 
+                      target="_blank"
+                      className="text-blue-600 hover:text-blue-800 underline font-medium"
+                    >
+                      {t.termsAndConditions}
+                    </a>
+                  </span>
+                </label>
+              </div>
+            </div>
           );
         })()}
       </div>
