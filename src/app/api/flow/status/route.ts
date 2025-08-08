@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFlowService } from '@/lib/flowService';
+import { getFlowService, FlowPaymentStatusResponse } from '@/lib/flowService';
 
 /**
  * API endpoint para verificar el estado de un pago Flow
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     console.log('📋 [FLOW STATUS] Full payment status object:', JSON.stringify(paymentStatus, null, 2));
 
     // Mapear estados de Flow a estados legibles
-    const getStatusText = (status: number, paymentData?: any): { statusCode: number; statusText: string; isSuccess: boolean } => {
+    const getStatusText = (status: number, paymentData?: FlowPaymentStatusResponse['paymentData']): { statusCode: number; statusText: string; isSuccess: boolean } => {
       console.log(`🔍 [FLOW STATUS] Mapping status ${status} to text...`);
       console.log(`🔍 [FLOW STATUS] Payment data present: ${paymentData ? 'YES' : 'NO'}`);
       

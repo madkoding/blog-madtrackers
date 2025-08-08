@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FlowService } from '@/lib/flowService';
+import { FlowService, FlowPaymentStatusResponse } from '@/lib/flowService';
 
 /**
  * Procesa el cuerpo de la petición HTTP para extraer datos
@@ -66,7 +66,7 @@ function extractToken(body: Record<string, unknown>, searchParams: URLSearchPara
  * NOTA: Flow a veces reporta status 2 pero con paymentData válido,
  * lo que indica que el pago SÍ fue procesado exitosamente
  */
-function getStatusMessage(status: number, paymentData?: any): { isSuccess: boolean; message: string } {
+function getStatusMessage(status: number, paymentData?: FlowPaymentStatusResponse['paymentData']): { isSuccess: boolean; message: string } {
   console.log(`🔍 [FLOW CONFIRM] Analyzing payment status: ${status}`);
   console.log(`🔍 [FLOW CONFIRM] Payment data present: ${paymentData ? 'YES' : 'NO'}`);
   
@@ -121,7 +121,7 @@ function getStatusMessage(status: number, paymentData?: any): { isSuccess: boole
 /**
  * Crea la respuesta para Flow
  */
-function createFlowResponse(isSuccess: boolean, message: string, paymentStatus: any) {
+function createFlowResponse(isSuccess: boolean, message: string, paymentStatus: FlowPaymentStatusResponse) {
   console.log('📤 [FLOW CONFIRM] Creating response for Flow...');
   console.log('📊 [FLOW CONFIRM] Response data:', {
     isSuccess,
