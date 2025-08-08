@@ -8,7 +8,6 @@ import { LangProvider } from "./lang-context";
 import { exo2, faustina } from "./fonts";
 import ResourceOptimizer from "./_components/common/ResourceOptimizer";
 import CriticalCSS from "./_components/common/CriticalCSS";
-import WebVitalsMonitor from "./_components/common/WebVitalsMonitor";
 import ConditionalAnalytics from "./_components/common/ConditionalAnalytics";
 import CountrySimulator from "./_components/dev/CountrySimulator";
 import GlobalProductStructuredData from "./_components/common/GlobalProductStructuredData";
@@ -144,7 +143,6 @@ export default function RootLayout({
         <link rel="manifest" href="/favicon/site.webmanifest" />
       </head>
       <body className={`leading-normal tracking-normal text-white gradient ${exo2.className}`}>
-        <WebVitalsMonitor />
         <ResourceOptimizer />
         <ConditionalAnalytics />
         <RecaptchaProvider>
