@@ -45,7 +45,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
-    "eslint": "9.28.0",
+    "eslint": "9.33.0",
     "eslint-config-next": "15.3.3",
     "gltf-pipeline": "^4.1.0",
     "jest": "^30.0.5",
