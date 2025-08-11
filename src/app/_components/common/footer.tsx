@@ -33,7 +33,7 @@ const Footer: React.FC<FooterProps> = () => {
             height={60}
             className={"invert"}
           />
-          <p className="text-lg text-white font-bold">madTrackers</p>
+          <p className="text-lg text-white font-bold">madTrackers SpA</p>
           <br />
           <p className="text-sm text-gray-400">{t.footerDescription}</p>
         </div>
