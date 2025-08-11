@@ -34,7 +34,7 @@
     "remark-html": "^16.0.1",
     "resend": "^4.5.1",
     "sqlite-vss": "^0.1.2",
-    "three": "^0.176.0"
+    "three": "^0.179.1"
   },
   "devDependencies": {
     "@gltf-transform/cli": "^4.1.4",
