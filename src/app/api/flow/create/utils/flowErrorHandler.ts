@@ -8,7 +8,7 @@ export interface FlowErrorResponse {
   error: string;
   timestamp: string;
   code?: string;
-  details?: any;
+  details?: Record<string, unknown> | string[];
 }
 
 export interface ErrorInfo {
@@ -112,8 +112,8 @@ export function isRecoverableError(error: unknown): boolean {
 /**
  * Extrae detalles del error para logging
  */
-export function extractErrorDetails(error: unknown): Record<string, any> {
-  const details: Record<string, any> = {
+export function extractErrorDetails(error: unknown): Record<string, unknown> {
+  const details: Record<string, unknown> = {
     type: typeof error,
     timestamp: new Date().toISOString()
   };
@@ -143,18 +143,18 @@ export function extractErrorDetails(error: unknown): Record<string, any> {
 /**
  * Sanitiza un error para logging público (remueve información sensible)
  */
-export function sanitizeErrorForLogging(error: unknown): Record<string, any> {
+export function sanitizeErrorForLogging(error: unknown): Record<string, unknown> {
   const details = extractErrorDetails(error);
   
   // Remover información potencialmente sensible
   const sensitiveKeys = ['password', 'token', 'secret', 'key', 'auth'];
   
-  function sanitizeObject(obj: any): any {
+  function sanitizeObject(obj: unknown): unknown {
     if (typeof obj !== 'object' || obj === null) {
       return obj;
     }
     
-    const sanitized: any = {};
+    const sanitized: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
       const keyLower = key.toLowerCase();
       if (sensitiveKeys.some(sensitive => keyLower.includes(sensitive))) {
@@ -168,5 +168,5 @@ export function sanitizeErrorForLogging(error: unknown): Record<string, any> {
     return sanitized;
   }
   
-  return sanitizeObject(details);
+  return sanitizeObject(details) as Record<string, unknown>;
 }

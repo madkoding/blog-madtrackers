@@ -48,7 +48,7 @@ export function logFlowEndpointStart(context: FlowLogContext): void {
 /**
  * Log de parámetros extraídos
  */
-export function logFlowParameters(endpoint: string, params: Record<string, any>): void {
+export function logFlowParameters(endpoint: string, params: Record<string, unknown>): void {
   console.log(`📊 [FLOW ${endpoint.toUpperCase()}] Extracted parameters:`);
   Object.entries(params).forEach(([key, value]) => {
     const icon = getParameterIcon(key);
@@ -72,7 +72,7 @@ export function logFlowValidationError(endpoint: string, errors: string[], missi
 /**
  * Log de respuesta exitosa
  */
-export function logFlowSuccess(endpoint: string, data: Record<string, any>): void {
+export function logFlowSuccess(endpoint: string, data: Record<string, unknown>): void {
   console.log(`📥 [FLOW ${endpoint.toUpperCase()}] Operation completed successfully!`);
   Object.entries(data).forEach(([key, value]) => {
     const icon = getParameterIcon(key);

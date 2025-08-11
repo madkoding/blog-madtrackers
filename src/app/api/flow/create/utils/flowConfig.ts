@@ -118,7 +118,7 @@ export function validateFlowConfig(config: FlowConfig): { isValid: boolean; erro
 /**
  * Formatea los parámetros de configuración para logging (sin datos sensibles)
  */
-export function formatConfigForLogging(config: FlowConfig): Record<string, any> {
+export function formatConfigForLogging(config: FlowConfig): Record<string, string | number> {
   return {
     currency: config.currency,
     paymentMethod: config.paymentMethod,

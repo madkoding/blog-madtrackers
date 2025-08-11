@@ -5,6 +5,7 @@ export function logVerificationError(verificationError: unknown, token: string):
   console.error('💥 [FLOW CONFIRM] ===============================================');
   console.error('💥 [FLOW CONFIRM] ERROR VERIFYING PAYMENT STATUS');
   console.error('💥 [FLOW CONFIRM] ===============================================');
+  console.error('💥 [FLOW CONFIRM] Token:', token ? token.substring(0, 10) + '...' : 'No token');
   console.error('💥 [FLOW CONFIRM] Error details:', verificationError);
   console.error('💥 [FLOW CONFIRM] Error type:', typeof verificationError);
   console.error('💥 [FLOW CONFIRM] Error message:', verificationError instanceof Error ? verificationError.message : 'Unknown error');

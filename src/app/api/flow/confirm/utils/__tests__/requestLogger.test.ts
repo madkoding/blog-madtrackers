@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
 import { 
   logRequestInfo, 
@@ -301,9 +302,9 @@ describe('requestLogger', () => {
     });
 
     it('should handle large analysis data', () => {
-      const largeBody = {};
+      const largeBody: Record<string, string> = {};
       for (let i = 0; i < 1000; i++) {
-        (largeBody as any)[`key${i}`] = `value${i}`;
+        largeBody[`key${i}`] = `value${i}`;
       }
 
       const analysisData = {

@@ -44,7 +44,7 @@ export class PaymentStatusService {
   /**
    * Mapea el estado de Flow a una ruta de redirección
    */
-  private static mapStatusToRedirectPath(status: number, method: 'POST' | 'GET', paymentData?: any): string {
+  private static mapStatusToRedirectPath(status: number, method: 'POST' | 'GET', paymentData?: Record<string, unknown>): string {
     let redirectPath: string;
     
     // Detectar pago exitoso basado en paymentData (problema conocido de Flow con status 2)
