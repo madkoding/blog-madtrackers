@@ -90,7 +90,7 @@ const LoadingScreen: React.FC = () => (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
     <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-      <p className="text-gray-600">Verificando el estado de tu pago...</p>
+      <p className="text-gray-600 text-center">Verificando el estado de tu pago...</p>
     </div>
   </div>
 );
