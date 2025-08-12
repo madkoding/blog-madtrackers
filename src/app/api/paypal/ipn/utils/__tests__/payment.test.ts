@@ -1,5 +1,6 @@
 import { processCompletedPayment } from '../payment';
 import { PayPalIPNData } from '../types';
+import { UserTracking, OrderStatus } from '@/interfaces/tracking';
 
 // Mock Resend
 jest.mock('resend', () => ({
@@ -47,10 +48,28 @@ describe('PayPal IPN Payment Utils', () => {
       amount: 99.99
     };
 
-    const mockExistingTracking = {
+    const mockExistingTracking: UserTracking = {
       id: 'tracking_123',
+      nombreUsuario: 'testuser',
+      userHash: 'hash_123',
       contacto: 'test@example.com',
-      userHash: 'hash_123'
+      fechaEntrega: '2024-02-01T00:00:00.000Z',
+      totalUsd: 99.99,
+      abonadoUsd: 99.99,
+      envioPagado: false,
+      numeroTrackers: 5,
+      sensor: 'ICM45686 + QMC6309',
+      magneto: false,
+      porcentajes: {
+        placa: 0,
+        straps: 0,
+        cases: 0,
+        baterias: 0
+      },
+      colorCase: 'black',
+      colorTapa: 'black',
+      paisEnvio: 'Chile',
+      estadoPedido: OrderStatus.WAITING
     };
 
     const mockOrderDetails = {

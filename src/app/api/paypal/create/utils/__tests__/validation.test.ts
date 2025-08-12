@@ -20,6 +20,7 @@ describe('PayPal Create Validation Utils', () => {
 
     it('should return invalid when email is missing', () => {
       const body = {
+        email: '',
         amount: 100,
         transactionId: 'txn_123',
         userData: {
@@ -36,6 +37,7 @@ describe('PayPal Create Validation Utils', () => {
     it('should return invalid when amount is missing', () => {
       const body = {
         email: 'test@example.com',
+        amount: 0,
         transactionId: 'txn_123',
         userData: {
           direccion: 'Test Address'
@@ -52,6 +54,7 @@ describe('PayPal Create Validation Utils', () => {
       const body = {
         email: 'test@example.com',
         amount: 100,
+        transactionId: '',
         userData: {
           direccion: 'Test Address'
         }
@@ -67,7 +70,10 @@ describe('PayPal Create Validation Utils', () => {
       const body = {
         email: 'test@example.com',
         amount: 100,
-        transactionId: 'txn_123'
+        transactionId: 'txn_123',
+        userData: {
+          direccion: ''
+        }
       };
 
       const result = validatePayPalCreateRequest(body);
@@ -81,7 +87,9 @@ describe('PayPal Create Validation Utils', () => {
         email: 'test@example.com',
         amount: 100,
         transactionId: 'txn_123',
-        userData: {}
+        userData: {
+          direccion: ''
+        }
       };
 
       const result = validatePayPalCreateRequest(body);

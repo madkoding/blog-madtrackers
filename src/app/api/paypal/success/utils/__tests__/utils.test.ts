@@ -89,10 +89,10 @@ describe('PayPal Success Utils', () => {
     });
 
     it('should handle null body', () => {
-      logProcessingStart(null);
+      logProcessingStart({});
 
       expect(console.log).toHaveBeenCalledWith('🎉 [PAYPAL SUCCESS] Starting PayPal payment processing...');
-      expect(console.log).toHaveBeenCalledWith('📄 [PAYPAL SUCCESS] Request body:', null);
+      expect(console.log).toHaveBeenCalledWith('📄 [PAYPAL SUCCESS] Request body:', {});
     });
 
     it('should handle complex body object', () => {

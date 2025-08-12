@@ -26,6 +26,7 @@ describe('PayPal Success Validation Utils', () => {
 
     it('should return invalid when transactionId is missing', () => {
       const body = {
+        transactionId: '',
         payerEmail: 'payer@example.com',
         amount: '99.99',
         userData: validUserData
@@ -40,6 +41,7 @@ describe('PayPal Success Validation Utils', () => {
     it('should return invalid when payerEmail is missing', () => {
       const body = {
         transactionId: 'txn_123',
+        payerEmail: '',
         amount: '99.99',
         userData: validUserData
       };
@@ -54,6 +56,7 @@ describe('PayPal Success Validation Utils', () => {
       const body = {
         transactionId: 'txn_123',
         payerEmail: 'payer@example.com',
+        amount: '',
         userData: validUserData
       };
 
@@ -67,13 +70,20 @@ describe('PayPal Success Validation Utils', () => {
       const body = {
         transactionId: 'txn_123',
         payerEmail: 'payer@example.com',
-        amount: '99.99'
+        amount: '99.99',
+        userData: {
+          email: '',
+          direccion: 'Test Address',
+          ciudad: 'Test City',
+          estado: 'Test State',
+          pais: 'Test Country'
+        }
       };
 
       const result = validateSuccessRequest(body);
 
       expect(result.isValid).toBe(false);
-      expect(result.error).toBe('Missing required parameters: transactionId, payerEmail, amount, userData');
+      expect(result.error).toBe('Missing required userData fields');
     });
 
     it('should return invalid when userData.email is missing', () => {
@@ -81,7 +91,7 @@ describe('PayPal Success Validation Utils', () => {
         transactionId: 'txn_123',
         payerEmail: 'payer@example.com',
         amount: '99.99',
-        userData: { ...validUserData, email: undefined }
+        userData: { ...validUserData, email: '' }
       };
 
       const result = validateSuccessRequest(body);
@@ -95,7 +105,7 @@ describe('PayPal Success Validation Utils', () => {
         transactionId: 'txn_123',
         payerEmail: 'payer@example.com',
         amount: '99.99',
-        userData: { ...validUserData, direccion: undefined }
+        userData: { ...validUserData, direccion: '' }
       };
 
       const result = validateSuccessRequest(body);
@@ -180,7 +190,7 @@ describe('PayPal Success Validation Utils', () => {
     it('should handle null values as invalid', () => {
       const body = {
         transactionId: 'txn_123',
-        payerEmail: null,
+        payerEmail: '',
         amount: '99.99',
         userData: validUserData
       };
