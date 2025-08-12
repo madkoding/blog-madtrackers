@@ -65,8 +65,9 @@ export enum Colors {
 
 // Enum para los sensores disponibles
 export enum SensorTypes {
-  LSM6DSR = "LSM6DSR",
-  LSM6DSR_MMC = "LSM6DSR + MMC5983MA",
-  ICM45686 = "ICM45686",
-  ICM45686_MMC = "ICM45686 + MMC5983MA"
+  // Sensores comentados - no disponibles actualmente
+  // LSM6DSR = "LSM6DSR",
+  // LSM6DSR_MMC = "LSM6DSR + QMC6309", 
+  // ICM45686 = "ICM45686",
+  ICM45686_QMC = "ICM45686 + QMC6309"
 }

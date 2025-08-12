@@ -14,7 +14,7 @@ const initialUserData: Partial<UserTracking> = {
   paisEnvio: "AR",
   fechaEntrega: new Date().toISOString(),
   numeroTrackers: 1,
-  sensor: SensorTypes.LSM6DSR,
+  sensor: SensorTypes.ICM45686_QMC,
   colorCase: Colors.BLACK,
   colorTapa: Colors.BLACK,
   magneto: false,

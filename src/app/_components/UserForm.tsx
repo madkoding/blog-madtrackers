@@ -268,7 +268,7 @@ const OrderDetailsSection = ({
           <label htmlFor="sensor" className="text-sm font-medium text-gray-700">Tipo de Sensor:</label>
           <SensorSelector 
             id="sensor"
-            selectedSensor={formData?.sensor ?? SensorTypes.LSM6DSR}
+            selectedSensor={formData?.sensor ?? SensorTypes.ICM45686_QMC}
             onUpdate={onFieldUpdate}
           />
         </div>
@@ -482,7 +482,7 @@ const getDefaultUserData = (): Partial<UserTracking> => ({
   paisEnvio: "AR",
   fechaEntrega: new Date().toISOString(),
   numeroTrackers: 1,
-  sensor: SensorTypes.LSM6DSR,
+  sensor: SensorTypes.ICM45686_QMC,
   colorCase: Colors.BLACK,
   colorTapa: Colors.BLACK,
   magneto: false,
