@@ -1,6 +1,6 @@
 import { TrackingManager } from '@/lib/trackingManager';
 import { FirebaseTrackingService } from '@/lib/firebaseTrackingService';
-import { OrderStatus } from '@/interfaces/tracking';
+import { OrderStatus, UserTracking } from '@/interfaces/tracking';
 import { UserData, ProductData } from './types';
 
 /**
@@ -11,7 +11,7 @@ export function createTrackingData(
   userData: UserData,
   amount: string,
   productData?: ProductData
-) {
+): UserTracking {
   return TrackingManager.generateUserTracking({
     nombreUsuario: username,
     contacto: userData.email,
@@ -39,13 +39,13 @@ export function createTrackingData(
  * Crea los datos de tracking mejorados con información de PayPal
  */
 export function createEnhancedTrackingData(
-  trackingData: any,
+  trackingData: UserTracking,
   transactionId: string,
   paypalTransactionId: string | undefined,
   amount: string,
   currency: string | undefined,
   userData: UserData
-) {
+): UserTracking {
   return {
     ...trackingData,
     paymentMethod: 'PayPal',
@@ -66,7 +66,7 @@ export function createEnhancedTrackingData(
 /**
  * Crea el tracking en Firebase y retorna el ID
  */
-export async function createTrackingInFirebase(enhancedTrackingData: any): Promise<string> {
+export async function createTrackingInFirebase(enhancedTrackingData: UserTracking): Promise<string> {
   return await FirebaseTrackingService.createTracking(enhancedTrackingData);
 }
 
@@ -75,7 +75,7 @@ export async function createTrackingInFirebase(enhancedTrackingData: any): Promi
  */
 export function logTrackingCreated(
   trackingId: string,
-  trackingData: any,
+  trackingData: UserTracking,
   transactionId: string
 ): void {
   console.log('🎯 [PAYPAL SUCCESS] Tracking created successfully:', {

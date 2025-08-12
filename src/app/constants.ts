@@ -2,7 +2,7 @@
 // Para mantener compatibilidad con importaciones existentes
 
 // Re-exportar todas las constantes desde los módulos específicos
-export * from './constants/';
+export * from './constants/index';
 
 // También exportar las interfaces que están en otros módulos
 export type { CountryOption, CountryConfig } from './constants/countries.constants';

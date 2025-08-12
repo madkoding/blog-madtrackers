@@ -7,10 +7,14 @@ export function generateUsername(email: string): string {
   return email.split('@')[0] + '_' + Date.now().toString().slice(-6);
 }
 
+interface RequestBody {
+  [key: string]: unknown;
+}
+
 /**
  * Logs de inicio del procesamiento
  */
-export function logProcessingStart(body: any): void {
+export function logProcessingStart(body: RequestBody): void {
   console.log('🎉 [PAYPAL SUCCESS] Starting PayPal payment processing...');
   console.log('📄 [PAYPAL SUCCESS] Request body:', body);
 }

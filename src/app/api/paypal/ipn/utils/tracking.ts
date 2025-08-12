@@ -1,5 +1,5 @@
 import { FirebaseTrackingService } from '@/lib/firebaseTrackingService';
-import { OrderStatus } from '@/interfaces/tracking';
+import { OrderStatus, UserTracking } from '@/interfaces/tracking';
 import { PayPalCustomData, PayPalIPNData } from './types';
 
 /**
@@ -8,7 +8,7 @@ import { PayPalCustomData, PayPalIPNData } from './types';
 export async function updateTrackingFromPayment(
   customData: PayPalCustomData,
   ipnData: PayPalIPNData
-): Promise<any> {
+): Promise<UserTracking | null> {
   try {
     console.log('📝 [PAYPAL IPN] Transaction ID found, updating existing tracking...');
     
@@ -28,7 +28,7 @@ export async function updateTrackingFromPayment(
       estadoPedido: OrderStatus.MANUFACTURING,
       abonadoUsd: customData.amount || parseFloat(ipnData.mc_gross || '0'),
       paymentStatus: 'COMPLETED',
-      paypalTransactionId: ipnData.txn_id,
+      paypalTransactionId: ipnData.txn_id || undefined,
       paymentDate: new Date().toISOString()
     };
     

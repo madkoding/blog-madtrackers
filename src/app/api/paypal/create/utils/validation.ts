@@ -1,7 +1,18 @@
+interface PayPalCreateRequest {
+  amount: string | number;
+  email: string;
+  userData: {
+    direccion: string;
+    [key: string]: unknown;
+  };
+  transactionId: string;
+  [key: string]: unknown;
+}
+
 /**
  * Valida los datos requeridos para crear un pago PayPal
  */
-export function validatePayPalCreateRequest(body: any): { isValid: boolean; error?: string } {
+export function validatePayPalCreateRequest(body: PayPalCreateRequest): { isValid: boolean; error?: string } {
   const { amount, email, userData, transactionId } = body;
 
   // Validaciones básicas

@@ -1,7 +1,19 @@
+interface PayPalSuccessRequestBody {
+  transactionId: string;
+  payerEmail: string;
+  amount: string;
+  userData: {
+    email: string;
+    direccion: string;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
 /**
  * Valida los parámetros requeridos para procesar un pago exitoso de PayPal
  */
-export function validateSuccessRequest(body: any): { isValid: boolean; error?: string } {
+export function validateSuccessRequest(body: PayPalSuccessRequestBody): { isValid: boolean; error?: string } {
   const { 
     transactionId, 
     payerEmail, 

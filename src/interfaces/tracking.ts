@@ -39,7 +39,8 @@ export interface UserTracking {
   
   // Campos de pago
   paymentMethod?: string; // 'PayPal', 'Flow', etc.
-  paymentTransactionId?: string; // ID de transacción del método de pago
+  paymentTransactionId?: string; // ID de transacción del método de pago (nuestro ID personalizado)
+  paypalTransactionId?: string; // ID real de transacción de PayPal
   paymentFlowOrder?: number; // Flow Order ID específico para Flow
   paymentStatus?: string; // 'PENDING', 'COMPLETED', 'FAILED'
   paymentAmount?: number; // Monto del pago

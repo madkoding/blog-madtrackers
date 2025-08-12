@@ -1,11 +1,12 @@
 import { EmailService } from '@/lib/emailService';
 import { PayPalCustomData, PayPalIPNData, OrderDetails } from './types';
+import { UserTracking } from '@/interfaces/tracking';
 
 /**
  * Crea los detalles de la orden para el correo de confirmación
  */
 export function createOrderDetails(
-  existingTracking: any,
+  existingTracking: UserTracking,
   customData: PayPalCustomData,
   ipnData: PayPalIPNData
 ): OrderDetails {
@@ -40,7 +41,7 @@ export function createOrderDetails(
  * Envía el correo de confirmación de compra
  */
 export async function sendPurchaseConfirmationEmail(
-  existingTracking: any,
+  existingTracking: UserTracking,
   orderDetails: OrderDetails
 ): Promise<boolean> {
   try {
@@ -49,7 +50,7 @@ export async function sendPurchaseConfirmationEmail(
     const emailSent = await EmailService.sendPurchaseConfirmation(
       existingTracking.contacto,
       existingTracking.vrchatUsername || 'Usuario',
-      existingTracking.userHash,
+      existingTracking.userHash || '',
       orderDetails
     );
 
