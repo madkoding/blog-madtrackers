@@ -7,14 +7,29 @@ import { useLang } from "../../lang-context";
 interface TermsCheckboxProps {
   acceptedTerms: boolean;
   onTermsChange: (accepted: boolean) => void;
+  onValidateForm?: () => boolean;
 }
 
 const TermsCheckbox: React.FC<TermsCheckboxProps> = ({
   acceptedTerms,
   onTermsChange,
+  onValidateForm,
 }) => {
   const { lang } = useLang();
   const t = translations[lang];
+
+  const handleCheckboxChange = (checked: boolean) => {
+    if (checked && onValidateForm) {
+      // Si intenta marcar el checkbox, primero validar el formulario
+      const isFormValid = onValidateForm();
+      if (!isFormValid) {
+        // Si el formulario no es válido, no permitir marcar el checkbox
+        return;
+      }
+    }
+    // Si el formulario es válido o está desmarcando, proceder
+    onTermsChange(checked);
+  };
 
   return (
     <div className="mt-6 mb-4">
@@ -23,7 +38,7 @@ const TermsCheckbox: React.FC<TermsCheckboxProps> = ({
           <input
             type="checkbox"
             checked={acceptedTerms}
-            onChange={(e) => onTermsChange(e.target.checked)}
+            onChange={(e) => handleCheckboxChange(e.target.checked)}
             className="w-5 h-5 text-blue-600 bg-gray-100 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 transition-all duration-200 transform group-hover:scale-110"
           />
           {acceptedTerms && (

@@ -2,10 +2,19 @@
  * Utilidades para validación de parámetros de Flow
  */
 
+export interface UserData {
+  direccion?: string;
+  ciudad?: string;
+  estado?: string;
+  pais?: string;
+  nombreUsuarioVrChat?: string;
+}
+
 export interface FlowCreateParams {
   amount: number;
   description: string;
   email: string;
+  userData?: UserData;
 }
 
 export interface ValidationResult {
@@ -40,6 +49,15 @@ export function validateFlowCreateParams(params: Partial<FlowCreateParams>): Val
     errors.push('Email es requerido');
   } else if (typeof params.email !== 'string' || !isValidEmail(params.email)) {
     errors.push('Email debe tener un formato válido');
+  }
+
+  // Validación opcional de userData - solo si se proporciona
+  if (params.userData) {
+    const userData = params.userData;
+    
+    if (userData.nombreUsuarioVrChat && userData.nombreUsuarioVrChat.trim().length < 3) {
+      errors.push('Nombre de usuario VRChat debe tener al menos 3 caracteres');
+    }
   }
 
   return {

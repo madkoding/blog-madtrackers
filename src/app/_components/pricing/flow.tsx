@@ -12,6 +12,16 @@ export interface FlowButtonProps {
   readonly email?: string;
   /** Texto personalizado para el botón */
   readonly buttonText?: string;
+  /** Si el botón está deshabilitado */
+  readonly disabled?: boolean;
+  /** Datos adicionales del usuario (opcional) */
+  readonly userData?: {
+    direccion?: string;
+    ciudad?: string;
+    estado?: string;
+    pais?: string;
+    nombreUsuarioVrChat?: string;
+  };
 }
 
 /**
@@ -26,14 +36,20 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
   amount, 
   description = "Anticipo MadTrackers",
   email = "",
-  buttonText = "💳 Pagar con Tarjetas"
+  buttonText = "💳 Pagar con Tarjetas",
+  disabled = false,
+  userData
 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handlePayment = useCallback(async () => {
+    if (disabled) {
+      return;
+    }
+
     if (!email) {
-      setError('Por favor ingresa tu email para continuar con el pago');
+      setError('Por favor completa todos los datos requeridos para continuar con el pago');
       return;
     }
 
@@ -51,6 +67,7 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
           amount,
           description,
           email,
+          userData
         }),
       });
 
@@ -73,7 +90,7 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
     } finally {
       setLoading(false);
     }
-  }, [amount, description, email]);
+  }, [amount, description, email, disabled, userData]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-CL").format(price);
@@ -86,29 +103,38 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: white;
           border: none;
-          border-radius: 12px;
-          padding: 14px 20px;
-          font-size: 16px;
-          font-weight: 600;
+          border-radius: 16px;
+          padding: 18px 24px;
+          font-size: 17px;
+          font-weight: 700;
           cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-          min-width: 200px;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+          min-width: 220px;
           width: 100%;
-          max-width: 280px;
+          max-width: 300px;
           position: relative;
           overflow: hidden;
+          letter-spacing: 0.025em;
         }
         
         .flow-button:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+          transform: translateY(-3px);
+          box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+          background: linear-gradient(135deg, #5a67d8 0%, #667eea 100%);
+        }
+        
+        .flow-button:active:not(:disabled) {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
         }
         
         .flow-button:disabled {
-          opacity: 0.7;
+          opacity: 0.6;
           cursor: not-allowed;
           transform: none;
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+          background: linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%);
         }
         
         .flow-button-content {
@@ -144,24 +170,27 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
         }
         
         .amount-display {
-          font-size: 24px;
-          font-weight: bold;
-          color: #333;
-          margin-bottom: 4px;
+          font-size: 28px;
+          font-weight: 800;
+          color: #1e293b;
+          margin-bottom: 6px;
+          letter-spacing: -0.025em;
         }
         
         .description-display {
-          font-size: 14px;
-          color: #666;
+          font-size: 15px;
+          color: #64748b;
+          font-weight: 500;
         }
         
         .flow-container {
-          background: linear-gradient(to bottom right, #f8f9ff, #e8ecff);
-          border: 1px solid #e1e7ff;
-          border-radius: 16px;
-          padding: 24px;
-          max-width: 400px;
+          background: linear-gradient(to bottom right, #f8fafc, #f1f5f9);
+          border: 1px solid #e2e8f0;
+          border-radius: 20px;
+          padding: 28px;
+          max-width: 420px;
           margin: 0 auto;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
         .flow-logo-container {
@@ -204,7 +233,7 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
         <button
           className="flow-button"
           onClick={handlePayment}
-          disabled={loading || !email}
+          disabled={loading || !email || disabled}
           type="button"
         >
           <div className="flow-button-content">

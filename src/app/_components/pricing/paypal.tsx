@@ -1,7 +1,8 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState, memo } from "react";
 import Image from "next/image";
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
+import UserCheckoutForm, { UserCheckoutData } from "./user-checkout-form";
 
 /**
  * Props para el componente PaypalButton.
@@ -11,6 +12,10 @@ export interface PaypalButtonProps {
   readonly amount: number;
   /** Descripción del producto (opcional) */
   readonly description?: string;
+  /** Estado de aceptación de términos */
+  readonly acceptedTerms?: boolean;
+  /** Callback para cambio de términos */
+  readonly onTermsChange?: (accepted: boolean) => void;
 }
 
 /**
@@ -117,12 +122,26 @@ PaypalSingleButton.displayName = 'PaypalSingleButton';
  *
  * Renderiza dos formularios de PayPal: uno para anticipo (25%) y otro para total (100%).
  */
-const PaypalButton: React.FC<PaypalButtonProps> = React.memo(({ 
+const PaypalButton: React.FC<PaypalButtonProps> = memo(({ 
   amount, 
   description = "Pago de MadTrackers",
+  acceptedTerms,
+  onTermsChange
 }) => {
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  
   const { lang } = useLang();
   const t = translations[lang];
+
+  const handleUserDataChange = useCallback((data: UserCheckoutData) => {
+    // Los datos del usuario se manejan directamente en UserCheckoutForm
+    console.log('User data updated:', data);
+  }, []);
+
+  const handleValidationChange = useCallback((isValid: boolean) => {
+    setIsFormValid(isValid);
+  }, []);
   
   return (
     <>
@@ -197,67 +216,204 @@ const PaypalButton: React.FC<PaypalButtonProps> = React.memo(({
           margin-bottom: 16px;
           font-size: 15px;
         }
+        
+        .continue-purchase-container {
+          display: flex;
+          justify-content: center;
+          margin: 32px 0;
+        }
+        
+        .continue-purchase-btn {
+          background: linear-gradient(135deg, #ffd140 0%, #ffcd00 100%);
+          color: #000;
+          border: none;
+          border-radius: 12px;
+          padding: 16px 32px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 4px 16px rgba(255, 209, 64, 0.3);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        .continue-purchase-btn:hover {
+          background: linear-gradient(135deg, #ffcd00 0%, #ffb300 100%);
+          box-shadow: 0 6px 20px rgba(255, 209, 64, 0.4);
+          transform: translateY(-2px);
+        }
+        
+        .continue-purchase-btn:active {
+          transform: translateY(0);
+          box-shadow: 0 2px 8px rgba(255, 209, 64, 0.3);
+        }
+        
+        .cart-icon {
+          font-size: 28px;
+          margin-right: 12px;
+          display: inline-block;
+          transform: scale(1);
+          transition: transform 0.2s ease;
+          filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0%) contrast(100%);
+          opacity: 0.9;
+        }
+        
+        .continue-purchase-btn:hover .cart-icon {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+        
+        .payment-buttons {
+          opacity: var(--buttons-opacity, 0.5);
+          pointer-events: var(--buttons-pointer-events, none);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          transform: var(--buttons-transform, translateY(8px));
+          position: relative;
+        }
+        
+        .payment-buttons.enabled {
+          --buttons-opacity: 1;
+          --buttons-pointer-events: auto;
+          --buttons-transform: translateY(0);
+        }
+        
+        .glass-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(
+            135deg, 
+            rgba(255, 255, 255, 0.9) 0%, 
+            rgba(255, 255, 255, 0.6) 25%, 
+            rgba(255, 255, 255, 0.2) 50%, 
+            rgba(255, 255, 255, 0.6) 75%, 
+            rgba(255, 255, 255, 0.9) 100%
+          );
+          backdrop-filter: blur(8px) saturate(1.2);
+          border-radius: 12px;
+          opacity: var(--overlay-opacity, 1);
+          pointer-events: var(--overlay-pointer-events, auto);
+          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10;
+        }
+        
+        .payment-buttons.enabled .glass-overlay {
+          --overlay-opacity: 0;
+          --overlay-pointer-events: none;
+          transform: scale(1.1) rotate(2deg);
+        }
+        
+        .overlay-message {
+          background: rgba(255, 255, 255, 0.95);
+          border: 2px solid rgba(255, 209, 64, 0.3);
+          border-radius: 12px;
+          padding: 16px 24px;
+          text-align: center;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+          color: #b8860b;
+          font-weight: 600;
+          font-size: 14px;
+          max-width: 300px;
+        }
       `}</style>
       
       <div className="paypal-payment-wrapper">
         <hr />
         <br/>
-        <div className="payment-title">
-          {t.paymentSecure}
-        </div>
         
-        <div className="payment-buttons">
-          <div className="payment-card">
-            <div className="card-title">{t.paymentAdvance}</div>
-            <div className="card-description">{t.paymentAdvanceDesc}</div>
-            <div className="card-highlight">${amount.toFixed(2)} USD</div>
-            <PaypalSingleButton
-              amount={amount}
-              description={`${description} (${t.paymentAdvance} 25%)`}
-              buttonText={t.payAdvanceBtn}
-            />
+        {!showCheckoutForm ? (
+          <div className="continue-purchase-container">
+            <button 
+              className="continue-purchase-btn"
+              onClick={() => setShowCheckoutForm(true)}
+            >
+              <span className="cart-icon">🛒</span>
+              Continuar con la compra
+            </button>
           </div>
-          
-          <div className="payment-card">
-            <div className="card-title">{t.paymentFull}</div>
-            <div className="card-description">{t.paymentFullDesc}</div>
-            <div className="card-highlight">${(amount * 4).toFixed(2)} USD</div>
-            <PaypalSingleButton
-              amount={amount * 4}
-              description={`${description} (${t.paymentFull} 100%)`}
-              buttonText={t.payFullBtn}
+        ) : (
+          <>
+            <div className="payment-title">
+              {t.paymentSecure}
+            </div>
+            
+            <UserCheckoutForm
+              onUserDataChange={handleUserDataChange}
+              onValidationChange={handleValidationChange}
+              acceptedTerms={acceptedTerms}
+              onTermsChange={onTermsChange}
             />
-          </div>
-        </div>
-        
-        <div style={{ textAlign: 'center', marginTop: '16px' }}>
-          <section style={{ 
-            marginTop: '8px', 
-            fontSize: '14px', 
-            color: '#666',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            flexWrap: 'wrap'
-          }}>
-            <span>{t.poweredBy}</span>
-            <Image
-              src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg"
-              alt="paypal"
-              width={60}
-              height={14}
-              style={{ verticalAlign: "middle" }}
-            />
-            <Image
-              src="https://www.paypalobjects.com/images/Debit_Credit.svg"
-              alt="cards"
-              width={120}
-              height={24}
-              style={{ verticalAlign: "middle" }}
-            />
-          </section>
-        </div>
+            
+            <div className={`payment-buttons ${isFormValid ? 'enabled' : ''}`}>
+              {/* Glass overlay que aparece cuando el formulario no está completo */}
+              {!isFormValid && (
+                <div className="glass-overlay">
+                  <div className="overlay-message">
+                    Completa todos los campos y acepta los términos para continuar
+                  </div>
+                </div>
+              )}
+              
+              <div className="payment-card">
+                <div className="card-title">{t.paymentAdvance}</div>
+                <div className="card-description">{t.paymentAdvanceDesc}</div>
+                <div className="card-highlight">${amount.toFixed(2)} USD</div>
+                <PaypalSingleButton
+                  amount={amount}
+                  description={`${description} (${t.paymentAdvance} 25%)`}
+                  buttonText={t.payAdvanceBtn}
+                />
+              </div>
+              
+              <div className="payment-card">
+                <div className="card-title">{t.paymentFull}</div>
+                <div className="card-description">{t.paymentFullDesc}</div>
+                <div className="card-highlight">${(amount * 4).toFixed(2)} USD</div>
+                <PaypalSingleButton
+                  amount={amount * 4}
+                  description={`${description} (${t.paymentFull} 100%)`}
+                  buttonText={t.payFullBtn}
+                />
+              </div>
+            </div>
+            
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+              <section style={{ 
+                marginTop: '8px', 
+                fontSize: '14px', 
+                color: '#666',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                flexWrap: 'wrap'
+              }}>
+                <span>{t.poweredBy}</span>
+                <Image
+                  src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg"
+                  alt="paypal"
+                  width={60}
+                  height={14}
+                  style={{ verticalAlign: "middle" }}
+                />
+                <Image
+                  src="https://www.paypalobjects.com/images/Debit_Credit.svg"
+                  alt="cards"
+                  width={120}
+                  height={24}
+                  style={{ verticalAlign: "middle" }}
+                />
+              </section>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

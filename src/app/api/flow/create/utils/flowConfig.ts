@@ -3,6 +3,7 @@
  */
 
 import { NextRequest } from 'next/server';
+import { UserData } from './flowValidation';
 
 export interface FlowConfig {
   currency: string;
@@ -68,8 +69,24 @@ export function buildFlowPaymentParams(
   amount: number,
   email: string,
   urls: FlowUrls,
-  config: FlowConfig
+  config: FlowConfig,
+  userData?: UserData
 ): FlowPaymentParams {
+  // Crear el objeto opcional que incluye datos del sistema y del usuario
+  const optionalData = {
+    source: config.source,
+    type: config.paymentType,
+    ...(userData && {
+      userData: {
+        direccion: userData.direccion,
+        ciudad: userData.ciudad,
+        estado: userData.estado,
+        pais: userData.pais,
+        nombreUsuarioVrChat: userData.nombreUsuarioVrChat
+      }
+    })
+  };
+
   return {
     commerceOrder,
     subject: description,
@@ -79,10 +96,7 @@ export function buildFlowPaymentParams(
     urlConfirmation: urls.confirmation,
     urlReturn: urls.return,
     paymentMethod: config.paymentMethod,
-    optional: JSON.stringify({
-      source: config.source,
-      type: config.paymentType
-    }),
+    optional: JSON.stringify(optionalData),
     timeout: config.timeout
   };
 }

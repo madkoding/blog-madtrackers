@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     console.log('📄 [FLOW CREATE] Request body:', body);
     
-    const { amount, description, email } = body;
-    logFlowParameters('CREATE', { amount, description, email });
+    const { amount, description, email, userData } = body;
+    logFlowParameters('CREATE', { amount, description, email, userData });
 
     // Validar parámetros usando el util de validación
-    const validation = validateFlowCreateParams({ amount, description, email });
+    const validation = validateFlowCreateParams({ amount, description, email, userData });
     if (!validation.isValid) {
       logFlowValidationError('CREATE', validation.errors, validation.missingFields);
       return createValidationErrorResponse(validation.errors);
@@ -65,7 +65,8 @@ export async function POST(request: NextRequest) {
       normalizeAmount(amount, config.currency),
       email,
       urls,
-      config
+      config,
+      userData
     );
 
     console.log('📋 [FLOW CREATE] Payment parameters prepared:', {
