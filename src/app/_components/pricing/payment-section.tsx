@@ -13,6 +13,10 @@ interface PaymentSectionProps {
   selectedQuantity: number;
   acceptedTerms: boolean;
   onTermsChange: (accepted: boolean) => void;
+  // Información adicional del producto
+  selectedSensor?: { id: string; label: string };
+  selectedColorCase?: { id: string; label: string };
+  selectedColorTapa?: { id: string; label: string };
 }
 
 const PaymentSection: React.FC<PaymentSectionProps> = ({
@@ -23,9 +27,27 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({
   selectedQuantity,
   acceptedTerms,
   onTermsChange,
+  selectedSensor,
+  selectedColorCase,
+  selectedColorTapa,
 }) => {
   const advanceAmount = Math.round(parseFloat(totalPrice) / 4);
   const advanceAmountUsd = Math.round(totalUsd / 4 * 100) / 100;
+
+  // Debug logging para verificar datos del producto
+  React.useEffect(() => {
+    console.log('💳 [PAYMENT SECTION] Product data being passed:', {
+      sensor: selectedSensor?.label,
+      numberOfTrackers: selectedQuantity,
+      caseColor: selectedColorCase?.id,
+      coverColor: selectedColorTapa?.id,
+      magnetometer: selectedSensor?.label?.includes('+') || false,
+      totalUsd: totalUsd,
+      'selectedSensor full': selectedSensor,
+      'selectedColorCase full': selectedColorCase,
+      'selectedColorTapa full': selectedColorTapa
+    });
+  }, [selectedSensor, selectedQuantity, selectedColorCase, selectedColorTapa, totalUsd]);
 
   return (
     <div>
@@ -37,6 +59,14 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({
               description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
               acceptedTerms={acceptedTerms}
               onTermsChange={onTermsChange}
+              productData={{
+                sensor: selectedSensor?.label,
+                numberOfTrackers: selectedQuantity,
+                caseColor: selectedColorCase?.id,
+                coverColor: selectedColorTapa?.id,
+                magnetometer: selectedSensor?.label?.includes('+') || false,
+                totalUsd: totalUsd
+              }}
             />
           ) : (
             <PaypalButton 

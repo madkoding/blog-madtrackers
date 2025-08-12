@@ -36,12 +36,33 @@ interface PriceCalculationRequest {
 }
 
 export async function POST(request: NextRequest) {
+  const requestId = Math.random().toString(36).substring(7);
+  const startTime = Date.now();
+  
   try {
+    console.log(`💰 [PRICING ${requestId}] Starting price calculation...`);
+    
     const body: PriceCalculationRequest = await request.json();
     const { sensorId, trackerId, quantity, countryCode, usbReceiverId, strapId, chargingDockId } = body;
+    
+    console.log(`📊 [PRICING ${requestId}] Request parameters:`, {
+      sensorId,
+      trackerId,
+      quantity,
+      countryCode,
+      usbReceiverId,
+      strapId,
+      chargingDockId
+    });
 
     // Validar datos de entrada
     if (!sensorId || !trackerId || !quantity || !countryCode) {
+      console.error(`❌ [PRICING ${requestId}] Missing required parameters:`, {
+        sensorId: !!sensorId,
+        trackerId: !!trackerId,
+        quantity: !!quantity,
+        countryCode: !!countryCode
+      });
       return NextResponse.json(
         { error: 'Faltan parámetros requeridos' },
         { status: 400 }
@@ -51,8 +72,23 @@ export async function POST(request: NextRequest) {
     // Validar que existan los precios
     const sensorPrice = SENSOR_PRICES[sensorId as keyof typeof SENSOR_PRICES];
     const trackerPrice = TRACKER_PRICES[trackerId as keyof typeof TRACKER_PRICES];
+    
+    console.log(`🔍 [PRICING ${requestId}] Price lookup:`, {
+      sensorId,
+      sensorPrice,
+      trackerId,
+      trackerPrice,
+      availableSensors: Object.keys(SENSOR_PRICES),
+      availableTrackers: Object.keys(TRACKER_PRICES)
+    });
 
     if (!sensorPrice || !trackerPrice) {
+      console.error(`❌ [PRICING ${requestId}] Product not found:`, {
+        sensorId,
+        sensorPrice,
+        trackerId,
+        trackerPrice
+      });
       return NextResponse.json(
         { error: 'Producto no encontrado' },
         { status: 404 }
@@ -70,13 +106,38 @@ export async function POST(request: NextRequest) {
     if (chargingDockId === "dock_dynamic") {
       chargingDockCost = calculateDockCost(quantity);
     }
+    
+    console.log(`💲 [PRICING ${requestId}] Additional costs:`, {
+      usbReceiverId,
+      usbReceiverCost,
+      strapId,
+      strapCost,
+      chargingDockId,
+      chargingDockCost
+    });
 
     // Obtener configuración del país
     const countryConfig = countries[countryCode] || countries.US;
+    
+    console.log(`🌍 [PRICING ${requestId}] Country config:`, {
+      countryCode,
+      currency: countryConfig.currency,
+      exchangeRate: countryConfig.exchangeRate,
+      shippingCostUsd: countryConfig.shippingCostUsd
+    });
 
     // Calcular precios base en USD
     const basePrice = (trackerPrice * sensorPrice * quantity) + usbReceiverCost + strapCost + chargingDockCost;
     const shippingUsd = countryConfig.shippingCostUsd;
+    
+    console.log(`🧮 [PRICING ${requestId}] Base calculation:`, {
+      trackerPrice,
+      sensorPrice,
+      quantity,
+      baseCalculation: `(${trackerPrice} * ${sensorPrice} * ${quantity}) + ${usbReceiverCost} + ${strapCost} + ${chargingDockCost}`,
+      basePrice,
+      shippingUsd
+    });
     
     // Para países que no son Chile, aplicar markup para cubrir comisiones de PayPal (~3.5% + $0.5)
     let basePriceWithMarkup: number;
@@ -88,6 +149,14 @@ export async function POST(request: NextRequest) {
       basePriceWithMarkup = basePrice + paypalFee;
     }
     const totalUsd = basePriceWithMarkup; // El envío no se suma al total
+    
+    console.log(`💳 [PRICING ${requestId}] PayPal markup calculation:`, {
+      countryCode,
+      basePrice,
+      basePriceWithMarkup,
+      totalUsd,
+      paypalFeeApplied: countryCode !== 'CL'
+    });
 
     // Obtener la tasa de cambio real (sin markup adicional)
     let realExchangeRate: number;
@@ -108,9 +177,31 @@ export async function POST(request: NextRequest) {
         realExchangeRate = 1;
     }
     
+    console.log(`💱 [PRICING ${requestId}] Exchange rate:`, {
+      countryCode,
+      realExchangeRate
+    });
+    
     const basePriceLocal = Math.round(basePriceWithMarkup * realExchangeRate);
     const shippingLocal = Math.round(shippingUsd * realExchangeRate);
     const totalLocal = Math.round(totalUsd * realExchangeRate); // Total sin envío
+    
+    const processingTime = Date.now() - startTime;
+    console.log(`✅ [PRICING ${requestId}] Calculation completed (${processingTime}ms):`, {
+      prices: {
+        basePrice: basePriceWithMarkup,
+        shippingUsd,
+        totalUsd,
+        basePriceLocal,
+        shippingLocal,
+        totalLocal,
+      },
+      currency: {
+        code: countryConfig.currency,
+        symbol: countryConfig.currencySymbol,
+        exchangeRate: realExchangeRate,
+      }
+    });
 
     return NextResponse.json({
       prices: {
@@ -129,7 +220,8 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error en cálculo de precios:', error);
+    const processingTime = Date.now() - startTime;
+    console.error(`❌ [PRICING ${requestId}] Error en cálculo de precios (${processingTime}ms):`, error);
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

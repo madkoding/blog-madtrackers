@@ -1,7 +1,7 @@
 // QuantitySelector.tsx
 "use client";
 
-import React, { useCallback, useMemo } from "react";
+import React from "react";
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
 
@@ -11,7 +11,7 @@ type QuantitySelectorProps = {
   setSelectedQuantity: (qty: number) => void;
 };
 
-const QuantitySelector: React.FC<QuantitySelectorProps> = React.memo(({
+const QuantitySelector: React.FC<QuantitySelectorProps> = ({
   quantities,
   selectedQuantity,
   setSelectedQuantity,
@@ -19,24 +19,48 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = React.memo(({
   const { lang } = useLang();
   const t = translations[lang];
 
-  const handleQuantitySelect = useCallback((qty: number) => {
-    setSelectedQuantity(qty);
-  }, [setSelectedQuantity]);
+  // Debug log para verificar el estado del componente
+  React.useEffect(() => {
+    console.log('🔢 [QUANTITY SELECTOR] Component state:', {
+      quantities,
+      selectedQuantity,
+      'setter type': typeof setSelectedQuantity
+    });
+  }, [quantities, selectedQuantity, setSelectedQuantity]);
 
-  const quantityButtons = useMemo(() => 
-    quantities.map((qty) => (
-      <button
-        key={qty}
-        className={`px-6 py-3 rounded-lg border-2 ${
-          selectedQuantity === qty
-            ? "border-black bg-purple-900 text-white"
-            : "border-gray-300"
-        }`}
-        onClick={() => handleQuantitySelect(qty)}
-      >
-        {qty}
-      </button>
-    )), [quantities, selectedQuantity, handleQuantitySelect]);
+  const handleQuantitySelect = (qty: number) => {
+    console.log('🔢 [QUANTITY SELECTOR] Button clicked! Selecting quantity:', qty, 'current:', selectedQuantity);
+    console.log('🔢 [QUANTITY SELECTOR] setSelectedQuantity function:', setSelectedQuantity);
+    try {
+      setSelectedQuantity(qty);
+      console.log('✅ [QUANTITY SELECTOR] setSelectedQuantity called successfully');
+    } catch (error) {
+      console.error('❌ [QUANTITY SELECTOR] Error calling setSelectedQuantity:', error);
+    }
+  };
+
+  const quantityButtons = quantities.map((qty) => (
+    <button
+      key={qty}
+      className={`px-6 py-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
+        selectedQuantity === qty
+          ? "border-black bg-purple-900 text-white"
+          : "border-gray-300 hover:border-gray-500 bg-white text-black"
+      }`}
+      style={{ 
+        cursor: 'pointer',
+        userSelect: 'none',
+        pointerEvents: 'auto'
+      }}
+      onClick={() => {
+        console.log('🔢 [QUANTITY SELECTOR] Raw button click for quantity:', qty);
+        handleQuantitySelect(qty);
+      }}
+      onMouseDown={(e) => e.preventDefault()} // Evitar que el mousedown interfiera
+    >
+      {qty}
+    </button>
+  ));
 
   return (
     <div className="mb-4 flex flex-col items-center gap-2">
@@ -46,7 +70,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = React.memo(({
       </div>
     </div>
   );
-});
+};
 
 QuantitySelector.displayName = 'QuantitySelector';
 

@@ -198,7 +198,7 @@ export class TrackingManager {
       fechaLimite: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // +30 días
       totalUsd: 350, // $350 USD
       numeroTrackers: 5,
-      sensor: "LSM6DSR"
+      sensor: "ICM45686 + QMC6309"
     });
   }
 }

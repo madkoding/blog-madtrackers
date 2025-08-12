@@ -22,6 +22,14 @@ export interface FlowButtonProps {
     pais?: string;
     nombreUsuarioVrChat?: string;
   };
+  /** Información del producto seleccionado */
+  readonly productData?: {
+    sensor?: string;
+    numberOfTrackers?: number;
+    caseColor?: string;
+    coverColor?: string;
+    magnetometer?: boolean;
+  };
 }
 
 /**
@@ -38,7 +46,8 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
   email = "",
   buttonText = "💳 Pagar con Tarjetas",
   disabled = false,
-  userData
+  userData,
+  productData
 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +66,14 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
     setError(null);
 
     try {
+      console.log('🚀 [FLOW BUTTON] Sending payment request with data:', {
+        amount,
+        description,
+        email,
+        userData,
+        productData
+      });
+      
       // Crear el pago en Flow
       const response = await fetch('/api/flow/create', {
         method: 'POST',
@@ -67,7 +84,8 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
           amount,
           description,
           email,
-          userData
+          userData,
+          productData
         }),
       });
 
@@ -90,7 +108,7 @@ const FlowButton: React.FC<FlowButtonProps> = React.memo(({
     } finally {
       setLoading(false);
     }
-  }, [amount, description, email, disabled, userData]);
+  }, [amount, description, email, disabled, userData, productData]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-CL").format(price);

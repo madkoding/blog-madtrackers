@@ -14,12 +14,21 @@ export interface FlowPaymentProps {
   readonly acceptedTerms?: boolean;
   /** Callback para cambio de términos */
   readonly onTermsChange?: (accepted: boolean) => void;
+  /** Información del producto seleccionado */
+  readonly productData?: {
+    sensor?: string;
+    numberOfTrackers?: number;
+    caseColor?: string;
+    coverColor?: string;
+    magnetometer?: boolean;
+    totalUsd?: number; // Precio real calculado en USD
+  };
 }
 
 /**
  * Componente completo de pago con Flow que incluye captura de datos del usuario
  */
-const FlowPayment = memo(({ amount, description, acceptedTerms, onTermsChange }: FlowPaymentProps) => {
+const FlowPayment = memo(({ amount, description, acceptedTerms, onTermsChange, productData }: FlowPaymentProps) => {
   const [userData, setUserData] = useState<UserCheckoutData>({
     email: '',
     direccion: '',
@@ -267,6 +276,7 @@ const FlowPayment = memo(({ amount, description, acceptedTerms, onTermsChange }:
                 pais: userData.pais,
                 nombreUsuarioVrChat: userData.nombreUsuarioVrChat
               }}
+              productData={productData}
             />
             
             <FlowButton
@@ -282,6 +292,7 @@ const FlowPayment = memo(({ amount, description, acceptedTerms, onTermsChange }:
                 pais: userData.pais,
                 nombreUsuarioVrChat: userData.nombreUsuarioVrChat
               }}
+              productData={productData}
             />
           </div>
         </>

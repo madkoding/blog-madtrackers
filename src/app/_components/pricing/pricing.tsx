@@ -43,6 +43,25 @@ const Pricing = () => {
     chargingDockId: productConfig.selectedChargingDock?.id,
   });
 
+  // Debug logging para verificar valores seleccionados
+  React.useEffect(() => {
+    console.log('🔍 [PRICING COMPONENT] Current product configuration:', {
+      sensor: productConfig.selectedSensor,
+      tracker: productConfig.selectedTrackerType,
+      quantity: productConfig.selectedQuantity,
+      colorCase: productConfig.selectedColorCase,
+      colorTapa: productConfig.selectedColorTapa,
+      country: countryConfig.countryCode
+    });
+  }, [
+    productConfig.selectedSensor,
+    productConfig.selectedTrackerType,
+    productConfig.selectedQuantity,
+    productConfig.selectedColorCase,
+    productConfig.selectedColorTapa,
+    countryConfig.countryCode
+  ]);
+
   // Hook para mensaje de WhatsApp
   const whatsAppMessage = useWhatsAppMessage({
     selectedTrackerType: productConfig.selectedTrackerType,
@@ -204,6 +223,9 @@ const Pricing = () => {
               selectedQuantity={productConfig.selectedQuantity}
               acceptedTerms={termsAcceptance.acceptedTerms}
               onTermsChange={termsAcceptance.setAcceptedTerms}
+              selectedSensor={productConfig.selectedSensor}
+              selectedColorCase={productConfig.selectedColorCase}
+              selectedColorTapa={productConfig.selectedColorTapa}
             />
           );
         })()}

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFlowService } from '@/lib/flowService';
+import { FirebaseTrackingService } from '@/lib/firebaseTrackingService';
+import { TrackingManager } from '@/lib/trackingManager';
+import { OrderStatus } from '@/interfaces/tracking';
 
 // Importar utils específicos para mejor trazabilidad
 import { validateFlowCreateParams, normalizeAmount } from './utils/flowValidation';
@@ -14,8 +17,69 @@ import {
 } from './utils/flowLogging';
 import { generateCommerceOrder } from './utils/flowOrderGenerator';
 import { getFlowConfig, buildFlowUrls, buildFlowPaymentParams, formatConfigForLogging } from './utils/flowConfig';
+import type { UserData } from './utils/flowValidation';
 import { buildSuccessResponse, validatePaymentData } from './utils/flowUrlBuilder';
 import { createFlowErrorResponse, createValidationErrorResponse } from './utils/flowErrorHandler';
+
+/**
+ * Crea un tracking en estado PENDING antes del pago
+ */
+async function createPendingTracking(
+  commerceOrder: string, 
+  email: string, 
+  amount: number, 
+  userData: UserData,
+  productData?: any
+): Promise<string> {
+  // Generar un nombre de usuario temporal basado en el commerceOrder
+  const username = `flow_${commerceOrder}`;
+
+  console.log('📦 [FLOW CREATE] Creating pending tracking with product data:', productData);
+
+  // Crear el tracking usando TrackingManager con los datos reales del producto
+  const trackingData = TrackingManager.generateUserTracking({
+    nombreUsuario: username,
+    contacto: email,
+    fechaLimite: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // +30 días
+    totalUsd: productData?.totalUsd || Math.round(amount / 920), // Usar precio real del producto o conversión aprox
+    abonadoUsd: 0, // Pendiente de pago
+    envioPagado: false,
+    numeroTrackers: productData?.numberOfTrackers || 6, // Primera opción por defecto
+    sensor: productData?.sensor || "ICM45686 + QMC6309", // Primer sensor disponible
+    magneto: productData?.magnetometer || true,
+    colorCase: productData?.caseColor || 'white', // Segundo color por defecto (posición 0)
+    colorTapa: productData?.coverColor || 'white', // Primer color por defecto (posición 0)
+    paisEnvio: userData.pais || 'Chile',
+    estadoPedido: OrderStatus.PENDING_PAYMENT, // Estado específico para pago pendiente
+    porcentajes: {
+      placa: 0,
+      straps: 0,
+      cases: 0,
+      baterias: 0
+    }
+  });
+
+  // Agregar información adicional del pago pendiente
+  const enhancedTrackingData = {
+    ...trackingData,
+    paymentMethod: 'Flow',
+    paymentTransactionId: commerceOrder,
+    paymentStatus: 'PENDING',
+    paymentAmount: amount,
+    paymentCurrency: 'CLP',
+    shippingAddress: {
+      direccion: userData.direccion,
+      ciudad: userData.ciudad,
+      estado: userData.estado,
+      pais: userData.pais
+    },
+    vrchatUsername: userData.nombreUsuarioVrChat,
+    isPendingPayment: true // Flag para identificar pagos pendientes
+  };
+
+  // Crear el tracking en Firebase
+  return await FirebaseTrackingService.createTracking(enhancedTrackingData);
+}
 
 /**
  * API endpoint para crear un pago con Flow
@@ -30,8 +94,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     console.log('📄 [FLOW CREATE] Request body:', body);
     
-    const { amount, description, email, userData } = body;
-    logFlowParameters('CREATE', { amount, description, email, userData });
+    const { amount, description, email, userData, productData } = body;
+    console.log('📄 [FLOW CREATE] Product data received:', productData);
+    logFlowParameters('CREATE', { amount, description, email, userData, productData });
 
     // Validar parámetros usando el util de validación
     const validation = validateFlowCreateParams({ amount, description, email, userData });
@@ -66,7 +131,7 @@ export async function POST(request: NextRequest) {
       email,
       urls,
       config,
-      userData
+      { userData, productData }
     );
 
     console.log('📋 [FLOW CREATE] Payment parameters prepared:', {
@@ -75,6 +140,18 @@ export async function POST(request: NextRequest) {
     });
 
     console.log('📞 [FLOW CREATE] Calling Flow API to create payment...');
+
+    // Si tenemos userData, crear un tracking PENDING antes del pago
+    let pendingTrackingId: string | null = null;
+    if (userData) {
+      try {
+        pendingTrackingId = await createPendingTracking(commerceOrder, email, amount, userData, productData);
+        console.log('📝 [FLOW CREATE] Pending tracking created:', pendingTrackingId);
+      } catch (trackingError) {
+        console.error('⚠️ [FLOW CREATE] Error creating pending tracking:', trackingError);
+        // No fallar la creación del pago por un error de tracking
+      }
+    }
 
     // Crear el pago en Flow
     const paymentData = await flowService.createPayment(paymentParams);

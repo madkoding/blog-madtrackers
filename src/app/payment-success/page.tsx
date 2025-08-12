@@ -12,6 +12,7 @@ interface PaymentInfo {
   paymentData?: {
     media: string;
   };
+  trackingId?: string; // Añadir tracking ID
 }
 
 const getPaymentTitle = (isFlow: boolean, status?: number, hasToken?: boolean): string => {
@@ -109,6 +110,33 @@ const PaymentDetails: React.FC<{ paymentInfo: PaymentInfo }> = ({ paymentInfo })
   </div>
 );
 
+const TrackingLink: React.FC<{ trackingId: string }> = ({ trackingId }) => (
+  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+    <div className="flex items-center mb-2">
+      <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h3 className="font-semibold text-green-800">¡Pago Confirmado!</h3>
+    </div>
+    <p className="text-green-700 text-sm mb-3">
+      Tu pedido ha sido registrado exitosamente. Puedes hacer seguimiento de tu orden con el siguiente enlace:
+    </p>
+    <div className="bg-white border border-green-300 rounded p-3 mb-3">
+      <p className="text-xs text-gray-600 mb-1">ID de Seguimiento:</p>
+      <p className="font-mono text-sm text-gray-800 break-all">{trackingId}</p>
+    </div>
+    <a
+      href={`/seguimiento/${trackingId}`}
+      className="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+    >
+      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.102m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+      </svg>
+      Ver seguimiento del pedido
+    </a>
+  </div>
+);
+
 export default function PaymentSuccess() {
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -140,14 +168,22 @@ export default function PaymentSuccess() {
 
   const checkFlowPaymentStatus = async (token: string) => {
     try {
+      console.log('🔍 [PAYMENT SUCCESS] Checking payment status with token:', token);
       const response = await fetch(`/api/flow/status?token=${token}`);
       const data = await response.json();
       
+      console.log('📥 [PAYMENT SUCCESS] Response received:', data);
+      
       if (data.success) {
+        console.log('📋 [PAYMENT SUCCESS] Payment info:', data.payment);
+        console.log('🎯 [PAYMENT SUCCESS] Tracking ID:', data.payment?.trackingId);
+        console.log('📊 [PAYMENT SUCCESS] Status:', data.payment?.status);
         setPaymentInfo(data.payment);
+      } else {
+        console.error('❌ [PAYMENT SUCCESS] Response not successful:', data);
       }
     } catch (error) {
-      console.error('Error checking payment status:', error);
+      console.error('❌ [PAYMENT SUCCESS] Error checking payment status:', error);
     } finally {
       setLoading(false);
     }
@@ -186,6 +222,24 @@ export default function PaymentSuccess() {
         {isFlow && paymentInfo && (
           <PaymentDetails paymentInfo={paymentInfo} />
         )}
+
+        {/* Mostrar link de seguimiento si el pago es exitoso y tenemos tracking ID */}
+        {(() => {
+          const hasTrackingId = !!paymentInfo?.trackingId;
+          const isStatusOne = status === 1;
+          
+          console.log('🔍 [PAYMENT SUCCESS] Tracking link conditions:', {
+            hasTrackingId,
+            trackingId: paymentInfo?.trackingId,
+            isStatusOne,
+            status,
+            shouldShow: hasTrackingId && isStatusOne
+          });
+          
+          return hasTrackingId && isStatusOne && paymentInfo?.trackingId ? (
+            <TrackingLink trackingId={paymentInfo.trackingId} />
+          ) : null;
+        })()}
         
         <div className="space-y-4">
           <button

@@ -48,6 +48,12 @@ export function usePricing({ sensorId, trackerId, quantity, countryCode, usbRece
     const calculatePricing = async () => {
       // Validar que tenemos todos los parámetros necesarios
       if (!sensorId || !trackerId || !quantity || !countryCode) {
+        console.log('🔍 [PRICING] Missing parameters, skipping calculation:', {
+          sensorId: !!sensorId,
+          trackerId: !!trackerId,
+          quantity: !!quantity,
+          countryCode: !!countryCode
+        });
         setLoading(false);
         return;
       }
@@ -57,6 +63,16 @@ export function usePricing({ sensorId, trackerId, quantity, countryCode, usbRece
       // No limpiar pricing aquí para evitar flash de datos vacíos
 
       try {
+        console.log('🔍 [PRICING] Calculating with params:', {
+          sensorId,
+          trackerId,
+          quantity,
+          countryCode,
+          usbReceiverId,
+          strapId,
+          chargingDockId
+        });
+
         const response = await fetch('/api/pricing/calculate', {
           method: 'POST',
           headers: {
@@ -81,6 +97,11 @@ export function usePricing({ sensorId, trackerId, quantity, countryCode, usbRece
         
         // Validar que los datos recibidos son válidos
         if (data?.prices?.totalLocal > 0 && data?.prices?.totalUsd > 0) {
+          console.log('✅ [PRICING] Pricing calculated successfully:', {
+            totalUsd: data.prices.totalUsd,
+            totalLocal: data.prices.totalLocal,
+            currency: data.currency.code
+          });
           setPricing(data);
           setRetryCount(0); // Reset retry count on success
         } else {

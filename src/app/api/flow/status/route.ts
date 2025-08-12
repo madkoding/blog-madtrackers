@@ -2,6 +2,93 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFlowService, FlowPaymentStatusResponse } from '@/lib/flowService';
 
 /**
+ * Actualiza un tracking pendiente o crea uno nuevo para un pago exitoso
+ */
+async function updateOrCreateTrackingForSuccessfulPayment(statusResponse: FlowPaymentStatusResponse): Promise<string | null> {
+  try {
+    console.log('🎯 [FLOW STATUS] Processing tracking for successful payment...');
+    
+    // Los datos del usuario están directamente en optional, no en optional.userData
+    const userData = statusResponse.optional;
+    if (!userData) {
+      console.log('⚠️ [FLOW STATUS] No optional data found in payment response');
+      return null;
+    }
+
+    console.log('📋 [FLOW STATUS] Found userData:', userData);
+
+    // Primero intentar actualizar un tracking existente
+    const updatePayload = {
+      commerceOrder: statusResponse.commerceOrder,
+      flowOrder: statusResponse.flowOrder,
+      amount: statusResponse.amount,
+      payer: statusResponse.payer,
+      paymentData: statusResponse.paymentData
+    };
+
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const updateResponse = await fetch(`${baseUrl}/api/flow/update-tracking`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatePayload)
+    });
+
+    if (updateResponse.ok) {
+      const result = await updateResponse.json();
+      console.log('✅ [FLOW STATUS] Existing tracking updated successfully:', result);
+      console.log('🎯 [FLOW STATUS] Returning trackingId from update:', result.trackingId);
+      console.log('🎯 [FLOW STATUS] userHash from update:', result.userHash);
+      return result.trackingId || result.userHash || null;
+    }
+    
+    // Si no hay tracking existente, crear uno nuevo
+    if (updateResponse.status === 404) {
+      console.log('📝 [FLOW STATUS] No pending tracking found, creating new one...');
+      
+      const successPayload = {
+        commerceOrder: statusResponse.commerceOrder,
+        flowOrder: statusResponse.flowOrder,
+        amount: statusResponse.amount,
+        currency: statusResponse.currency,
+        payer: statusResponse.payer,
+        paymentData: statusResponse.paymentData,
+        userData: userData,
+        productData: {}
+      };
+
+      const createResponse = await fetch(`${baseUrl}/api/flow/success`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(successPayload)
+      });
+
+      if (createResponse.ok) {
+        const result = await createResponse.json();
+        console.log('✅ [FLOW STATUS] New tracking created successfully:', result);
+        console.log('🎯 [FLOW STATUS] Returning trackingId from creation:', result.trackingId);
+        console.log('🎯 [FLOW STATUS] userHash from creation:', result.userHash);
+        return result.trackingId || result.userHash || null;
+      } else {
+        const errorText = await createResponse.text();
+        console.error('❌ [FLOW STATUS] Error creating new tracking:', errorText);
+        return null;
+      }
+    } else {
+      const errorText = await updateResponse.text();
+      console.error('❌ [FLOW STATUS] Error updating existing tracking:', errorText);
+      return null;
+    }
+  } catch (error) {
+    console.error('❌ [FLOW STATUS] Exception processing tracking:', error);
+    throw error;
+  }
+}
+
+/**
  * API endpoint para verificar el estado de un pago Flow
  */
 export async function GET(request: NextRequest) {
@@ -114,6 +201,21 @@ export async function GET(request: NextRequest) {
 
     const { statusCode, statusText, isSuccess } = getStatusText(paymentStatus.status, paymentStatus.paymentData);
 
+    // Si el pago es exitoso y tenemos optional data, intentar crear el tracking si no existe
+    let trackingId = null;
+    if (isSuccess && paymentStatus.optional) {
+      console.log('🎯 [FLOW STATUS] Payment is successful and optional data found, creating/updating tracking...');
+      try {
+        trackingId = await updateOrCreateTrackingForSuccessfulPayment(paymentStatus);
+        console.log('🎯 [FLOW STATUS] Tracking operation result - trackingId:', trackingId);
+      } catch (trackingError) {
+        console.error('❌ [FLOW STATUS] Error creating tracking:', trackingError);
+        // No fallar la consulta de status por un error de tracking
+      }
+    } else {
+      console.log('🚫 [FLOW STATUS] Not creating tracking. isSuccess:', isSuccess, 'optional data present:', !!paymentStatus.optional);
+    }
+
     const responseData = {
       success: true,
       payment: {
@@ -129,7 +231,8 @@ export async function GET(request: NextRequest) {
         payer: paymentStatus.payer,
         requestDate: paymentStatus.requestDate,
         paymentData: paymentStatus.paymentData,
-        pending_info: paymentStatus.pending_info
+        pending_info: paymentStatus.pending_info,
+        trackingId: trackingId // Añadir el tracking ID si se creó
       },
       timestamp: new Date().toISOString()
     };

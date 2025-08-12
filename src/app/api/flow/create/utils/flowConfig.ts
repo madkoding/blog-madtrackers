@@ -70,22 +70,29 @@ export function buildFlowPaymentParams(
   email: string,
   urls: FlowUrls,
   config: FlowConfig,
-  userData?: UserData
+  additionalData?: { userData?: UserData; productData?: any }
 ): FlowPaymentParams {
-  // Crear el objeto opcional que incluye datos del sistema y del usuario
+  const { userData, productData } = additionalData || {};
+  
+  // Crear el objeto opcional que incluye solo datos esenciales (Flow tiene límite de tamaño)
   const optionalData = {
     source: config.source,
     type: config.paymentType,
+    // Solo incluir datos críticos para evitar el límite de Flow
     ...(userData && {
-      userData: {
-        direccion: userData.direccion,
-        ciudad: userData.ciudad,
-        estado: userData.estado,
-        pais: userData.pais,
-        nombreUsuarioVrChat: userData.nombreUsuarioVrChat
-      }
+      pais: userData.pais,
+      vrchat: userData.nombreUsuarioVrChat || 'N/A'
+    }),
+    // Solo datos mínimos del producto para identificación
+    ...(productData && {
+      trackers: productData.numberOfTrackers || 6,
+      totalUsd: productData.totalUsd
     })
   };
+
+  const optionalString = JSON.stringify(optionalData);
+  console.log('📋 [FLOW CONFIG] Optional data size:', optionalString.length, 'characters');
+  console.log('📋 [FLOW CONFIG] Optional data content:', optionalString);
 
   return {
     commerceOrder,
@@ -96,7 +103,7 @@ export function buildFlowPaymentParams(
     urlConfirmation: urls.confirmation,
     urlReturn: urls.return,
     paymentMethod: config.paymentMethod,
-    optional: JSON.stringify(optionalData),
+    optional: optionalString,
     timeout: config.timeout
   };
 }

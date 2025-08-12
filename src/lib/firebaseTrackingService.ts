@@ -24,18 +24,37 @@ export class FirebaseTrackingService {
    */
   static async createTracking(trackingData: UserTracking): Promise<string> {
     try {
+      console.log('🔥 [FIREBASE SERVICE] Starting tracking creation...');
+      console.log('🔥 [FIREBASE SERVICE] Collection name:', COLLECTION_NAME);
+      console.log('🔥 [FIREBASE SERVICE] Input tracking data keys:', Object.keys(trackingData));
+      
       // Generar hash si no existe
       const userHash = trackingData.userHash ?? generateUserHash(trackingData.nombreUsuario);
+      console.log('🔥 [FIREBASE SERVICE] Generated userHash:', userHash);
       
-      const docRef = await addDoc(collection(db, COLLECTION_NAME), {
+      const finalData = {
         ...trackingData,
         userHash,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
-      });
+      };
+      
+      console.log('🔥 [FIREBASE SERVICE] Final data to save:', JSON.stringify(finalData, null, 2));
+      console.log('🔥 [FIREBASE SERVICE] About to call addDoc...');
+      
+      const docRef = await addDoc(collection(db, COLLECTION_NAME), finalData);
+      
+      console.log('🔥 [FIREBASE SERVICE] addDoc completed successfully');
+      console.log('🔥 [FIREBASE SERVICE] Document ID:', docRef.id);
+      
       return docRef.id;
     } catch (error) {
-      console.error('Error creating tracking:', error);
+      console.error('❌ [FIREBASE SERVICE] Error creating tracking:', error);
+      console.error('❌ [FIREBASE SERVICE] Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : 'No stack trace',
+        name: error instanceof Error ? error.name : 'Unknown error type'
+      });
       throw error;
     }
   }
@@ -223,6 +242,41 @@ export class FirebaseTrackingService {
       })) as UserTracking[];
     } catch (error) {
       console.error('Error getting trackings near deadline:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Buscar tracking por ID de transacción de pago para evitar duplicados
+   */
+  static async getTrackingByPaymentTransactionId(transactionId: string): Promise<UserTracking | null> {
+    try {
+      console.log('🔍 [FIREBASE SERVICE] Searching for existing tracking with transactionId:', transactionId);
+      
+      const q = query(
+        collection(db, COLLECTION_NAME),
+        where('paymentTransactionId', '==', transactionId),
+        limit(1)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        console.log('✅ [FIREBASE SERVICE] No existing tracking found for transactionId:', transactionId);
+        return null;
+      }
+      
+      const doc = querySnapshot.docs[0];
+      const tracking = {
+        id: doc.id,
+        ...doc.data()
+      } as UserTracking;
+      
+      console.log('⚠️ [FIREBASE SERVICE] Found existing tracking for transactionId:', transactionId, 'userHash:', tracking.userHash);
+      return tracking;
+      
+    } catch (error) {
+      console.error('❌ [FIREBASE SERVICE] Error searching for tracking by transactionId:', error);
       throw error;
     }
   }

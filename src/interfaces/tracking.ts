@@ -1,8 +1,10 @@
 // Interface para la información de seguimiento de usuarios
+import { FlowPaymentStatusResponse } from '@/lib/flowService';
 
 // Enum para los estados del pedido
 export enum OrderStatus {
   WAITING = "waiting",           // En espera
+  PENDING_PAYMENT = "pending_payment", // Pendiente de pago
   MANUFACTURING = "manufacturing", // En fabricación
   TESTING = "testing",           // En prueba
   SHIPPING = "shipping",         // En envío
@@ -34,6 +36,29 @@ export interface UserTracking {
   colorTapa: string;
   paisEnvio: string;
   estadoPedido: OrderStatus;
+  
+  // Campos de pago
+  paymentMethod?: string; // 'PayPal', 'Flow', etc.
+  paymentTransactionId?: string; // ID de transacción del método de pago
+  paymentFlowOrder?: number; // Flow Order ID específico para Flow
+  paymentStatus?: string; // 'PENDING', 'COMPLETED', 'FAILED'
+  paymentAmount?: number; // Monto del pago
+  paymentCurrency?: string; // Moneda del pago
+  paymentData?: FlowPaymentStatusResponse['paymentData']; // Datos adicionales del pago
+  paymentCompletedAt?: string; // Fecha de completado del pago
+  isPendingPayment?: boolean; // Flag para pagos pendientes
+  
+  // Dirección de envío
+  shippingAddress?: {
+    direccion?: string;
+    ciudad?: string;
+    estado?: string;
+    pais?: string;
+  };
+  
+  // VRChat username
+  vrchatUsername?: string;
+  
   // Campos de auditoría de Firestore
   createdAt?: string; // ISO date string
   updatedAt?: string; // ISO date string

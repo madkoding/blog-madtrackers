@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TermsCheckbox from "./terms-checkbox";
 
 /**
@@ -52,7 +52,7 @@ const UserCheckoutForm: React.FC<UserCheckoutFormProps> = React.memo(({
     return emailRegex.test(email);
   };
 
-  const validateField = (field: keyof UserCheckoutData, value: string): string => {
+  const validateField = useCallback((field: keyof UserCheckoutData, value: string): string => {
     switch (field) {
       case 'email':
         if (!value.trim()) return 'El email es obligatorio';
@@ -77,9 +77,9 @@ const UserCheckoutForm: React.FC<UserCheckoutFormProps> = React.memo(({
       default:
         return '';
     }
-  };
+  }, []);
 
-  const validateAllFields = (data: UserCheckoutData): boolean => {
+  const validateAllFields = useCallback((data: UserCheckoutData): boolean => {
     const requiredFields: (keyof UserCheckoutData)[] = ['email', 'direccion', 'ciudad', 'estado', 'pais'];
     
     console.log('🔍 Validating all fields:', {
@@ -102,7 +102,7 @@ const UserCheckoutForm: React.FC<UserCheckoutFormProps> = React.memo(({
     console.log('🎯 All fields valid:', allValid);
     
     return allValid;
-  };
+  }, [validateField]);
 
   const validateFormForTerms = (): boolean => {
     if (!validateAllFields(userData)) {

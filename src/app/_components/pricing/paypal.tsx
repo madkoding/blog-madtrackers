@@ -8,14 +8,27 @@ import UserCheckoutForm, { UserCheckoutData } from "./user-checkout-form";
  * Props para el componente PaypalButton.
  */
 export interface PaypalButtonProps {
-  /** Cantidad total en dólares USD */
+  /** Cantidad en dólares USD */
   readonly amount: number;
-  /** Descripción del producto (opcional) */
-  readonly description?: string;
-  /** Estado de aceptación de términos */
+  /** Descripción del producto */
+  readonly description: string;
+  /** Configuración de términos y condiciones */
   readonly acceptedTerms?: boolean;
-  /** Callback para cambio de términos */
   readonly onTermsChange?: (accepted: boolean) => void;
+}
+
+/**
+ * Datos del producto para PayPal
+ */
+interface PaypalProductData {
+  readonly amount: number;
+  readonly description: string;
+  readonly paymentType: 'advance' | 'full';
+  readonly numberOfTrackers?: number;
+  readonly sensor?: string;
+  readonly magnetometer?: boolean;
+  readonly caseColor?: string;
+  readonly coverColor?: string;
 }
 
 /**
@@ -28,6 +41,10 @@ interface PaypalSingleButtonProps {
   readonly description: string;
   /** Texto del botón */
   readonly buttonText: string;
+  /** Datos del usuario para el tracking */
+  readonly userData?: UserCheckoutData | null;
+  /** Datos del producto configurado */
+  readonly productData?: PaypalProductData;
 }
 
 /**
@@ -36,7 +53,9 @@ interface PaypalSingleButtonProps {
 const PaypalSingleButton: React.FC<PaypalSingleButtonProps> = React.memo(({ 
   amount, 
   description,
-  buttonText
+  buttonText,
+  userData,
+  productData
 }) => {
   // Generar un ID único para la transacción
   const transactionId = useMemo(() => 
@@ -55,6 +74,29 @@ const PaypalSingleButton: React.FC<PaypalSingleButtonProps> = React.memo(({
       alert('⚠️ Configura tu email de PayPal en las variables de entorno (NEXT_PUBLIC_PAYPAL_BUSINESS_EMAIL)');
       return;
     }
+
+    // Verificar que tengamos los datos del usuario
+    if (!userData?.email || !userData?.direccion) {
+      alert('⚠️ Por favor completa todos los campos del formulario antes de proceder con el pago');
+      return;
+    }
+    
+    // Crear objeto con datos para el tracking
+    const customData = {
+      transactionId,
+      userData: {
+        email: userData.email,
+        direccion: userData.direccion,
+        ciudad: userData.ciudad,
+        estado: userData.estado,
+        pais: userData.pais,
+        nombreUsuarioVrChat: userData.nombreUsuarioVrChat
+      },
+      productData: productData || {},
+      amount: amount,
+      currency: 'USD',
+      timestamp: new Date().toISOString()
+    };
     
     // Crear URL de PayPal con parámetros dinámicos
     const paypalUrl = new URL('https://www.paypal.com/cgi-bin/webscr');
@@ -63,14 +105,21 @@ const PaypalSingleButton: React.FC<PaypalSingleButtonProps> = React.memo(({
     paypalUrl.searchParams.append('item_name', description);
     paypalUrl.searchParams.append('amount', amount.toFixed(2));
     paypalUrl.searchParams.append('currency_code', 'USD');
-    paypalUrl.searchParams.append('custom', transactionId);
+    paypalUrl.searchParams.append('custom', JSON.stringify(customData));
     paypalUrl.searchParams.append('return', window.location.origin + '/payment-success');
     paypalUrl.searchParams.append('cancel_return', window.location.origin + '/payment-cancel');
     paypalUrl.searchParams.append('notify_url', window.location.origin + '/api/paypal/ipn');
     
+    console.log('🚀 [PAYPAL] Redirecting to PayPal with user data:', {
+      transactionId,
+      amount,
+      userEmail: userData.email,
+      userCountry: userData.pais
+    });
+    
     // Abrir PayPal en nueva ventana
     window.open(paypalUrl.toString(), '_blank');
-  }, [amount, description, transactionId]);
+  }, [amount, description, transactionId, userData, productData]);
 
   return (
     <>
@@ -130,13 +179,15 @@ const PaypalButton: React.FC<PaypalButtonProps> = memo(({
 }) => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  const [userData, setUserData] = useState<UserCheckoutData | null>(null);
   
   const { lang } = useLang();
   const t = translations[lang];
 
   const handleUserDataChange = useCallback((data: UserCheckoutData) => {
-    // Los datos del usuario se manejan directamente en UserCheckoutForm
-    console.log('User data updated:', data);
+    // Almacenar los datos del usuario para usarlos cuando se confirme el pago
+    setUserData(data);
+    console.log('PayPal user data updated:', data);
   }, []);
 
   const handleValidationChange = useCallback((isValid: boolean) => {
@@ -334,7 +385,10 @@ const PaypalButton: React.FC<PaypalButtonProps> = memo(({
               className="continue-purchase-btn"
               onClick={() => setShowCheckoutForm(true)}
             >
-              <span className="cart-icon">🛒</span>
+              <span className="cart-icon">
+                🛒
+              </span>
+              {' '}
               Continuar con la compra
             </button>
           </div>
@@ -369,6 +423,8 @@ const PaypalButton: React.FC<PaypalButtonProps> = memo(({
                   amount={amount}
                   description={`${description} (${t.paymentAdvance} 25%)`}
                   buttonText={t.payAdvanceBtn}
+                  userData={userData}
+                  productData={{ amount: amount, description, paymentType: 'advance' }}
                 />
               </div>
               
@@ -380,6 +436,8 @@ const PaypalButton: React.FC<PaypalButtonProps> = memo(({
                   amount={amount * 4}
                   description={`${description} (${t.paymentFull} 100%)`}
                   buttonText={t.payFullBtn}
+                  userData={userData}
+                  productData={{ amount: amount * 4, description, paymentType: 'full' }}
                 />
               </div>
             </div>
