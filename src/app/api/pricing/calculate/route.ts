@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { countries } from '../../../constants/countries.constants';
+import { calculateDockCost } from '../../../constants/product.constants';
 
 // Datos de precios - Solo accesibles desde el servidor
 const SENSOR_PRICES = {
@@ -14,17 +15,30 @@ const TRACKER_PRICES = {
   // wifi: 40, // Para futuro uso
 };
 
+const USB_RECEIVER_ADDITIONAL_COSTS = {
+  usb_3m: 0,
+  usb_6m: 30,
+};
+
+const STRAP_ADDITIONAL_COSTS = {
+  velcro: 0,
+  anchor: 10,
+};
+
 interface PriceCalculationRequest {
   sensorId: string;
   trackerId: string;
   quantity: number;
   countryCode: string;
+  usbReceiverId?: string;
+  strapId?: string;
+  chargingDockId?: string;
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body: PriceCalculationRequest = await request.json();
-    const { sensorId, trackerId, quantity, countryCode } = body;
+    const { sensorId, trackerId, quantity, countryCode, usbReceiverId, strapId, chargingDockId } = body;
 
     // Validar datos de entrada
     if (!sensorId || !trackerId || !quantity || !countryCode) {
@@ -45,11 +59,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Obtener costos adicionales (por defecto 0 si no se especifica)
+    const usbReceiverCost = usbReceiverId ? 
+      (USB_RECEIVER_ADDITIONAL_COSTS[usbReceiverId as keyof typeof USB_RECEIVER_ADDITIONAL_COSTS] || 0) : 0;
+    const strapCost = strapId ? 
+      (STRAP_ADDITIONAL_COSTS[strapId as keyof typeof STRAP_ADDITIONAL_COSTS] || 0) : 0;
+    
+    // Calcular costo del dock dinámicamente
+    let chargingDockCost = 0;
+    if (chargingDockId === "dock_dynamic") {
+      chargingDockCost = calculateDockCost(quantity);
+    }
+
     // Obtener configuración del país
     const countryConfig = countries[countryCode] || countries.US;
 
     // Calcular precios base en USD
-    const basePrice = trackerPrice * sensorPrice * quantity;
+    const basePrice = (trackerPrice * sensorPrice * quantity) + usbReceiverCost + strapCost + chargingDockCost;
     const shippingUsd = countryConfig.shippingCostUsd;
     
     // Para países que no son Chile, aplicar markup para cubrir comisiones de PayPal (~3.5% + $0.5)

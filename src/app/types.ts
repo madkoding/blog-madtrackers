@@ -22,6 +22,28 @@ export interface Color {
   hex: string;
 }
 
+export interface UsbReceiver {
+  id: string;
+  label: string;
+  description: string;
+  additionalCostUsd: number;
+}
+
+export interface Strap {
+  id: string;
+  label: string;
+  description: string;
+  additionalCostUsd: number;
+}
+
+export interface ChargingDock {
+  id: string;
+  label: string;
+  description: string;
+  additionalCostUsd: number;
+  available: boolean;
+}
+
 export type Point = { x: number; y: number };
 
 export type PointsMap = {

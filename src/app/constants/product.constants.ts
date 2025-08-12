@@ -1,4 +1,4 @@
-import { Color, Sensor } from "../types";
+import { Color, Sensor, UsbReceiver, Strap, ChargingDock } from "../types";
 
 // NOTA: Los precios se han movido al backend por seguridad
 // Solo se exponen datos públicos necesarios para la UI
@@ -53,7 +53,79 @@ export const trackers = [
   // }
 ];
 
+export const usbReceivers: UsbReceiver[] = [
+  {
+    id: "usb_3m",
+    label: "Alcance de 3mt²",
+    description: "Alcance estándar",
+    additionalCostUsd: 0
+  },
+  {
+    id: "usb_6m",
+    label: "Alcance de 6mt²",
+    description: "Alcance extendido",
+    additionalCostUsd: 30
+  }
+];
+
+export const straps: Strap[] = [
+  {
+    id: "velcro",
+    label: "Straps de velcro",
+    description: "Ideales para uso casual y cómodo",
+    additionalCostUsd: 0
+  },
+  {
+    id: "anchor",
+    label: "Straps con anclaje",
+    description: "Perfectos para dancers y uso intensivo",
+    additionalCostUsd: 10
+  }
+];
+
+export const chargingDocks: ChargingDock[] = [
+  {
+    id: "no_dock",
+    label: "Sin dock de carga",
+    description: "Carga mediante cable USB-C de 1 a 6 conectores incluido",
+    additionalCostUsd: 0,
+    available: true
+  },
+  {
+    id: "dock_dynamic",
+    label: "Dock de carga",
+    description: "Carga simultánea de trackers",
+    additionalCostUsd: 0, // Se calculará dinámicamente
+    available: false
+  }
+];
+
 export const quantities: number[] = [6, 8, 10, 20];
+
+// Función para calcular el costo del dock de carga basado en la cantidad de trackers
+export function calculateDockCost(quantity: number): number {
+  // Costo base de 50 USD para 6 trackers, +5 USD por cada tracker adicional
+  const baseQuantity = 6;
+  const baseCost = 50;
+  const costPerAdditionalTracker = 5;
+  
+  if (quantity <= baseQuantity) {
+    return baseCost;
+  }
+  
+  const additionalTrackers = quantity - baseQuantity;
+  return baseCost + (additionalTrackers * costPerAdditionalTracker);
+}
+
+// Función para obtener el label dinámico del dock
+export function getDynamicDockLabel(quantity: number): string {
+  return `Dock de carga para ${quantity} trackers`;
+}
+
+// Función para obtener la descripción dinámica del dock
+export function getDynamicDockDescription(quantity: number): string {
+  return `Carga simultánea de hasta ${quantity} trackers`;
+}
 
 export const colors: Color[] = [
   { id: "white", label: "Blanco", color: "bg-white border-gray-400", hex: "#FFFFFF" },

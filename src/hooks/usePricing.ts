@@ -25,9 +25,12 @@ interface UsePricingParams {
   trackerId: string;
   quantity: number;
   countryCode: string;
+  usbReceiverId?: string;
+  strapId?: string;
+  chargingDockId?: string;
 }
 
-export function usePricing({ sensorId, trackerId, quantity, countryCode }: UsePricingParams) {
+export function usePricing({ sensorId, trackerId, quantity, countryCode, usbReceiverId, strapId, chargingDockId }: UsePricingParams) {
   const [pricing, setPricing] = useState<PriceResponse | null>(null);
   const [loading, setLoading] = useState(true); // Empezar en true para evitar flash de contenido
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +67,9 @@ export function usePricing({ sensorId, trackerId, quantity, countryCode }: UsePr
             trackerId,
             quantity,
             countryCode,
+            usbReceiverId,
+            strapId,
+            chargingDockId,
           }),
         });
 
@@ -93,7 +99,7 @@ export function usePricing({ sensorId, trackerId, quantity, countryCode }: UsePr
     };
 
     calculatePricing();
-  }, [sensorId, trackerId, quantity, countryCode, retryCount, scheduleRetry]);
+  }, [sensorId, trackerId, quantity, countryCode, usbReceiverId, strapId, chargingDockId, retryCount, scheduleRetry]);
 
   return {
     pricing,
