@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FirebaseTrackingService } from '@/lib/firebaseTrackingService';
 import { TrackingManager } from '@/lib/trackingManager';
 import { OrderStatus } from '@/interfaces/tracking';
+import { EmailService } from '@/lib/emailService';
 
 /**
  * API endpoint para procesar pagos exitosos de PayPal y crear tracking
@@ -15,6 +16,7 @@ export async function POST(request: NextRequest) {
     
     const { 
       transactionId, 
+      paypalTransactionId,
       payerEmail, 
       amount, 
       currency, 
@@ -82,7 +84,8 @@ export async function POST(request: NextRequest) {
     const enhancedTrackingData = {
       ...trackingData,
       paymentMethod: 'PayPal',
-      paymentTransactionId: transactionId,
+      paymentTransactionId: transactionId, // Nuestro ID personalizado
+      paypalTransactionId: paypalTransactionId, // ID real de PayPal
       paymentAmount: parseFloat(amount),
       paymentCurrency: currency || 'USD',
       shippingAddress: {
@@ -105,9 +108,54 @@ export async function POST(request: NextRequest) {
       transactionId
     });
 
+    // Enviar correo de confirmación de compra
+    console.log('📧 [PAYPAL SUCCESS] Sending purchase confirmation email...');
+    try {
+      const orderDetails = {
+        transactionId: transactionId,
+        amount: parseFloat(amount),
+        currency: currency || 'USD',
+        trackers: productData?.numberOfTrackers || 5,
+        sensor: productData?.sensor || 'ICM45686 + QMC6309',
+        colors: {
+          case: productData?.caseColor || 'black',
+          tapa: productData?.coverColor || 'black'
+        },
+        shippingAddress: {
+          direccion: userData.direccion,
+          ciudad: userData.ciudad,
+          estado: userData.estado,
+          pais: userData.pais
+        },
+        paymentMethod: 'PayPal',
+        orderDate: new Date().toLocaleDateString('es-CL', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      };
+
+      const emailSent = await EmailService.sendPurchaseConfirmation(
+        userData.email,
+        userData.nombreUsuarioVrChat || 'Usuario',
+        trackingData.userHash!,
+        orderDetails
+      );
+
+      if (emailSent) {
+        console.log('✅ [PAYPAL SUCCESS] Purchase confirmation email sent successfully');
+      } else {
+        console.warn('⚠️ [PAYPAL SUCCESS] Failed to send purchase confirmation email');
+      }
+    } catch (emailError) {
+      console.error('❌ [PAYPAL SUCCESS] Error sending purchase confirmation email:', emailError);
+    }
+
     return NextResponse.json({
       success: true,
-      trackingId,
+      trackingId: trackingData.userHash,
       username: trackingData.nombreUsuario,
       userHash: trackingData.userHash,
       message: 'Payment processed and tracking created successfully'

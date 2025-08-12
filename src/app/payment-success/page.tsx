@@ -15,7 +15,11 @@ interface PaymentInfo {
   trackingId?: string; // Añadir tracking ID
 }
 
-const getPaymentTitle = (isFlow: boolean, status?: number, hasToken?: boolean): string => {
+const getPaymentTitle = (isFlow: boolean, isPayPal: boolean, status?: number, hasToken?: boolean): string => {
+  if (isPayPal) {
+    return status === 1 ? '¡Pago Exitoso!' : 'Procesando Pago PayPal';
+  }
+  
   if (!isFlow) return '¡Pago Exitoso!';
   
   if (!hasToken) return 'Procesando Pago';
@@ -29,7 +33,13 @@ const getPaymentTitle = (isFlow: boolean, status?: number, hasToken?: boolean): 
   }
 };
 
-const getPaymentMessage = (isFlow: boolean, status?: number, hasToken?: boolean): string => {
+const getPaymentMessage = (isFlow: boolean, isPayPal: boolean, status?: number, hasToken?: boolean): string => {
+  if (isPayPal) {
+    return status === 1 
+      ? 'Tu pago PayPal ha sido procesado correctamente. Recibirás un email de confirmación en breve.'
+      : 'Tu pago PayPal está siendo procesado. Te notificaremos cuando se complete.';
+  }
+  
   if (!isFlow) {
     return 'Tu pago ha sido procesado correctamente. Recibirás un email de confirmación en breve.';
   }
@@ -141,14 +151,18 @@ export default function PaymentSuccess() {
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [isFlow, setIsFlow] = useState(false);
+  const [isPayPal, setIsPayPal] = useState(false);
   const [hasToken, setHasToken] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const flowParam = urlParams.get('flow');
+    const paypalParam = urlParams.get('paypal');
     const token = urlParams.get('token');
+    const transactionId = urlParams.get('transactionId');
+    const trackingId = urlParams.get('trackingId');
     
-    console.log('URL params:', { flowParam, token, allParams: Object.fromEntries(urlParams.entries()) });
+    console.log('URL params:', { flowParam, paypalParam, token, transactionId, trackingId, allParams: Object.fromEntries(urlParams.entries()) });
     
     if (flowParam === 'true') {
       setIsFlow(true);
@@ -161,10 +175,46 @@ export default function PaymentSuccess() {
         setHasToken(false);
         setLoading(false);
       }
+    } else if (paypalParam === 'true') {
+      setIsPayPal(true);
+      if (transactionId || trackingId) {
+        checkPayPalPaymentStatus(transactionId, trackingId);
+      } else {
+        console.warn('PayPal payment detected but no transactionId or trackingId found');
+        setLoading(false);
+      }
     } else {
       setLoading(false);
     }
   }, []);
+
+  const checkPayPalPaymentStatus = async (transactionId?: string | null, trackingId?: string | null) => {
+    try {
+      console.log('🔍 [PAYMENT SUCCESS] Checking PayPal payment status with:', { transactionId, trackingId });
+      
+      const params = new URLSearchParams();
+      if (transactionId) params.append('transactionId', transactionId);
+      if (trackingId) params.append('trackingId', trackingId);
+      
+      const response = await fetch(`/api/paypal/status?${params.toString()}`);
+      const data = await response.json();
+      
+      console.log('📥 [PAYMENT SUCCESS] PayPal response received:', data);
+      
+      if (data.success) {
+        console.log('📋 [PAYMENT SUCCESS] PayPal payment info:', data.payment);
+        console.log('🎯 [PAYMENT SUCCESS] PayPal tracking ID:', data.payment?.trackingId);
+        console.log('📊 [PAYMENT SUCCESS] PayPal status:', data.payment?.status);
+        setPaymentInfo(data.payment);
+      } else {
+        console.error('❌ [PAYMENT SUCCESS] PayPal response not successful:', data);
+      }
+    } catch (error) {
+      console.error('❌ [PAYMENT SUCCESS] Error checking PayPal payment status:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const checkFlowPaymentStatus = async (token: string) => {
     try {
@@ -195,8 +245,8 @@ export default function PaymentSuccess() {
 
   const status = paymentInfo?.status || 1;
   const statusColor = getStatusColor(status);
-  const title = getPaymentTitle(isFlow, status, hasToken);
-  const message = getPaymentMessage(isFlow, status, hasToken);
+  const title = getPaymentTitle(isFlow, isPayPal, status, hasToken);
+  const message = getPaymentMessage(isFlow, isPayPal, status, hasToken);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -247,13 +297,6 @@ export default function PaymentSuccess() {
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Volver al inicio
-          </button>
-          
-          <button
-            onClick={() => window.location.href = '/seguimiento'}
-            className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
-          >
-            Ver seguimiento
           </button>
         </div>
       </div>

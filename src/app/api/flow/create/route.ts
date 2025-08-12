@@ -4,6 +4,15 @@ import { FirebaseTrackingService } from '@/lib/firebaseTrackingService';
 import { TrackingManager } from '@/lib/trackingManager';
 import { OrderStatus } from '@/interfaces/tracking';
 
+interface FlowProductData {
+  totalUsd?: number;
+  numberOfTrackers?: number;
+  sensor?: string;
+  magnetometer?: boolean;
+  caseColor?: string;
+  coverColor?: string;
+}
+
 // Importar utils específicos para mejor trazabilidad
 import { validateFlowCreateParams, normalizeAmount } from './utils/flowValidation';
 import { 
@@ -29,7 +38,7 @@ async function createPendingTracking(
   email: string, 
   amount: number, 
   userData: UserData,
-  productData?: any
+  productData?: FlowProductData
 ): Promise<string> {
   // Generar un nombre de usuario temporal basado en el commerceOrder
   const username = `flow_${commerceOrder}`;

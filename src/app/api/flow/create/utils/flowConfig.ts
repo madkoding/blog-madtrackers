@@ -70,7 +70,7 @@ export function buildFlowPaymentParams(
   email: string,
   urls: FlowUrls,
   config: FlowConfig,
-  additionalData?: { userData?: UserData; productData?: any }
+  additionalData?: { userData?: UserData; productData?: Record<string, unknown> }
 ): FlowPaymentParams {
   const { userData, productData } = additionalData || {};
   
