@@ -5,6 +5,13 @@ export interface PayPalProductData {
   magnetometer?: boolean;
   caseColor?: string;
   coverColor?: string;
+  // Extras adicionales
+  usbReceiverId?: string;
+  usbReceiverCost?: number;
+  strapId?: string;
+  strapCost?: number;
+  chargingDockId?: string;
+  chargingDockCost?: number;
 }
 
 export interface UserData {

@@ -11,6 +11,13 @@ interface FlowProductData {
   magnetometer?: boolean;
   caseColor?: string;
   coverColor?: string;
+  // Extras adicionales
+  usbReceiverId?: string;
+  usbReceiverCost?: number;
+  strapId?: string;
+  strapCost?: number;
+  chargingDockId?: string;
+  chargingDockCost?: number;
 }
 
 // Importar utils específicos para mejor trazabilidad
@@ -68,22 +75,40 @@ async function createPendingTracking(
     }
   });
 
-  // Agregar información adicional del pago pendiente
+  // Agregar información adicional del pago pendiente (solo campos esenciales)
   const enhancedTrackingData = {
     ...trackingData,
+    // Payment info (solo campos necesarios)
     paymentMethod: 'Flow',
     paymentTransactionId: commerceOrder,
     paymentStatus: 'PENDING',
-    paymentAmount: amount,
     paymentCurrency: 'CLP',
-    shippingAddress: {
-      direccion: userData.direccion,
-      ciudad: userData.ciudad,
-      estado: userData.estado,
-      pais: userData.pais
-    },
+    // VRChat username
     vrchatUsername: userData.nombreUsuarioVrChat,
-    isPendingPayment: true // Flag para identificar pagos pendientes
+    // Dirección de envío (solo si es diferente al país ya guardado)
+    ...(userData.direccion && {
+      shippingAddress: {
+        direccion: userData.direccion,
+        ciudad: userData.ciudad,
+        estado: userData.estado,
+        pais: userData.pais
+      }
+    }),
+    // Extras adicionales
+    extrasSeleccionados: {
+      usbReceiver: {
+        id: productData?.usbReceiverId || 'usb_3m',
+        cost: productData?.usbReceiverCost || 0
+      },
+      strap: {
+        id: productData?.strapId || 'velcro',
+        cost: productData?.strapCost || 0
+      },
+      chargingDock: {
+        id: productData?.chargingDockId || 'no_dock',
+        cost: productData?.chargingDockCost || 0
+      }
+    }
   };
 
   // Crear el tracking en Firebase

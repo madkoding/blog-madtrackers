@@ -190,27 +190,40 @@ export default function PaymentSuccess() {
 
   const checkPayPalPaymentStatus = async (transactionId?: string | null, trackingId?: string | null) => {
     try {
-      console.log('🔍 [PAYMENT SUCCESS] Checking PayPal payment status with:', { transactionId, trackingId });
+      console.log('🔍 [PAYMENT SUCCESS] Processing PayPal payment completion with:', { transactionId, trackingId });
       
       const params = new URLSearchParams();
       if (transactionId) params.append('transactionId', transactionId);
       if (trackingId) params.append('trackingId', trackingId);
       
-      const response = await fetch(`/api/paypal/status?${params.toString()}`);
-      const data = await response.json();
+      // Primero actualizar el estado del pago a completado (el usuario volvió exitosamente de PayPal)
+      console.log('🎯 [PAYMENT SUCCESS] Marking PayPal payment as completed...');
+      const updateResponse = await fetch(`/api/paypal/complete-payment?${params.toString()}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       
-      console.log('📥 [PAYMENT SUCCESS] PayPal response received:', data);
+      const updateData = await updateResponse.json();
+      console.log('📥 [PAYMENT SUCCESS] PayPal payment update response:', updateData);
       
-      if (data.success) {
-        console.log('📋 [PAYMENT SUCCESS] PayPal payment info:', data.payment);
-        console.log('🎯 [PAYMENT SUCCESS] PayPal tracking ID:', data.payment?.trackingId);
-        console.log('📊 [PAYMENT SUCCESS] PayPal status:', data.payment?.status);
-        setPaymentInfo(data.payment);
+      if (updateData.success) {
+        console.log('✅ [PAYMENT SUCCESS] PayPal payment marked as completed successfully');
+        console.log('📋 [PAYMENT SUCCESS] PayPal payment info:', updateData.payment);
+        console.log('🎯 [PAYMENT SUCCESS] PayPal tracking ID:', updateData.payment?.trackingId);
+        setPaymentInfo(updateData.payment);
       } else {
-        console.error('❌ [PAYMENT SUCCESS] PayPal response not successful:', data);
+        console.error('❌ [PAYMENT SUCCESS] Failed to update PayPal payment status:', updateData);
+        // Fallback: intentar obtener el estado actual sin actualizar
+        const response = await fetch(`/api/paypal/status?${params.toString()}`);
+        const data = await response.json();
+        if (data.success) {
+          setPaymentInfo(data.payment);
+        }
       }
     } catch (error) {
-      console.error('❌ [PAYMENT SUCCESS] Error checking PayPal payment status:', error);
+      console.error('❌ [PAYMENT SUCCESS] Error processing PayPal payment completion:', error);
     } finally {
       setLoading(false);
     }

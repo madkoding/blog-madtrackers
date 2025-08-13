@@ -22,6 +22,13 @@ export interface FlowPaymentProps {
     coverColor?: string;
     magnetometer?: boolean;
     totalUsd?: number; // Precio real calculado en USD
+    // Extras adicionales
+    usbReceiverId?: string;
+    usbReceiverCost?: number;
+    strapId?: string;
+    strapCost?: number;
+    chargingDockId?: string;
+    chargingDockCost?: number;
   };
 }
 
@@ -234,6 +241,7 @@ const FlowPayment = memo(({ amount, description, acceptedTerms, onTermsChange, p
             onClick={() => setShowCheckoutForm(true)}
           >
             <span className="cart-icon">🛒</span>
+            {' '}
             Continuar con la compra
           </button>
         </div>

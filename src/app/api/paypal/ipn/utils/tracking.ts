@@ -22,20 +22,20 @@ export async function updateTrackingFromPayment(
     
     console.log('✅ [PAYPAL IPN] Found existing tracking:', existingTracking.id);
     
-    // Actualizar el tracking a estado MANUFACTURING (pago completado)
+    // Actualizar el tracking a estado WAITING (pago completado) - mantener estructura existente
     const updatedTrackingData = {
       ...existingTracking,
-      estadoPedido: OrderStatus.MANUFACTURING,
+      estadoPedido: OrderStatus.WAITING,
       abonadoUsd: customData.amount || parseFloat(ipnData.mc_gross || '0'),
       paymentStatus: 'COMPLETED',
       paypalTransactionId: ipnData.txn_id || undefined,
-      paymentDate: new Date().toISOString()
+      paymentCompletedAt: new Date().toISOString()
     };
     
     // Actualizar en Firebase
     if (existingTracking.id) {
       await FirebaseTrackingService.updateTracking(existingTracking.id, updatedTrackingData);
-      console.log('🎯 [PAYPAL IPN] Tracking updated successfully to MANUFACTURING status');
+      console.log('🎯 [PAYPAL IPN] Tracking updated successfully to WAITING status');
       return existingTracking;
     } else {
       console.error('❌ [PAYPAL IPN] Tracking ID is undefined');

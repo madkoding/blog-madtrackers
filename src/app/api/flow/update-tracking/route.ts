@@ -69,8 +69,8 @@ export async function PUT(request: NextRequest) {
     try {
       const orderDetails = {
         transactionId: commerceOrder,
-        amount: Math.round(parseFloat(amount) / 900), // Conversión aproximada de CLP a USD
-        currency: 'USD',
+        amount: parseFloat(amount), // Mantener el monto original en CLP
+        currency: 'CLP', // Flow trabaja en CLP
         trackers: pendingTracking.numeroTrackers || 5,
         sensor: pendingTracking.sensor || 'ICM45686 + QMC6309',
         colors: {

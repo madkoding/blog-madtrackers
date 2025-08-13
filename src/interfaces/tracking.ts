@@ -60,6 +60,22 @@ export interface UserTracking {
   // VRChat username
   vrchatUsername?: string;
   
+  // Extras seleccionados (nueva estructura para extras)
+  extrasSeleccionados?: {
+    usbReceiver?: {
+      id: string;
+      cost: number;
+    };
+    strap?: {
+      id: string;
+      cost: number;
+    };
+    chargingDock?: {
+      id: string;
+      cost: number;
+    };
+  };
+  
   // Campos de auditoría de Firestore
   createdAt?: string; // ISO date string
   updatedAt?: string; // ISO date string

@@ -226,6 +226,9 @@ const Pricing = () => {
               selectedSensor={productConfig.selectedSensor}
               selectedColorCase={productConfig.selectedColorCase}
               selectedColorTapa={productConfig.selectedColorTapa}
+              selectedUsbReceiver={productConfig.selectedUsbReceiver}
+              selectedStrap={productConfig.selectedStrap}
+              selectedChargingDock={productConfig.selectedChargingDock}
             />
           );
         })()}

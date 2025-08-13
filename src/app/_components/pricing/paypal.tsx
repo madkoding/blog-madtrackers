@@ -16,6 +16,22 @@ export interface PaypalButtonProps {
   readonly acceptedTerms?: boolean;
   /** Callback para cambio de términos */
   readonly onTermsChange?: (accepted: boolean) => void;
+  /** Información del producto seleccionado */
+  readonly productData?: {
+    sensor?: string;
+    numberOfTrackers?: number;
+    caseColor?: string;
+    coverColor?: string;
+    magnetometer?: boolean;
+    totalUsd?: number;
+    // Extras adicionales
+    usbReceiverId?: string;
+    usbReceiverCost?: number;
+    strapId?: string;
+    strapCost?: number;
+    chargingDockId?: string;
+    chargingDockCost?: number;
+  };
 }
 
 /**
@@ -44,6 +60,14 @@ interface PaypalSingleButtonProps {
     caseColor?: string;
     coverColor?: string;
     magnetometer?: boolean;
+    totalUsd?: number;
+    // Extras adicionales
+    usbReceiverId?: string;
+    usbReceiverCost?: number;
+    strapId?: string;
+    strapCost?: number;
+    chargingDockId?: string;
+    chargingDockCost?: number;
   };
 }
 
@@ -191,7 +215,8 @@ const PaypalButton: React.FC<PaypalButtonProps> = memo(({
   amount, 
   description = "Pago de MadTrackers",
   acceptedTerms,
-  onTermsChange
+  onTermsChange,
+  productData: externalProductData
 }) => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
@@ -209,21 +234,30 @@ const PaypalButton: React.FC<PaypalButtonProps> = memo(({
     setIsFormValid(isValid);
   }, []);
 
-  // Crear productData basado en la descripción y cantidad
+  // Usar productData externo si está disponible, sino generar basado en descripción
   const productData = useMemo(() => {
+    if (externalProductData) {
+      console.log('🔧 [PAYPAL] Using external product data:', externalProductData);
+      return externalProductData;
+    }
+    
+    // Fallback: crear productData basado en la descripción y cantidad (para compatibilidad)
     let trackers = 6; // valor por defecto
     if (description.includes('x11')) {
       trackers = 11;
     }
 
-    return {
+    const fallbackData = {
       numberOfTrackers: trackers,
       sensor: "ICM45686 + QMC6309", // Sensor por defecto
       magnetometer: true,
       caseColor: 'white',
       coverColor: 'white'
     };
-  }, [description]);
+    
+    console.log('⚠️ [PAYPAL] Using fallback product data:', fallbackData);
+    return fallbackData;
+  }, [description, externalProductData]);
   
   return (
     <>
@@ -417,6 +451,7 @@ const PaypalButton: React.FC<PaypalButtonProps> = memo(({
               onClick={() => setShowCheckoutForm(true)}
             >
               <span className="cart-icon">🛒</span>
+              {' '}
               Continuar con la compra
             </button>
           </div>

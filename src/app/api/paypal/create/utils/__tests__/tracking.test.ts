@@ -77,7 +77,6 @@ describe('PayPal Create Tracking Utils', () => {
         paymentMethod: 'PayPal',
         paymentTransactionId: 'txn_123',
         paymentStatus: 'PENDING',
-        paymentAmount: 250,
         paymentCurrency: 'USD',
         shippingAddress: {
           direccion: 'Test Address',
@@ -86,7 +85,20 @@ describe('PayPal Create Tracking Utils', () => {
           pais: 'Chile'
         },
         vrchatUsername: undefined,
-        isPendingPayment: true
+        extrasSeleccionados: {
+          usbReceiver: {
+            id: 'usb_3m',
+            cost: 0
+          },
+          strap: {
+            id: 'velcro',
+            cost: 0
+          },
+          chargingDock: {
+            id: 'no_dock',
+            cost: 0
+          }
+        }
       });
 
       expect(result).toBe('tracking_id_123');

@@ -41,22 +41,40 @@ export async function createPendingTracking(
     }
   });
 
-  // Agregar información adicional del pago pendiente
+  // Agregar información adicional del pago pendiente (solo campos esenciales)
   const enhancedTrackingData = {
     ...trackingData,
+    // Payment info (solo campos necesarios)
     paymentMethod: 'PayPal',
     paymentTransactionId: transactionId,
     paymentStatus: 'PENDING',
-    paymentAmount: amount,
     paymentCurrency: 'USD',
-    shippingAddress: {
-      direccion: userData.direccion,
-      ciudad: userData.ciudad,
-      estado: userData.estado,
-      pais: userData.pais
-    },
+    // VRChat username  
     vrchatUsername: userData.nombreUsuarioVrChat,
-    isPendingPayment: true // Flag para identificar pagos pendientes
+    // Dirección de envío (solo si es diferente al país ya guardado)
+    ...(userData.direccion && {
+      shippingAddress: {
+        direccion: userData.direccion,
+        ciudad: userData.ciudad,
+        estado: userData.estado,
+        pais: userData.pais
+      }
+    }),
+    // Extras adicionales
+    extrasSeleccionados: {
+      usbReceiver: {
+        id: productData?.usbReceiverId || 'usb_3m',
+        cost: productData?.usbReceiverCost || 0
+      },
+      strap: {
+        id: productData?.strapId || 'velcro',
+        cost: productData?.strapCost || 0
+      },
+      chargingDock: {
+        id: productData?.chargingDockId || 'no_dock',
+        cost: productData?.chargingDockCost || 0
+      }
+    }
   };
 
   // Crear el tracking en Firebase
