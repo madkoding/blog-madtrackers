@@ -190,10 +190,11 @@ export async function POST(request: NextRequest) {
       paymentCurrency: currency || 'CLP',
       paymentData: paymentData || null,
       shippingAddress: {
-        direccion: userData.direccion,
-        ciudad: userData.ciudad,
-        estado: userData.estado,
-        pais: userData.pais
+        address: userData.direccion,
+        cityState: userData.ciudad && userData.estado 
+          ? `${userData.ciudad}, ${userData.estado}` 
+          : userData.ciudad || userData.estado,
+        country: userData.pais
       },
       vrchatUsername: userData.nombreUsuarioVrChat
     };
@@ -228,10 +229,11 @@ export async function POST(request: NextRequest) {
           tapa: trackingData.colorTapa // Usar color del tracking real
         },
         shippingAddress: {
-          direccion: userData.direccion || 'No especificada',
-          ciudad: userData.ciudad || 'No especificada', 
-          estado: userData.estado || 'No especificado',
-          pais: userData.pais || 'Chile'
+          address: userData.direccion || 'No especificada',
+          cityState: userData.ciudad && userData.estado 
+            ? `${userData.ciudad}, ${userData.estado}` 
+            : userData.ciudad || userData.estado || 'No especificada',
+          country: userData.pais || 'Chile'
         },
         paymentMethod: 'Flow (Webpay)',
         orderDate: new Date().toLocaleDateString('es-CL', {

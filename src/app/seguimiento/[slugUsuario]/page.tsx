@@ -480,6 +480,23 @@ export default function UserTrackingPage() {
             </InfoCard>
           </div>
 
+          {/* Información de Dirección de Envío */}
+          {tracking.shippingAddress && (tracking.shippingAddress.address || tracking.shippingAddress.cityState || tracking.shippingAddress.country) && (
+            <div className="mt-6">
+              <InfoCard title={t.shippingAddress}>
+                {tracking.shippingAddress.address && (
+                  <InfoRow label={t.address} value={tracking.shippingAddress.address} />
+                )}
+                {tracking.shippingAddress.cityState && (
+                  <InfoRow label={t.cityState} value={tracking.shippingAddress.cityState} />
+                )}
+                {tracking.shippingAddress.country && (
+                  <InfoRow label={t.country} value={tracking.shippingAddress.country} />
+                )}
+              </InfoCard>
+            </div>
+          )}
+
           <div className="mt-8 text-center">
             <div className="bg-blue-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-blue-800 mb-2">

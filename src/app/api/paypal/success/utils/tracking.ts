@@ -54,10 +54,9 @@ export function createEnhancedTrackingData(
     paymentAmount: parseFloat(amount),
     paymentCurrency: currency || 'USD',
     shippingAddress: {
-      direccion: userData.direccion,
-      ciudad: userData.ciudad,
-      estado: userData.estado,
-      pais: userData.pais
+      address: userData.direccion,
+      cityState: `${userData.ciudad}, ${userData.estado}`,
+      country: userData.pais
     },
     vrchatUsername: userData.nombreUsuarioVrChat
   };

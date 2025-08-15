@@ -60,10 +60,9 @@ export async function POST(request: NextRequest) {
           tapa: 'white'
         },
         shippingAddress: {
-          direccion: 'Test Address 123',
-          ciudad: 'Santiago',
-          estado: 'RM',
-          pais: 'Chile'
+          address: 'Test Address 123',
+          cityState: 'Santiago, RM',
+          country: 'Chile'
         },
         paymentMethod: 'PayPal',
         orderDate: new Date().toLocaleDateString('es-CL')

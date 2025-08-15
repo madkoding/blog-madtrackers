@@ -165,10 +165,9 @@ describe('PayPal Success Tracking Utils', () => {
         paymentAmount: 150.00,
         paymentCurrency: 'USD',
         shippingAddress: {
-          direccion: '123 Main St',
-          ciudad: 'Springfield',
-          estado: 'IL',
-          pais: 'US'
+          address: '123 Main St',
+          cityState: 'Springfield, IL',
+          country: 'US'
         },
         vrchatUsername: 'test_user'
       });
@@ -204,7 +203,7 @@ describe('PayPal Success Tracking Utils', () => {
     it('should preserve original tracking data properties', () => {
       const extendedTrackingData = createMockUserTracking({
         ...mockTrackingData,
-        paymentMethod: 'custom_value' as any,
+        paymentMethod: 'custom_value' as string,
         paymentAmount: 42
       });
 
@@ -271,7 +270,7 @@ describe('PayPal Success Tracking Utils', () => {
 
     it('should handle missing properties gracefully', () => {
       const incompleteData = createMockUserTracking({
-        nombreUsuario: undefined as any,
+        nombreUsuario: undefined as string | undefined,
         userHash: undefined
       });
 

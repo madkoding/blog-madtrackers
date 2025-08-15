@@ -88,10 +88,11 @@ async function createPendingTracking(
     // Dirección de envío (solo si es diferente al país ya guardado)
     ...(userData.direccion && {
       shippingAddress: {
-        direccion: userData.direccion,
-        ciudad: userData.ciudad,
-        estado: userData.estado,
-        pais: userData.pais
+        address: userData.direccion,
+        cityState: userData.ciudad && userData.estado 
+          ? `${userData.ciudad}, ${userData.estado}` 
+          : userData.ciudad || userData.estado,
+        country: userData.pais
       }
     }),
     // Extras adicionales

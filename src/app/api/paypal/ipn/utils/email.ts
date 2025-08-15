@@ -21,10 +21,9 @@ export function createOrderDetails(
       tapa: existingTracking.colorTapa
     },
     shippingAddress: {
-      direccion: existingTracking.shippingAddress?.direccion || 'Dirección no disponible',
-      ciudad: existingTracking.shippingAddress?.ciudad || 'Ciudad no disponible',
-      estado: existingTracking.shippingAddress?.estado || 'Estado no disponible',
-      pais: existingTracking.paisEnvio || 'País no disponible'
+      address: existingTracking.shippingAddress?.address || 'Dirección no disponible',
+      cityState: existingTracking.shippingAddress?.cityState || 'Ciudad/Estado no disponible',
+      country: existingTracking.shippingAddress?.country || existingTracking.paisEnvio || 'País no disponible'
     },
     paymentMethod: 'PayPal',
     orderDate: new Date().toLocaleDateString('es-CL', {

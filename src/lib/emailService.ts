@@ -249,10 +249,9 @@ export class EmailService {
         tapa: string;
       };
       shippingAddress: {
-        direccion: string;
-        ciudad: string;
-        estado: string;
-        pais: string;
+        address: string;
+        cityState: string;
+        country: string;
       };
       paymentMethod: string;
       orderDate: string;
@@ -505,9 +504,9 @@ export class EmailService {
               <div class="address-section">
                 <h4>📍 Dirección de Envío</h4>
                 <p>
-                  ${orderDetails.shippingAddress.direccion}<br>
-                  ${orderDetails.shippingAddress.ciudad}, ${orderDetails.shippingAddress.estado}<br>
-                  ${orderDetails.shippingAddress.pais}
+                  ${orderDetails.shippingAddress.address}<br>
+                  ${orderDetails.shippingAddress.cityState}<br>
+                  ${orderDetails.shippingAddress.country}
                 </p>
               </div>
               

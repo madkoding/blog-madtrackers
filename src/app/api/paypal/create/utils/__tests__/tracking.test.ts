@@ -79,10 +79,9 @@ describe('PayPal Create Tracking Utils', () => {
         paymentStatus: 'PENDING',
         paymentCurrency: 'USD',
         shippingAddress: {
-          direccion: 'Test Address',
-          ciudad: 'Test City',
-          estado: 'Test State',
-          pais: 'Chile'
+          address: 'Test Address',
+          cityState: 'Test City, Test State',
+          country: 'Chile'
         },
         vrchatUsername: undefined,
         extrasSeleccionados: {

@@ -22,10 +22,11 @@ export function createOrderDetails(
       tapa: productData?.coverColor || 'black'
     },
     shippingAddress: {
-      direccion: userData.direccion,
-      ciudad: userData.ciudad,
-      estado: userData.estado,
-      pais: userData.pais
+      address: userData.direccion,
+      cityState: userData.ciudad && userData.estado 
+        ? `${userData.ciudad}, ${userData.estado}` 
+        : userData.ciudad || userData.estado,
+      country: userData.pais
     },
     paymentMethod: 'PayPal',
     orderDate: new Date().toLocaleDateString('es-CL', {

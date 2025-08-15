@@ -36,10 +36,9 @@ export interface OrderDetails {
     tapa: string;
   };
   shippingAddress: {
-    direccion: string;
-    ciudad: string;
-    estado: string;
-    pais: string;
+    address: string;
+    cityState: string;
+    country: string;
   };
   paymentMethod: string;
   orderDate: string;

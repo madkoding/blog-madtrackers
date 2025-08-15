@@ -69,10 +69,9 @@ describe('PayPal Success Email Utils', () => {
           tapa: 'red'
         },
         shippingAddress: {
-          direccion: 'Av. Principal 123',
-          ciudad: 'Santiago',
-          estado: 'Metropolitana',
-          pais: 'Chile'
+          address: 'Av. Principal 123',
+          cityState: 'Santiago, Metropolitana',
+          country: 'Chile'
         },
         paymentMethod: 'PayPal',
         orderDate: expect.any(String)
@@ -98,10 +97,9 @@ describe('PayPal Success Email Utils', () => {
           tapa: 'black'
         },
         shippingAddress: {
-          direccion: 'Av. Principal 123',
-          ciudad: 'Santiago',
-          estado: 'Metropolitana',
-          pais: 'Chile'
+          address: 'Av. Principal 123',
+          cityState: 'Santiago, Metropolitana',
+          country: 'Chile'
         },
         paymentMethod: 'PayPal',
         orderDate: expect.any(String)
@@ -167,10 +165,9 @@ describe('PayPal Success Email Utils', () => {
       );
 
       expect(result.shippingAddress).toEqual({
-        direccion: 'Calle Nueva 456',
-        ciudad: 'Valparaíso',
-        estado: 'Valparaíso',
-        pais: 'Chile'
+        address: 'Calle Nueva 456',
+        cityState: 'Valparaíso, Valparaíso',
+        country: 'Chile'
       });
     });
   });
@@ -198,10 +195,9 @@ describe('PayPal Success Email Utils', () => {
         tapa: 'red'
       },
       shippingAddress: {
-        direccion: 'Av. Principal 123',
-        ciudad: 'Santiago',
-        estado: 'Metropolitana',
-        pais: 'Chile'
+        address: 'Av. Principal 123',
+        cityState: 'Santiago, Metropolitana',
+        country: 'Chile'
       },
       paymentMethod: 'PayPal',
       orderDate: '15 de enero de 2023, 10:30'

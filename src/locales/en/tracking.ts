@@ -42,4 +42,9 @@ export const tracking = {
   orderStatus_testing: "Testing", 
   orderStatus_shipping: "Shipping",
   orderStatus_received: "Received",
+  deliveryDate: "Delivery Date",
+  shippingAddress: "Shipping Address",
+  address: "Address",
+  cityState: "City/State",
+  country: "Country",
 } as const;

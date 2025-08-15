@@ -327,6 +327,61 @@ const OrderDetailsSection = ({
   </InfoCard>
 );
 
+const ShippingAddressSection = ({ 
+  formData, 
+  validationErrors, 
+  onFieldUpdate 
+}: {
+  formData: Partial<UserTracking>;
+  validationErrors: Record<string, string>;
+  onFieldUpdate: (field: string, value: FieldValue) => void;
+}) => (
+  <InfoCard title="🚚 Dirección de Envío">
+    <div className="grid grid-cols-1 gap-6">
+      <div className="space-y-4">
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="shippingAddress.address" className="text-sm font-medium text-gray-700">Dirección:</label>
+          <InlineEdit 
+            id="shippingAddress.address"
+            value={formData?.shippingAddress?.address ?? ""} 
+            field="shippingAddress.address" 
+            type="text"
+            onUpdate={onFieldUpdate}
+            error={validationErrors["shippingAddress.address"]}
+            placeholder="Ej: Calle Principal 123, Departamento 4B"
+          />
+        </div>
+        
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="shippingAddress.cityState" className="text-sm font-medium text-gray-700">Ciudad/Estado:</label>
+          <InlineEdit 
+            id="shippingAddress.cityState"
+            value={formData?.shippingAddress?.cityState ?? ""} 
+            field="shippingAddress.cityState" 
+            type="text"
+            onUpdate={onFieldUpdate}
+            error={validationErrors["shippingAddress.cityState"]}
+            placeholder="Ej: Santiago, Región Metropolitana"
+          />
+        </div>
+        
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="shippingAddress.country" className="text-sm font-medium text-gray-700">País:</label>
+          <InlineEdit 
+            id="shippingAddress.country"
+            value={formData?.shippingAddress?.country ?? ""} 
+            field="shippingAddress.country" 
+            type="text"
+            onUpdate={onFieldUpdate}
+            error={validationErrors["shippingAddress.country"]}
+            placeholder="Ej: Chile"
+          />
+        </div>
+      </div>
+    </div>
+  </InfoCard>
+);
+
 const ConstructionProgressSection = ({ 
   formData, 
   onFieldUpdate 
@@ -585,6 +640,12 @@ export default function UserForm({
         validationErrors={validationErrors} 
         onFieldUpdate={onFieldUpdate} 
         isCreateMode={isCreateMode} 
+      />
+
+      <ShippingAddressSection 
+        formData={formData} 
+        validationErrors={validationErrors} 
+        onFieldUpdate={onFieldUpdate} 
       />
 
       {isEditMode && formData && (

@@ -78,10 +78,9 @@ export async function PUT(request: NextRequest) {
           tapa: pendingTracking.colorTapa || 'black'
         },
         shippingAddress: {
-          direccion: pendingTracking.shippingAddress?.direccion || 'No especificada',
-          ciudad: pendingTracking.shippingAddress?.ciudad || 'No especificada', 
-          estado: pendingTracking.shippingAddress?.estado || 'No especificado',
-          pais: pendingTracking.shippingAddress?.pais || pendingTracking.paisEnvio || 'Chile'
+          address: pendingTracking.shippingAddress?.address || 'No especificada',
+          cityState: pendingTracking.shippingAddress?.cityState || 'No especificada', 
+          country: pendingTracking.shippingAddress?.country || pendingTracking.paisEnvio || 'Chile'
         },
         paymentMethod: 'Flow (Webpay)',
         orderDate: new Date().toLocaleDateString('es-CL', {
