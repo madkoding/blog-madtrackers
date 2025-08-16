@@ -81,7 +81,10 @@ const OrderStatusTracker: React.FC<OrderStatusTrackerProps> = React.memo(({ curr
               ${isCompleted ? 'text-green-600' : ''}
               ${isPending ? 'text-gray-400' : ''}
             `}>
-              {t[step.labelKey as keyof typeof t]}
+              {(() => {
+                const translationValue = t[step.labelKey as keyof typeof t];
+                return typeof translationValue === 'string' ? translationValue : step.labelKey;
+              })()}
             </span>
           </div>
           
@@ -120,7 +123,10 @@ const OrderStatusTracker: React.FC<OrderStatusTrackerProps> = React.memo(({ curr
             ${isCompleted ? 'text-green-600' : ''}
             ${isPending ? 'text-gray-400' : ''}
           `}>
-            {t[step.labelKey as keyof typeof t]}
+            {(() => {
+              const translationValue = t[step.labelKey as keyof typeof t];
+              return typeof translationValue === 'string' ? translationValue : step.labelKey;
+            })()}
           </span>
           
           {/* Active indicator */}

@@ -39,33 +39,43 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
     }
   };
 
-  const quantityButtons = quantities.map((qty) => (
-    <button
-      key={qty}
-      className={`px-6 py-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
-        selectedQuantity === qty
-          ? "border-black bg-purple-900 text-white"
-          : "border-gray-300 hover:border-gray-500 bg-white text-black"
-      }`}
-      style={{ 
-        cursor: 'pointer',
-        userSelect: 'none',
-        pointerEvents: 'auto'
-      }}
-      onClick={() => {
-        console.log('🔢 [QUANTITY SELECTOR] Raw button click for quantity:', qty);
-        handleQuantitySelect(qty);
-      }}
-      onMouseDown={(e) => e.preventDefault()} // Evitar que el mousedown interfiera
-    >
-      {qty}
-    </button>
-  ));
+  const quantityButtons = quantities.map((qty) => {
+    const description = t.quantityDescriptions?.[qty as keyof typeof t.quantityDescriptions];
+    
+    return (
+      <button
+        key={qty}
+        className={`px-4 py-3 rounded-lg border-2 transition-all duration-200 hover:scale-105 flex items-center gap-3 text-left ${
+          selectedQuantity === qty
+            ? "border-black bg-purple-900 text-white"
+            : "border-gray-300 hover:border-gray-500 bg-white text-black"
+        }`}
+        style={{ 
+          cursor: 'pointer',
+          userSelect: 'none',
+          pointerEvents: 'auto',
+          minWidth: '280px'
+        }}
+        onClick={() => {
+          console.log('🔢 [QUANTITY SELECTOR] Raw button click for quantity:', qty);
+          handleQuantitySelect(qty);
+        }}
+        onMouseDown={(e) => e.preventDefault()} // Evitar que el mousedown interfiera
+      >
+        <div className="font-bold text-2xl flex-shrink-0 w-8 text-center">{qty}</div>
+        {description && (
+          <div className="text-sm opacity-90 leading-tight flex-1">
+            {description}
+          </div>
+        )}
+      </button>
+    );
+  });
 
   return (
     <div className="mb-4 flex flex-col items-center gap-2">
       <h3 className="font-medium mb-2">{t.quantitySelectorLabel}</h3>
-      <div className="flex justify-center gap-2 flex-wrap">
+      <div className="flex flex-col gap-3 w-full max-w-md">
         {quantityButtons}
       </div>
     </div>

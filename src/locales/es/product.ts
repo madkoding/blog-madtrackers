@@ -10,6 +10,12 @@ export const product = {
   continuePayment: "y podrás continuar abonando hasta cubrir el total",
   usdEquivalent: "Equivalente en USD",
   quantitySelectorLabel: "Cantidad de trackers:",
+  quantityDescriptions: {
+    6: "Hecho para moverte libre y expresarte en VR.",
+    8: "Cada paso y cada giro, como en la vida real.",
+    10: "Fluidez sin límites para bailar, crear y brillar.",
+    20: "El máximo nivel: captura tu cuerpo entero con detalle absoluto."
+  },
   customizeTracker: "Personaliza tu tracker",
   customizeTrackerDesc: "Tienes 10 Colores para escoger. También puedes personalizar la tapa del tracker con tu logo o nombre a pedido",
   modelPreview: "Vista previa 3D",

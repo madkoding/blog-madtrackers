@@ -10,6 +10,12 @@ export const product = {
   continuePayment: "and you can continue paying until the total is covered",
   usdEquivalent: "USD equivalent",
   quantitySelectorLabel: "Trackers quantity:",
+  quantityDescriptions: {
+    6: "Made to move freely and express yourself in VR.",
+    8: "Every step and every turn, just like real life.",
+    10: "Limitless fluidity to dance, create and shine.",
+    20: "The ultimate level: capture your entire body with absolute detail."
+  },
   customizeTracker: "Customize your tracker",
   customizeTrackerDesc: "You have 10 colors to choose from. You can also customize the tracker cover with your logo or name on request",
   modelPreview: "3D Preview",

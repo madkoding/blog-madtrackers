@@ -120,7 +120,14 @@ export default function UserTrackingPage() {
     const month = date.getMonth();
     const year = date.getFullYear();
     
-    const monthName = t[`month_${month}` as keyof typeof t] || date.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', { month: 'long' });
+    const translationValue = t[`month_${month}` as keyof typeof t];
+    let monthName: string;
+    
+    if (typeof translationValue === 'string') {
+      monthName = translationValue;
+    } else {
+      monthName = date.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', { month: 'long' });
+    }
     
     return `${day} ${monthName} ${year}`;
   };
@@ -134,7 +141,8 @@ export default function UserTrackingPage() {
   };
 
   const getColorName = (colorKey: string) => {
-    return t[`color_${colorKey}` as keyof typeof t] || colorKey;
+    const translationValue = t[`color_${colorKey}` as keyof typeof t];
+    return typeof translationValue === 'string' ? translationValue : colorKey;
   };
 
   const getColorHex = (colorKey: string) => {
