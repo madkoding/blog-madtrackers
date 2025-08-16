@@ -4,9 +4,13 @@
  */
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, updateDoc, writeBatch } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, writeBatch } from 'firebase/firestore';
 import { writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { config } from 'dotenv';
+
+// Cargar variables de entorno
+config({ path: '.env.local' });
 
 // Configuración de Firebase (usar las mismas variables de entorno)
 const firebaseConfig = {
@@ -194,9 +198,24 @@ class TrackingMigrationService {
     // Mantener todos los campos existentes
     const migrated: MigratedTracking = { ...legacy } as MigratedTracking;
     
+    // Aplicar transformaciones
+    this.migrateBasicFields(migrated, legacy);
+    this.migratePaymentFields(migrated, legacy);
+    this.migrateExtrasAndAddress(migrated, legacy);
+    
+    // Actualizar timestamp de migración
+    migrated.updatedAt = new Date().toISOString();
+    
+    return migrated;
+  }
+
+  /**
+   * Migra campos básicos
+   */
+  private static migrateBasicFields(migrated: MigratedTracking, legacy: LegacyTracking): void {
     // 1. Asegurar fechaLimite existe
     if (!migrated.fechaLimite) {
-      migrated.fechaLimite = legacy.fechaEntrega; // Usar fechaEntrega como fallback
+      migrated.fechaLimite = legacy.fechaEntrega;
     }
     
     // 2. Expandir código de país si es necesario
@@ -212,10 +231,13 @@ class TrackingMigrationService {
     if (mappedSensor) {
       migrated.sensor = mappedSensor;
     }
-    
-    // 4. Agregar campos de pago si no existen
+  }
+
+  /**
+   * Migra campos de pago
+   */
+  private static migratePaymentFields(migrated: MigratedTracking, legacy: LegacyTracking): void {
     if (!migrated.paymentMethod) {
-      // Inferir método de pago basado en el contexto
       migrated.paymentMethod = this.inferPaymentMethod(legacy);
     }
     
@@ -224,17 +246,18 @@ class TrackingMigrationService {
     }
     
     if (!migrated.paymentStatus) {
-      // Si ya pagó algo, considerarlo completado, sino pendiente
       migrated.paymentStatus = (legacy.abonadoUsd || 0) > 0 ? 'COMPLETED' : 'PENDING';
     }
     
-    // 5. Agregar paymentCurrency
-    migrated.paymentCurrency = 'USD'; // Todos los precios están en USD
-    
-    // 6. Agregar isPendingPayment
+    migrated.paymentCurrency = 'USD';
     migrated.isPendingPayment = migrated.paymentStatus === 'PENDING';
-    
-    // 7. Agregar estructura de extras si no existe
+  }
+
+  /**
+   * Migra extras y dirección
+   */
+  private static migrateExtrasAndAddress(migrated: MigratedTracking, legacy: LegacyTracking): void {
+    // Agregar estructura de extras si no existe
     if (!migrated.extrasSeleccionados) {
       migrated.extrasSeleccionados = {
         usbReceiver: { id: 'usb_3m', cost: 0 },
@@ -243,12 +266,12 @@ class TrackingMigrationService {
       };
     }
     
-    // 8. Asegurar que userHash existe
+    // Asegurar que userHash existe
     if (!migrated.userHash) {
       migrated.userHash = this.generateUserHash(legacy.nombreUsuario);
     }
     
-    // 9. Migrar estructura de shippingAddress a nuevos campos
+    // Migrar estructura de shippingAddress a nuevos campos
     if (legacy.shippingAddress) {
       const oldAddress = legacy.shippingAddress as any;
       migrated.shippingAddress = {
@@ -259,11 +282,6 @@ class TrackingMigrationService {
         country: oldAddress.pais || oldAddress.country
       };
     }
-    
-    // 10. Actualizar timestamp de migración
-    migrated.updatedAt = new Date().toISOString();
-    
-    return migrated;
   }
 
   /**
@@ -312,7 +330,7 @@ class TrackingMigrationService {
     
     // Usar batch para actualizaciones atómicas
     const batchSize = 500; // Límite de Firestore
-    const batches = [];
+    const batches: any[] = [];
     
     for (let i = 0; i < migratedTrackings.length; i += batchSize) {
       const batch = writeBatch(db);
