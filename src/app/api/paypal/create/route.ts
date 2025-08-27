@@ -8,12 +8,19 @@ import {
   createPayPalCustomData,
   buildPayPalUrl
 } from './utils';
+import { checkMaintenanceMode } from '@/utils/maintenanceMode';
 
 /**
  * API endpoint para crear un tracking antes del pago PayPal
  */
 export async function POST(request: NextRequest) {
   try {
+    // Verificar si está en modo mantenimiento
+    const maintenanceCheck = checkMaintenanceMode();
+    if (maintenanceCheck) {
+      return NextResponse.json(maintenanceCheck, { status: 503 });
+    }
+
     const body = await request.json();
     const { amount, description, email, userData, productData, transactionId } = body;
 

@@ -3,6 +3,7 @@ import { getFlowService } from '@/lib/flowService';
 import { FirebaseTrackingService } from '@/lib/firebaseTrackingService';
 import { TrackingManager } from '@/lib/trackingManager';
 import { OrderStatus } from '@/interfaces/tracking';
+import { checkMaintenanceMode } from '@/utils/maintenanceMode';
 
 interface FlowProductData {
   totalUsd?: number;
@@ -124,6 +125,12 @@ export async function POST(request: NextRequest) {
   logFlowEndpointStart(logContext);
   
   try {
+    // Verificar si está en modo mantenimiento
+    const maintenanceCheck = checkMaintenanceMode();
+    if (maintenanceCheck) {
+      return NextResponse.json(maintenanceCheck, { status: 503 });
+    }
+
     console.log('🏁 [FLOW CREATE] Starting payment creation process...');
     
     const body = await request.json();

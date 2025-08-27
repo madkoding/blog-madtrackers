@@ -18,7 +18,7 @@ const MaintenanceComponent: React.FC = () => {
             <span className="ml-3 text-gray-700 font-medium">Renovando stock...</span>
           </div>
           <p className="text-sm text-gray-500 text-center">
-            Volveremos en Agosto 2025
+            Volveremos en Septiembre 2025
           </p>
         </div>
 

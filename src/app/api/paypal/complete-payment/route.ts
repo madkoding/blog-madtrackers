@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FirebaseTrackingService } from '@/lib/firebaseTrackingService';
 import { OrderStatus } from '@/interfaces/tracking';
+import { checkMaintenanceMode } from '@/utils/maintenanceMode';
 
 /**
  * API endpoint para marcar un pago de PayPal como completado
@@ -10,6 +11,12 @@ export async function POST(request: NextRequest) {
   const requestId = Date.now().toString().slice(-6);
   
   try {
+    // Verificar si está en modo mantenimiento
+    const maintenanceCheck = checkMaintenanceMode();
+    if (maintenanceCheck) {
+      return NextResponse.json(maintenanceCheck, { status: 503 });
+    }
+
     console.log(`🎉 [PAYPAL COMPLETE ${requestId}] Marking PayPal payment as completed`);
     
     const searchParams = request.nextUrl.searchParams;

@@ -1,6 +1,7 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { handlePostConfirmation } from './utils/confirmationHandler';
 import { handleGetConfirmation, handleOptionsRequest } from './utils/httpHandlers';
+import { checkMaintenanceMode } from '@/utils/maintenanceMode';
 
 /**
  * Endpoint de confirmación para Flow
@@ -12,6 +13,12 @@ import { handleGetConfirmation, handleOptionsRequest } from './utils/httpHandler
  * En producción con dominio público, funcionará correctamente.
  */
 export async function POST(request: NextRequest) {
+  // Verificar si está en modo mantenimiento
+  const maintenanceCheck = checkMaintenanceMode();
+  if (maintenanceCheck) {
+    return NextResponse.json(maintenanceCheck, { status: 503 });
+  }
+
   return handlePostConfirmation(request);
 }
 
