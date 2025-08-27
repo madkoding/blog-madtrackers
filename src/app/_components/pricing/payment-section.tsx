@@ -78,7 +78,7 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({
             <span className="ml-3 text-yellow-700 font-medium">Sistema de pagos temporalmente deshabilitado</span>
           </div>
           <p className="text-sm text-yellow-600 mb-4">
-            Estamos renovando nuestro stock. Los pagos estarán disponibles nuevamente en Agosto 2025.
+            Estamos renovando nuestro stock. Los pagos estarán disponibles nuevamente en Septiembre 2025.
           </p>
           <button 
             onClick={() => {
