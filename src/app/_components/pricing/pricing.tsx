@@ -76,9 +76,6 @@ const Pricing = () => {
     totalUsd: pricing?.prices.totalUsd || 0,
   });
 
-  const formatPrice = (price: string) => {
-    return new Intl.NumberFormat("es-ES").format(Number(price));
-  };
 
   // Validar que los precios sean válidos antes de mostrar los botones de pago
   const isPricingValid = pricing && 
