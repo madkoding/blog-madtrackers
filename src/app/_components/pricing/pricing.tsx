@@ -76,7 +76,6 @@ const Pricing = () => {
     totalUsd: pricing?.prices.totalUsd || 0,
   });
 
-
   // Validar que los precios sean válidos antes de mostrar los botones de pago
   const isPricingValid = pricing && 
     pricing.prices.totalLocal > 0 && 
@@ -152,8 +151,21 @@ const Pricing = () => {
           isValid={Boolean(isPricingValidAndNonZero)}
         />
 
-        <h3 className="p-5 text-sm font-semibold">{t.buildTime}</h3>
         <h3 className="p-3 text-sm font-semibold">{t.includes}</h3>
+
+        {/* Mensaje de tiempo de fabricación y entrega */}
+        <div style={{
+          color: 'orange',
+          padding: '8px',
+          borderRadius: '6px',
+          marginBottom: '16px',
+          fontWeight: 'bold',
+          textAlign: 'center',
+          textShadow: '1px 1px 3px black, -1px -1px 3px black, 1px -1px 3px black, -1px 1px 3px black',
+          fontSize: '24px',
+        }}>
+          {t.buildTime}
+        </div>
 
         <WhatsAppButton
           isEnabled={Boolean(isPricingValidAndNonZero)}
