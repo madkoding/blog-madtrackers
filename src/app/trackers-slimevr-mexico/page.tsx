@@ -160,22 +160,22 @@ export default function TrackersSlimeVRMexico() {
               <div className="text-center">
                 <div className="text-3xl mb-2">🏛️</div>
                 <h4 className="text-white font-semibold">Ciudad de México</h4>
-                <p className="text-gray-300 text-sm">2-3 días hábiles</p>
+                <p className="text-gray-300 text-sm">30 días</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">🌮</div>
                 <h4 className="text-white font-semibold">Guadalajara</h4>
-                <p className="text-gray-300 text-sm">2-4 días hábiles</p>
+                <p className="text-gray-300 text-sm">30 días</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">🏭</div>
                 <h4 className="text-white font-semibold">Monterrey</h4>
-                <p className="text-gray-300 text-sm">2-3 días hábiles</p>
+                <p className="text-gray-300 text-sm">30 días</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">🏖️</div>
                 <h4 className="text-white font-semibold">Otras Ciudades</h4>
-                <p className="text-gray-300 text-sm">3-5 días hábiles</p>
+                <p className="text-gray-300 text-sm">30 días</p>
               </div>
             </div>
           </div>

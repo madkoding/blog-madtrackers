@@ -67,27 +67,21 @@ const PricingSummary: React.FC<PricingSummaryProps> = React.memo(({
   const t = translations[lang];
 
   // Calcular valores solo si tenemos datos válidos
-  const { totalLocal, shippingLocal, showUsdEquivalent } = useMemo(() => ({
+  const { totalLocal, shippingLocal, showLocalReference } = useMemo(() => ({
     totalLocal: Number(totalPrice) || 0,
     shippingLocal: Number(shippingPrice) || 0,
-    showUsdEquivalent: currency !== "USD"
+    showLocalReference: currency !== "USD"
   }), [totalPrice, shippingPrice, currency]);
 
   const { totalUsd, shippingUsd } = useMemo(() => ({
-    totalUsd: showUsdEquivalent ? totalLocal / exchangeRate : undefined,
-    shippingUsd: showUsdEquivalent ? shippingLocal / exchangeRate : undefined
-  }), [showUsdEquivalent, totalLocal, shippingLocal, exchangeRate]);
+    totalUsd: showLocalReference ? totalLocal / exchangeRate : totalLocal,
+    shippingUsd: showLocalReference ? shippingLocal / exchangeRate : shippingLocal
+  }), [showLocalReference, totalLocal, shippingLocal, exchangeRate]);
 
   const formattedTotalPrice = useMemo(() => formatPrice(totalPrice || "0"), [totalPrice]);
   const formattedShippingPrice = useMemo(() => formatPrice(shippingPrice || "0"), [shippingPrice]);
-  const formattedUsdTotal = useMemo(() => 
-    totalUsd ? formatUsd(totalUsd) : undefined,
-    [totalUsd]
-  );
-  const formattedUsdShipping = useMemo(() => 
-    shippingUsd ? formatUsd(shippingUsd) : undefined,
-    [shippingUsd]
-  );
+  const formattedUsdTotal = useMemo(() => formatUsd(totalUsd), [totalUsd]);
+  const formattedUsdShipping = useMemo(() => formatUsd(shippingUsd), [shippingUsd]);
 
   // Si está cargando, mostrar placeholders
   if (isLoading) {
@@ -115,27 +109,34 @@ const PricingSummary: React.FC<PricingSummaryProps> = React.memo(({
 
   return (
     <div className="text-center mt-6">
+      {/* Precios principales en USD */}
       <h2 className="text-xl font-semibold">
-        {t.total}: {currencySymbol}
-        {formattedTotalPrice} {currency}
+        {t.total}: {formattedUsdTotal} USD
       </h2>
       <p className="text-center text-gray-600">
-        + {t.shipping}: {currencySymbol}
-        {formattedShippingPrice} {currency}
+        + {t.shipping}: {formattedUsdShipping} USD
       </p>
-      {showUsdEquivalent && (
-        <div className="mt-2 space-y-1">
-          {formattedUsdTotal && (
-            <p className="text-center text-gray-500">
-              {t.usdEquivalent || "Equivalente en USD"}:{" "}
-              {formattedUsdTotal}
+      <p className="text-xs text-gray-500 mt-1 italic text-center">
+        *{t.shippingDisclaimer || "El cobro del envío se realiza cuando el pack de trackers está listo para envío"}
+      </p>
+      
+      {/* Precios de referencia en moneda local */}
+      {showLocalReference && (
+        <div className="mt-3 pt-3 border-t border-gray-200">
+          <p className="text-sm text-gray-500 mb-2 text-center">
+            <em>{t.referencePrice} {currency}:</em>
+          </p>
+          <div className="space-y-1">
+            <p className="text-center text-gray-500 text-sm">
+              {t.total}: {currencySymbol}{formattedTotalPrice} {currency}
             </p>
-          )}
-          {formattedUsdShipping && (
-            <p className="text-center text-gray-500">
-              + Shipping USD: {formattedUsdShipping}
+            <p className="text-center text-gray-500 text-sm">
+              + {t.shipping}: {currencySymbol}{formattedShippingPrice} {currency}
             </p>
-          )}
+          </div>
+          <p className="text-xs text-gray-400 mt-2 italic text-center">
+            *{t.priceDisclaimer?.replace('{currency}', currency) || `Los precios en ${currency} son solo de referencia. El cobro se realiza en USD.`}
+          </p>
         </div>
       )}
     </div>

@@ -35,7 +35,9 @@ export const useProductConfiguration = () => {
     colorsT[1] || colorsT[0] || { id: "black", label: "Negro", color: "bg-black text-white", hex: "#444444" }
   );
   const [selectedUsbReceiver, setSelectedUsbReceiver] = useState(() => 
-    usbReceiversT[0] || { id: "usb_3m", label: "Alcance de 3mt²", description: "" }
+    usbReceiversT.find(receiver => receiver.available !== false) || 
+    usbReceiversT[0] || 
+    { id: "usb_3m", label: "Alcance de 3mt²", description: "", additionalCostUsd: 0, available: true }
   );
   const [selectedStrap, setSelectedStrap] = useState(() => 
     strapsT[0] || { id: "velcro", label: "Velcro", description: "" }
@@ -86,7 +88,16 @@ export const useProductConfiguration = () => {
       updateIfNeeded(colorsT, selectedColorCase, setSelectedColorCase, 1, 'case color (black)'); // Negro como segundo color (case)
     }
     if (usbReceiversT && usbReceiversT.length > 0) {
-      updateIfNeeded(usbReceiversT, selectedUsbReceiver, setSelectedUsbReceiver, 0, 'USB receiver');
+      // Si el receptor actual no está disponible, cambiar al primero disponible
+      if (selectedUsbReceiver?.available === false) {
+        const firstAvailable = usbReceiversT.find(receiver => receiver.available !== false);
+        if (firstAvailable) {
+          console.log(`🔄 ProductConfig: Switching to available USB receiver:`, firstAvailable);
+          setSelectedUsbReceiver(firstAvailable);
+        }
+      } else {
+        updateIfNeeded(usbReceiversT, selectedUsbReceiver, setSelectedUsbReceiver, 0, 'USB receiver');
+      }
     }
     if (strapsT && strapsT.length > 0) {
       updateIfNeeded(strapsT, selectedStrap, setSelectedStrap, 0, 'strap');

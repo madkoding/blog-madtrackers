@@ -157,18 +157,6 @@ const Pricing = () => {
 
         <h3 className="p-5 text-sm font-semibold">{t.buildTime}</h3>
         <h3 className="p-3 text-sm font-semibold">{t.includes}</h3>
-        <h3 className="p-3 text-sm font-semibold">
-          {t.partialPayment}
-          {isPricingValidAndNonZero ? (
-            countryConfig.currencySymbol +
-            formatPrice((parseFloat(totalPrice) / 4).toString()) +
-            " " +
-            countryConfig.currency
-          ) : (
-            "..."
-          )}
-          , {t.continuePayment}.
-        </h3>
 
         <WhatsAppButton
           isEnabled={Boolean(isPricingValidAndNonZero)}

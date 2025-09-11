@@ -5,7 +5,7 @@ import ProductStructuredDataWrapper from '../_components/common/ProductStructure
 
 export const metadata: Metadata = {
   title: 'Trackers SlimeVR España - Envío Rápido UPS | madTrackers Chile',
-  description: 'Trackers SlimeVR compatibles en España. Envío rápido UPS 3-5 días, soporte en español, 50+ horas batería. Compatible VRChat, full body tracking España.',
+  description: 'Trackers SlimeVR compatibles en España. Tiempo de entrega 30 días, soporte en español, 50+ horas batería. Compatible VRChat, full body tracking España.',
   keywords: [
     'trackers slimevr españa',
     'slimevr españa', 
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Trackers SlimeVR España - Envío UPS Rápido | madTrackers',
-    description: 'Los mejores trackers SlimeVR compatibles para España. Envío UPS 3-5 días, soporte español, compatible VRChat.',
+    description: 'Los mejores trackers SlimeVR compatibles para España. Tiempo de entrega 30 días, soporte español, compatible VRChat.',
     url: 'https://www.madtrackers.com/trackers-slimevr-espana',
     siteName: 'madTrackers Chile',
     images: [
@@ -54,7 +54,7 @@ export default function TrackersSlimeVREspana() {
             </h1>
             <p className="text-xl text-gray-200 mb-8 leading-relaxed">
               Los mejores <strong>trackers SlimeVR compatibles</strong> ahora disponibles en España. 
-              Envío rápido UPS en 3-5 días, soporte en español y compatible 100% con VRChat.
+              Tiempo de entrega 30 días, soporte en español y compatible 100% con VRChat.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/#pricing" className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-8 py-4 rounded-lg font-semibold hover:from-cyan-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105">
@@ -72,7 +72,7 @@ export default function TrackersSlimeVREspana() {
               <div className="text-4xl mb-4">🚚</div>
               <h3 className="text-xl font-bold text-white mb-3">Envío Rápido UPS España</h3>
               <p className="text-gray-300">
-                Envío express UPS en 3-5 días hábiles a toda España. 
+                Tiempo de entrega 30 días a toda España. 
                 Tracking completo desde Chile hasta tu domicilio.
               </p>
             </div>
@@ -133,7 +133,7 @@ export default function TrackersSlimeVREspana() {
                 <h3 className="text-xl font-semibold text-cyan-400 mb-4">Detalles de Envío</h3>
                 <ul className="space-y-2 text-gray-300">
                   <li><strong>Costo:</strong> $75-85 USD (kit básico)</li>
-                  <li><strong>Tiempo:</strong> 3-5 días hábiles</li>
+                  <li><strong>Tiempo:</strong> 30 días</li>
                   <li><strong>Courier:</strong> UPS Express</li>
                   <li><strong>Tracking:</strong> Seguimiento completo</li>
                   <li><strong>Seguro:</strong> Incluido por UPS</li>
@@ -146,7 +146,7 @@ export default function TrackersSlimeVREspana() {
                   <li><strong>Gestión UPS:</strong> ~€15-25</li>
                   <li><strong>Documentos:</strong> Factura incluida</li>
                   <li><strong>Ciudades:</strong> Madrid, Barcelona, Valencia, Sevilla</li>
-                  <li><strong>Zonas rurales:</strong> +1-2 días</li>
+                  <li><strong>Zonas rurales:</strong> +30 días</li>
                 </ul>
               </div>
             </div>
@@ -245,8 +245,8 @@ export default function TrackersSlimeVREspana() {
                   ¿Cuánto tardan en llegar a España?
                 </h3>
                 <p className="text-gray-300">
-                  El envío UPS Express tarda 3-5 días hábiles desde Chile hasta España. 
-                  Madrid y Barcelona suelen recibir en 3-4 días.
+                  El tiempo de fabricación y entrega es de 30 días desde Chile hasta España. 
+                  Madrid y Barcelona tienen el mismo tiempo de entrega.
                 </p>
               </div>
               <div>
@@ -361,7 +361,7 @@ export default function TrackersSlimeVREspana() {
             },
             {
               question: "¿Cuánto tardan en llegar a España?",
-              answer: "El envío UPS Express tarda 3-5 días hábiles desde Chile hasta España. Madrid y Barcelona suelen recibir en 3-4 días."
+              answer: "El tiempo de fabricación y entrega es de 30 días desde Chile hasta España. Madrid y Barcelona tienen el mismo tiempo de entrega."
             },
             {
               question: "¿Qué impuestos debo pagar en España?",

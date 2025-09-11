@@ -2,7 +2,7 @@ export const product = {
   colorCover: "Color de la cubierta:",
   colorCase: "Color del case:",
   partialPayment: "Si no cuentas con el monto total, puedes realizar pagos parciales mientras se preparan los trackers. El primer abono es de ",
-  buildTime: "Dependiendo del stock disponible, tu pack de trackers puede estar listo entre 4 a 7 días. De no haber stock, puede tomar alrededor de 30 días",
+  buildTime: "El tiempo de fabricación y entrega es de aproximadamente 30 días para todos los pedidos",
   includes: "Todos los trackers incluyen straps, baterías, cable de carga, receptor USB y manual de instrucciones",
   askNow: "Tienes dudas? Realiza tu consulta via WhatsApp",
   payNow: "Abonar ahora!",
@@ -24,4 +24,7 @@ export const product = {
   localPrice: "Precio Local",
   currencyConversion: "Conversión de Moneda",
   deliveryDate: "Fecha de Entrega",
+  referencePrice: "Precio de referencia en",
+  priceDisclaimer: "Los precios en {currency} son solo de referencia. El cobro se realiza en USD.",
+  shippingDisclaimer: "El cobro del envío se realiza cuando el pack de trackers está listo para envío",
 } as const;

@@ -27,6 +27,7 @@ export interface UsbReceiver {
   label: string;
   description: string;
   additionalCostUsd: number;
+  available?: boolean;
 }
 
 export interface Strap {

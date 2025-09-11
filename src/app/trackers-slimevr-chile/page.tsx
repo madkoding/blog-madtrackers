@@ -209,8 +209,8 @@ export default function TrackersSlimeVRChile() {
                   ¿Cuánto tiempo toma el envío dentro de Chile?
                 </h3>
                 <p className="text-gray-300">
-                  El envío dentro de Chile es gratuito y toma entre 2-5 días hábiles según la región. 
-                  Santiago y ciudades principales reciben en 1-2 días.
+                  El tiempo de fabricación y entrega dentro de Chile es de 30 días según la región. 
+                  Santiago y ciudades principales tienen el mismo tiempo de entrega.
                 </p>
               </div>
               <div>

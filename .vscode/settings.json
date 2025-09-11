@@ -1,0 +1,6 @@
+{
+	"sonarlint.connectedMode.project": {
+		"connectionId": "madkoding",
+		"projectKey": "madkoding_blog-madtrackers"
+	}
+}

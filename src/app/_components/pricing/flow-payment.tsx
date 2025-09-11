@@ -275,22 +275,6 @@ const FlowPayment = memo(({ amount, description, acceptedTerms, onTermsChange, p
               amount={amount}
               description={description}
               email={userData.email}
-              buttonText="Pagar Anticipo (25%)"
-              disabled={!isFormValid}
-              userData={{
-                direccion: userData.direccion,
-                ciudad: userData.ciudad,
-                estado: userData.estado,
-                pais: userData.pais,
-                nombreUsuarioVrChat: userData.nombreUsuarioVrChat
-              }}
-              productData={productData}
-            />
-            
-            <FlowButton
-              amount={amount * 4}
-              description={description}
-              email={userData.email}
               buttonText="Pagar Total (100%)"
               disabled={!isFormValid}
               userData={{

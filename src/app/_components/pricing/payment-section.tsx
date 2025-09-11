@@ -41,8 +41,20 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({
   // Verificar si está en modo mantenimiento
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
   
-  const advanceAmount = Math.round(parseFloat(totalPrice) / 4);
-  const advanceAmountUsd = Math.round(totalUsd / 4 * 100) / 100;
+  // Usar el precio total en lugar del anticipo
+  const totalAmount = parseFloat(totalPrice);
+  const totalAmountUsd = totalUsd;
+
+  // Debug logging para verificar precios
+  React.useEffect(() => {
+    console.log('💰 [PAYMENT SECTION] Price calculation:', {
+      totalPrice: totalPrice,
+      totalUsd: totalUsd,
+      totalAmount: totalAmount,
+      totalAmountUsd: totalAmountUsd,
+      currency: currency
+    });
+  }, [totalPrice, totalUsd, totalAmount, totalAmountUsd, currency]);
 
   // Debug logging para verificar datos del producto incluyendo extras
   React.useEffect(() => {
@@ -98,7 +110,7 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({
           <div>
             {currency === "CLP" ? (
               <FlowPayment
-                amount={advanceAmount}
+                amount={totalAmount}
                 description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
                 acceptedTerms={acceptedTerms}
                 onTermsChange={onTermsChange}
@@ -120,7 +132,7 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({
               />
             ) : (
               <PaypalButton 
-                amount={advanceAmountUsd}
+                amount={totalAmountUsd}
                 description={`MadTrackers - ${selectedTrackerType.label} x${selectedQuantity}`}
                 acceptedTerms={acceptedTerms}
                 onTermsChange={onTermsChange}

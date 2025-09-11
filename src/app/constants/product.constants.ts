@@ -58,13 +58,15 @@ export const usbReceivers: UsbReceiver[] = [
     id: "usb_3m",
     label: "Alcance de 3mt²",
     description: "Alcance estándar",
-    additionalCostUsd: 0
+    additionalCostUsd: 0,
+    available: true
   },
   {
     id: "usb_6m",
     label: "Alcance de 6mt²",
     description: "Alcance extendido",
-    additionalCostUsd: 30
+    additionalCostUsd: 30,
+    available: false
   }
 ];
 

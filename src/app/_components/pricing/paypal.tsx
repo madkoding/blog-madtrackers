@@ -225,6 +225,15 @@ const PaypalButton: React.FC<PaypalButtonProps> = memo(({
   const { lang } = useLang();
   const t = translations[lang];
 
+  // Debug logging para verificar el monto recibido
+  React.useEffect(() => {
+    console.log('💳 [PAYPAL BUTTON] Amount received:', {
+      amount: amount,
+      description: description,
+      externalProductData: externalProductData
+    });
+  }, [amount, description, externalProductData]);
+
   const handleUserDataChange = useCallback((data: UserCheckoutData) => {
     setUserData(data);
     console.log('User data updated:', data);
@@ -478,25 +487,12 @@ const PaypalButton: React.FC<PaypalButtonProps> = memo(({
                 </div>
               )}
               
-              <div className="payment-card">
-                <div className="card-title">{t.paymentAdvance}</div>
-                <div className="card-description">{t.paymentAdvanceDesc}</div>
+              <div className="payment-card" style={{ maxWidth: '100%', margin: '0 auto' }}>
+                <div className="card-title">{t.paymentFull}</div>
+                <div className="card-description">{t.paymentFullDesc}</div>
                 <div className="card-highlight">${amount.toFixed(2)} USD</div>
                 <PaypalSingleButton
                   amount={amount}
-                  description={`${description} (${t.paymentAdvance} 25%)`}
-                  buttonText={t.payAdvanceBtn}
-                  userData={userData || undefined}
-                  productData={productData}
-                />
-              </div>
-              
-              <div className="payment-card">
-                <div className="card-title">{t.paymentFull}</div>
-                <div className="card-description">{t.paymentFullDesc}</div>
-                <div className="card-highlight">${(amount * 4).toFixed(2)} USD</div>
-                <PaypalSingleButton
-                  amount={amount * 4}
                   description={`${description} (${t.paymentFull} 100%)`}
                   buttonText={t.payFullBtn}
                   userData={userData || undefined}

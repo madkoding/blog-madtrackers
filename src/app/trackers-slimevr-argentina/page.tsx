@@ -3,8 +3,8 @@ import Link from 'next/link'
 import ProductStructuredDataWrapper from '../_components/common/ProductStructuredDataWrapper'
 
 export const metadata: Metadata = {
-  title: 'Trackers SlimeVR Argentina - Envío UPS 4-7 Días | madTrackers Chile',
-  description: 'Trackers SlimeVR compatibles en Argentina. Envío UPS 4-7 días, soporte español, compatible VRChat Argentina. Mejor precio vs importación local.',
+  title: 'Trackers SlimeVR Argentina - Envío 30 Días | madTrackers Chile',
+  description: 'Trackers SlimeVR compatibles en Argentina. Tiempo de entrega 30 días, soporte español, compatible VRChat Argentina. Mejor precio vs importación local.',
   keywords: [
     'trackers slimevr argentina',
     'slimevr argentina', 
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Trackers SlimeVR Argentina - Envío UPS | madTrackers',
-    description: 'Los mejores trackers SlimeVR compatibles para Argentina. Envío UPS 4-7 días, soporte español, compatible VRChat Argentina.',
+    description: 'Los mejores trackers SlimeVR compatibles para Argentina. Tiempo de entrega 30 días, soporte español, compatible VRChat Argentina.',
     url: 'https://www.madtrackers.com/trackers-slimevr-argentina',
     siteName: 'madTrackers Chile',
     images: [
@@ -53,7 +53,7 @@ export default function TrackersSlimeVRArgentina() {
             </h1>
             <p className="text-xl text-gray-200 mb-8 leading-relaxed">
               Los mejores <strong>trackers SlimeVR compatibles</strong> ahora en Argentina. 
-              Envío UPS 4-7 días, soporte en español argentino y compatible 100% con VRChat Argentina.
+              Tiempo de entrega 30 días, soporte en español argentino y compatible 100% con VRChat Argentina.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/#pricing" className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-8 py-4 rounded-lg font-semibold hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105">
@@ -71,7 +71,7 @@ export default function TrackersSlimeVRArgentina() {
               <div className="text-4xl mb-4">🚚</div>
               <h3 className="text-xl font-bold text-white mb-3">Envío UPS Argentina</h3>
               <p className="text-gray-300">
-                Envío UPS Door to Door 4-7 días hábiles a Buenos Aires, 
+                Tiempo de entrega 30 días a Buenos Aires, 
                 Córdoba, Rosario y todo el país.
               </p>
             </div>
@@ -132,7 +132,7 @@ export default function TrackersSlimeVRArgentina() {
                 <h3 className="text-xl font-semibold text-cyan-400 mb-4">Detalles de Envío</h3>
                 <ul className="space-y-2 text-gray-300">
                   <li><strong>Costo:</strong> $78-88 USD (kit básico)</li>
-                  <li><strong>Tiempo:</strong> 4-7 días hábiles</li>
+                  <li><strong>Tiempo:</strong> 30 días</li>
                   <li><strong>Courier:</strong> UPS Door to Door</li>
                   <li><strong>Tracking:</strong> Seguimiento completo</li>
                   <li><strong>Seguro:</strong> Cobertura total UPS</li>
@@ -160,22 +160,22 @@ export default function TrackersSlimeVRArgentina() {
               <div className="text-center">
                 <div className="text-3xl mb-2">🏛️</div>
                 <h4 className="text-white font-semibold">Buenos Aires</h4>
-                <p className="text-gray-300 text-sm">4-5 días hábiles</p>
+                <p className="text-gray-300 text-sm">30 días</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">🏫</div>
                 <h4 className="text-white font-semibold">Córdoba</h4>
-                <p className="text-gray-300 text-sm">5-6 días hábiles</p>
+                <p className="text-gray-300 text-sm">30 días</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">🏭</div>
                 <h4 className="text-white font-semibold">Rosario</h4>
-                <p className="text-gray-300 text-sm">5-6 días hábiles</p>
+                <p className="text-gray-300 text-sm">30 días</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">🏔️</div>
                 <h4 className="text-white font-semibold">Mendoza y más</h4>
-                <p className="text-gray-300 text-sm">6-7 días hábiles</p>
+                <p className="text-gray-300 text-sm">30 días</p>
               </div>
             </div>
           </div>

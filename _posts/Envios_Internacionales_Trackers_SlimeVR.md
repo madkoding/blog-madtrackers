@@ -31,7 +31,7 @@ ogImage:
 
 ### España 🇪🇸 - Trackers SlimeVR España
 - **Costo aproximado**: $75-85 USD (kit básico 5 trackers)
-- **Tiempo de entrega**: 3-5 días hábiles
+- **Tiempo de entrega**: 30 días
 - **Importación**: IVA 21% + tasas de gestión
 - **Tracking**: Completo con UPS
 - **Peso aproximado**: 1.2 kg (kit completo)
@@ -40,7 +40,7 @@ ogImage:
 
 ### México 🇲🇽 - Trackers SlimeVR México
 - **Costo aproximado**: $70-80 USD (kit básico 5 trackers)
-- **Tiempo de entrega**: 2-4 días hábiles
+- **Tiempo de entrega**: 30 días
 - **Importación**: IVA 16% + aranceles
 - **Tracking**: UPS con seguimiento completo
 - **Ciudades principales**: CDMX, Guadalajara, Monterrey
@@ -49,7 +49,7 @@ ogImage:
 
 ### Argentina 🇦🇷 - Trackers SlimeVR Argentina
 - **Costo aproximado**: $78-88 USD (kit básico 5 trackers)
-- **Tiempo de entrega**: 4-7 días hábiles
+- **Tiempo de entrega**: 30 días
 - **Importación**: Impuestos variables según normativa
 - **Tracking**: UPS Door to Door
 - **Ciudades**: Buenos Aires, Córdoba, Rosario, Mendoza
@@ -58,7 +58,7 @@ ogImage:
 
 ### Colombia 🇨🇴 - Trackers SlimeVR Colombia
 - **Costo aproximado**: $72-82 USD (kit básico 5 trackers)
-- **Tiempo de entrega**: 3-5 días hábiles
+- **Tiempo de entrega**: 30 días
 - **Importación**: IVA 19% + 4x1000
 - **Tracking**: UPS Express
 - **Ciudades**: Bogotá, Medellín, Cali, Barranquilla
@@ -67,7 +67,7 @@ ogImage:
 
 ### Perú 🇵🇪 - Trackers SlimeVR Perú
 - **Costo aproximado**: $74-84 USD (kit básico 5 trackers)
-- **Tiempo de entrega**: 3-6 días hábiles
+- **Tiempo de entrega**: 30 días
 - **Importación**: IGV 18% + derechos arancelarios
 - **Tracking**: UPS Worldwide Express
 - **Ciudades**: Lima, Arequipa, Trujillo
@@ -76,7 +76,7 @@ ogImage:
 
 ### Venezuela 🇻🇪 - Trackers SlimeVR Venezuela
 - **Costo aproximado**: $85-95 USD (kit básico 5 trackers)
-- **Tiempo de entrega**: 5-8 días hábiles
+- **Tiempo de entrega**: 30 días
 - **Importación**: Regulaciones especiales
 - **Tracking**: UPS con gestión de importación
 - **Ciudades**: Caracas, Maracaibo, Valencia
@@ -85,7 +85,7 @@ ogImage:
 
 ### Ecuador 🇪🇨 - Trackers SlimeVR Ecuador
 - **Costo aproximado**: $76-86 USD (kit básico 5 trackers)
-- **Tiempo de entrega**: 4-6 días hábiles
+- **Tiempo de entrega**: 30 días
 - **Importación**: IVA 12% + aranceles
 - **Tracking**: UPS Express Saver
 - **Ciudades**: Quito, Guayaquil, Cuenca
@@ -94,7 +94,7 @@ ogImage:
 
 ### Estados Unidos 🇺🇸 - SlimeVR Trackers USA
 - **Costo aproximado**: $70-80 USD (kit básico 5 trackers)
-- **Tiempo de entrega**: 2-3 días hábiles
+- **Tiempo de entrega**: 30 días
 - **Importación**: Sin aranceles adicionales (USMCA)
 - **Tracking**: UPS Next Day Air disponible
 - **Cobertura**: Todo Estados Unidos
