@@ -20,7 +20,6 @@ import ChargingDockSelector from "./charging-dock-selector";
 import ContactFormModal from "./contact-form-modal";
 import PaymentSection from "./payment-section";
 import WhatsAppButton from "./whatsapp-button";
-import ContactButton from "./contact-button";
 
 const Pricing = () => {
   const { lang } = useLang();
