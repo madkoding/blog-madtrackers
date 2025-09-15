@@ -2,7 +2,7 @@ export const product = {
   colorCover: "Cover color:",
   colorCase: "Case color:",
   partialPayment: "If you don't have the full amount, you can make partial payments while your trackers are being prepared. The first payment is ",
-  buildTime: "Manufacturing and delivery time is approximately 30 days for all orders",
+  buildTime: "Manufacturing and delivery time is approximately 30 to 45 days for all orders",
   includes: "All trackers include straps, batteries, charging cable, USB receiver and instruction manual",
   askNow: "Have questions? Make your inquiry via WhatsApp",
   payNow: "Pay now!",

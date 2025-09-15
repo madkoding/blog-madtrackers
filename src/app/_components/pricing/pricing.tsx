@@ -156,13 +156,14 @@ const Pricing = () => {
         {/* Mensaje de tiempo de fabricación y entrega */}
         <div style={{
           color: 'orange',
-          padding: '8px',
+          paddingLeft: '48px',
+          paddingRight: '48px',
           borderRadius: '6px',
           marginBottom: '16px',
           fontWeight: 'bold',
           textAlign: 'center',
           textShadow: '1px 1px 3px black, -1px -1px 3px black, 1px -1px 3px black, -1px 1px 3px black',
-          fontSize: '24px',
+          fontSize: '20px',
         }}>
           {t.buildTime}
         </div>
@@ -172,9 +173,9 @@ const Pricing = () => {
           onWhatsAppClick={whatsAppMessage.openWhatsApp}
         />
 
-        <ContactButton
+        {/* <ContactButton
           onContactClick={() => contactForm.setIsModalOpen(true)}
-        />
+        /> */}
 
         <ContactFormModal
           isOpen={contactForm.isModalOpen}

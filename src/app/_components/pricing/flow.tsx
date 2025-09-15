@@ -42,7 +42,7 @@ export interface FlowButtonProps {
  */
 const FlowButton: React.FC<FlowButtonProps> = React.memo(({ 
   amount, 
-  description = "Anticipo MadTrackers",
+  description = "MadTrackers",
   email = "",
   buttonText = "💳 Pagar con Tarjetas",
   disabled = false,

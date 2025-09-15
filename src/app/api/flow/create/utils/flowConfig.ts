@@ -43,7 +43,7 @@ export function getFlowConfig(): FlowConfig {
     timeout: parseInt(process.env.FLOW_TIMEOUT || '3600'),
     orderPrefix: process.env.FLOW_ORDER_PREFIX || 'MT',
     source: process.env.FLOW_SOURCE || 'madtrackers',
-    paymentType: process.env.FLOW_PAYMENT_TYPE || 'advance_payment'
+    paymentType: process.env.FLOW_PAYMENT_TYPE || 'full_payment'
   };
 }
 

@@ -301,7 +301,7 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
         {/* Información Adicional */}
         {apiPrices && apiCurrency && !calculating && (
           <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="font-medium text-gray-700">Precio por tracker:</span>
                 <div className="text-gray-700">
@@ -310,17 +310,10 @@ const PriceCalculator: React.FC<PriceCalculatorProps> = ({ className = "" }) => 
                 </div>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Anticipo (25%):</span>
+                <span className="font-medium text-gray-700">Total:</span>
                 <div className="text-gray-700">
-                  {formatUsd(apiPrices.totalUsd / 4)} /
-                  {apiCurrency.symbol}{formatNumber(apiPrices.totalLocal / 4)}
-                </div>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700">Saldo (75%):</span>
-                <div className="text-gray-700">
-                  {formatUsd(apiPrices.totalUsd * 0.75)} /
-                  {apiCurrency.symbol}{formatNumber(apiPrices.totalLocal * 0.75)}
+                  {formatUsd(apiPrices.totalUsd)} /
+                  {apiCurrency.symbol}{formatNumber(apiPrices.totalLocal)}
                 </div>
               </div>
             </div>

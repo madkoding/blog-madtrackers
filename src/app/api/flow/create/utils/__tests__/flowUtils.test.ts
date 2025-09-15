@@ -85,7 +85,7 @@ describe('Flow Config Utils', () => {
       timeout: 3600,
       orderPrefix: 'MT',
       source: 'madtrackers',
-      paymentType: 'advance_payment'
+      paymentType: 'full_payment'
     };
 
     const result = validateFlowConfig(validConfig);
@@ -100,7 +100,7 @@ describe('Flow Config Utils', () => {
       timeout: 30,
       orderPrefix: '',
       source: 'madtrackers',
-      paymentType: 'advance_payment'
+      paymentType: 'full_payment'
     };
 
     const result = validateFlowConfig(invalidConfig);

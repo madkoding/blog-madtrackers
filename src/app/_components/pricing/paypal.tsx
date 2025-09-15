@@ -207,9 +207,9 @@ const PaypalSingleButton: React.FC<PaypalSingleButtonProps> = React.memo(({
 
 PaypalSingleButton.displayName = 'PaypalSingleButton';
 /**
- * Componente principal de PayPal con dos opciones de pago.
+ * Componente principal de PayPal con opción de pago completo.
  *
- * Renderiza dos formularios de PayPal: uno para anticipo (25%) y otro para total (100%).
+ * Renderiza un formulario de PayPal para pago total (100%).
  */
 const PaypalButton: React.FC<PaypalButtonProps> = memo(({ 
   amount, 

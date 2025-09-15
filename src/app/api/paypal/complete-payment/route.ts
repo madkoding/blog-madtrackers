@@ -96,9 +96,9 @@ export async function POST(request: NextRequest) {
       estadoPedido: OrderStatus.WAITING, // El pago está completado, ahora en espera de fabricación
       paymentStatus: 'COMPLETED',
       paymentCompletedAt: new Date().toISOString(),
-      // Actualizar el monto pagado si no estaba establecido (importante para anticipos)
+      // Actualizar el monto pagado al total
       ...(existingTracking.abonadoUsd === 0 && existingTracking.totalUsd && {
-        abonadoUsd: existingTracking.totalUsd * 0.25 // 25% para anticipo
+        abonadoUsd: existingTracking.totalUsd // 100% para pago completo
       })
     };
 

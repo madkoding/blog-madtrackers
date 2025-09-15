@@ -2,7 +2,7 @@ export const product = {
   colorCover: "Color de la cubierta:",
   colorCase: "Color del case:",
   partialPayment: "Si no cuentas con el monto total, puedes realizar pagos parciales mientras se preparan los trackers. El primer abono es de ",
-  buildTime: "El tiempo de fabricación y entrega es de aproximadamente 30 días para todos los pedidos",
+  buildTime: "El tiempo de fabricación y entrega es de aproximadamente 30 a 45 días para todos los pedidos",
   includes: "Todos los trackers incluyen straps, baterías, cable de carga, receptor USB y manual de instrucciones",
   askNow: "Tienes dudas? Realiza tu consulta via WhatsApp",
   payNow: "Abonar ahora!",
