@@ -11,6 +11,7 @@ import { trackers } from './trackers';
 import { colors } from './colors';
 import { dates } from './dates';
 import { faq } from './faq';
+import { maintenance } from './maintenance';
 
 export const en = {
   ...common,
@@ -26,4 +27,5 @@ export const en = {
   ...colors,
   ...dates,
   ...faq,
+  ...maintenance,
 } as const;

@@ -42,6 +42,7 @@
   "devDependencies": {
     "@gltf-transform/cli": "^4.1.4",
     "@next/bundle-analyzer": "^15.3.3",
+    "@next/swc-darwin-arm64": "^15.3.3",
     "@testing-library/jest-dom": "^6.6.4",
     "@types/jest": "^30.0.0",
     "@types/node": "^24",
