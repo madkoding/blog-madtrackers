@@ -4,6 +4,14 @@ import { useEffect, useRef } from "react";
 
 const SkyDomeBackground = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const pixelRatioStateRef = useRef({
+    base: 0.5,
+    current: 0.5,
+    min: 0.25,
+    max: 0.5,
+    lastAdjust: 0
+  });
+  const longTaskObserverRef = useRef<PerformanceObserver | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -16,6 +24,9 @@ const SkyDomeBackground = () => {
     let wireframe: import("three").LineSegments<import("three").WireframeGeometry, import("three").LineBasicMaterial> | null = null;
     let glowSphere: import("three").Mesh<import("three").SphereGeometry, import("three").MeshBasicMaterial> | null = null;
     let starField: import("three").Points<import("three").BufferGeometry, import("three").PointsMaterial> | null = null;
+  const frameSamples: number[] = [];
+  const sampleSize = 60;
+  let lastFrameTime = typeof performance !== "undefined" ? performance.now() : Date.now();
 
     const cleanup = () => {
       if (animationFrameId) {
@@ -23,6 +34,10 @@ const SkyDomeBackground = () => {
       }
       if (resizeObserver) {
         resizeObserver.disconnect();
+      }
+      if (longTaskObserverRef.current) {
+        longTaskObserverRef.current.disconnect();
+        longTaskObserverRef.current = null;
       }
       if (renderer) {
         renderer.dispose();
@@ -44,6 +59,127 @@ const SkyDomeBackground = () => {
       }
     };
 
+    function applyRendererPixelRatio(
+      instance: import("three").WebGLRenderer,
+      ratio: number,
+      options?: { width?: number; height?: number }
+    ) {
+      const safeRatio = Math.max(ratio, 0.1);
+      instance.setPixelRatio(safeRatio);
+      const container = containerRef.current;
+      const canvas = instance.domElement;
+      let targetWidth = options?.width;
+      let targetHeight = options?.height;
+
+      if (!targetWidth || !targetHeight) {
+        if (container) {
+          targetWidth = targetWidth || container.clientWidth || container.offsetWidth || canvas.clientWidth || canvas.width;
+          targetHeight = targetHeight || container.clientHeight || container.offsetHeight || canvas.clientHeight || canvas.height;
+        }
+      }
+
+      if (!targetWidth || !targetHeight) {
+        targetWidth = targetWidth || canvas.clientWidth || canvas.width || 1;
+        targetHeight = targetHeight || canvas.clientHeight || canvas.height || 1;
+      }
+
+      instance.setSize(targetWidth, targetHeight, false);
+      instance.domElement.style.width = "100%";
+      instance.domElement.style.height = "100%";
+    }
+
+    function updateRendererPixelRatio(
+      instance: import("three").WebGLRenderer,
+      ratio: number,
+      options?: { width?: number; height?: number; force?: boolean }
+    ) {
+      const state = pixelRatioStateRef.current;
+      const clampedRatio = Math.min(state.max, Math.max(state.min, ratio));
+      const shouldSkip = !options?.force && Math.abs(clampedRatio - state.current) < 0.02;
+      if (shouldSkip) {
+        return;
+      }
+      applyRendererPixelRatio(instance, clampedRatio, options);
+      state.current = clampedRatio;
+      state.lastAdjust = typeof performance !== "undefined" ? performance.now() : Date.now();
+    }
+
+    function evaluateFramePerformance(delta: number, instance: import("three").WebGLRenderer) {
+      if (!Number.isFinite(delta) || delta <= 0) {
+        return;
+      }
+
+      const state = pixelRatioStateRef.current;
+      if (frameSamples.length >= sampleSize) {
+        frameSamples.shift();
+      }
+      frameSamples.push(delta);
+
+      const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+      if (frameSamples.length < sampleSize || now - state.lastAdjust <= 1000) {
+        return;
+      }
+
+      const average = frameSamples.reduce((acc, value) => acc + value, 0) / frameSamples.length;
+      const slowFrames = frameSamples.filter((value) => value > 48).length;
+      const fastFrames = frameSamples.filter((value) => value < 24).length;
+
+      if ((average > 40 || slowFrames > sampleSize * 0.3) && state.current - state.min > 0.01) {
+        const reductionStep = Math.max(state.current * 0.15, 0.05);
+        updateRendererPixelRatio(instance, state.current - reductionStep);
+        frameSamples.length = 0;
+      } else if (average < 24 && fastFrames > sampleSize * 0.6 && state.current < state.max - 0.01) {
+        const increaseStep = Math.max(state.current * 0.1, 0.05);
+        updateRendererPixelRatio(instance, state.current + increaseStep);
+        frameSamples.length = 0;
+      }
+    }
+
+    function setupPerformanceMonitoring(instance: import("three").WebGLRenderer) {
+      if (typeof PerformanceObserver === "undefined") {
+        return;
+      }
+
+      const supportedEntryTypes = (PerformanceObserver as unknown as { supportedEntryTypes?: string[] }).supportedEntryTypes;
+      if (supportedEntryTypes && !supportedEntryTypes.includes("longtask")) {
+        return;
+      }
+
+      if (longTaskObserverRef.current) {
+        longTaskObserverRef.current.disconnect();
+        longTaskObserverRef.current = null;
+      }
+
+      try {
+        const observer = new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          const heavyTasks = entries.filter((entry) => entry.duration > 70);
+
+          if (!heavyTasks.length) {
+            return;
+          }
+
+          const state = pixelRatioStateRef.current;
+          if (!instance) {
+            return;
+          }
+
+          const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+          if (now - state.lastAdjust < 700) {
+            return;
+          }
+
+          const reductionStep = Math.max(state.current * 0.15, 0.05);
+          updateRendererPixelRatio(instance, state.current - reductionStep);
+        });
+
+        observer.observe({ entryTypes: ["longtask"] });
+        longTaskObserverRef.current = observer;
+      } catch {
+        // Ignorar si el navegador no soporta completamente Long Tasks
+      }
+    }
+
     const init = async () => {
       if (!containerRef.current) return;
 
@@ -57,9 +193,15 @@ const SkyDomeBackground = () => {
       camera = new THREE.PerspectiveCamera(55, width / height || 1, 0.1, 200);
       camera.position.set(0, 0, 28);
 
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.max(window.devicePixelRatio * 0.25, 0.25));
-      renderer.setSize(width, height, false);
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      const deviceRatio = Math.max(window.devicePixelRatio * 0.35, 0.25);
+      const state = pixelRatioStateRef.current;
+      state.base = deviceRatio;
+      state.max = deviceRatio;
+      state.min = Math.max(deviceRatio * 0.4, 0.2);
+      state.current = deviceRatio;
+      state.lastAdjust = typeof performance !== "undefined" ? performance.now() : Date.now();
+      updateRendererPixelRatio(renderer, deviceRatio, { width, height, force: true });
       renderer.setClearColor(0x000000, 0);
       renderer.toneMappingExposure = 1.1;
       renderer.domElement.style.position = "absolute";
@@ -73,6 +215,7 @@ const SkyDomeBackground = () => {
       container.appendChild(renderer.domElement);
 
       const clock = new THREE.Clock();
+      setupPerformanceMonitoring(renderer);
 
       // Dome wireframe
       const sphereGeometry = new THREE.SphereGeometry(30, 64, 64);
@@ -121,7 +264,11 @@ const SkyDomeBackground = () => {
       const handleResize = () => {
         if (!containerRef.current || !renderer || !camera) return;
         const { clientWidth, clientHeight } = containerRef.current;
-        renderer.setSize(clientWidth, clientHeight, false);
+        updateRendererPixelRatio(renderer, pixelRatioStateRef.current.current, {
+          width: clientWidth,
+          height: clientHeight,
+          force: true
+        });
         camera.aspect = (clientWidth || 1) / (clientHeight || 1);
         camera.updateProjectionMatrix();
       };
@@ -133,6 +280,10 @@ const SkyDomeBackground = () => {
 
       const animate = () => {
         if (!mounted || !renderer || !scene || !camera) return;
+        const currentTime = typeof performance !== "undefined" ? performance.now() : Date.now();
+        const delta = currentTime - lastFrameTime;
+        lastFrameTime = currentTime;
+        evaluateFramePerformance(delta, renderer);
         const elapsed = clock.getElapsedTime();
 
         if (wireframe) {

@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { HeroPost } from "@/app/_components/common/hero-post";
 import { getAllPosts } from "@/lib/api";
 import DeferredComponent from "../_components/common/DeferredLoading";
@@ -84,6 +85,7 @@ export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapp
   return (
     <ClientErrorBoundary>
       <main>
+        <SpeedInsights />
         {/* Contenido crítico above-the-fold */}
         <HeroPost 
           title={heroContent.title} 

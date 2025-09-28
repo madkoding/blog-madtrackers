@@ -27,6 +27,59 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   const controlsRef = useRef<import('three/examples/jsm/controls/OrbitControls.js').OrbitControls | null>(null);
   const [loading, setLoading] = React.useState(true);
   const isUserInteractingRef = useRef(false);
+  const pixelRatioStateRef = useRef({
+    base: 0.5,
+    current: 0.5,
+    min: 0.25,
+    max: 0.5,
+    lastAdjust: 0
+  });
+  const longTaskObserverRef = useRef<PerformanceObserver | null>(null);
+
+  const applyRendererPixelRatio = React.useCallback((
+    renderer: import('three').WebGLRenderer,
+    ratio: number,
+    options?: { width?: number; height?: number }
+  ) => {
+    const safeRatio = Math.max(ratio, 0.1);
+    renderer.setPixelRatio(safeRatio);
+    const container = containerRef.current;
+    const canvas = renderer.domElement;
+    let targetWidth = options?.width;
+    let targetHeight = options?.height;
+
+    if (!targetWidth || !targetHeight) {
+      if (container) {
+        targetWidth = targetWidth || container.offsetWidth || container.clientWidth;
+        targetHeight = targetHeight || container.offsetHeight || container.clientHeight;
+      }
+    }
+
+    if (!targetWidth || !targetHeight) {
+      targetWidth = targetWidth || canvas.clientWidth || canvas.width || 1;
+      targetHeight = targetHeight || canvas.clientHeight || canvas.height || 1;
+    }
+
+    renderer.setSize(targetWidth, targetHeight, false);
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+  }, []);
+
+  const updateRendererPixelRatio = React.useCallback((
+    renderer: import('three').WebGLRenderer,
+    ratio: number,
+    options?: { width?: number; height?: number; force?: boolean }
+  ) => {
+    const state = pixelRatioStateRef.current;
+    const clampedRatio = Math.min(state.max, Math.max(state.min, ratio));
+    const shouldSkip = !options?.force && Math.abs(clampedRatio - state.current) < 0.02;
+    if (shouldSkip) {
+      return;
+    }
+    applyRendererPixelRatio(renderer, clampedRatio, options);
+    state.current = clampedRatio;
+    state.lastAdjust = typeof performance !== 'undefined' ? performance.now() : Date.now();
+  }, [applyRendererPixelRatio]);
 
   // ResizeObserver para ajustar el renderer y la cámara
   useEffect(() => {
@@ -37,10 +90,18 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
         const width = container.offsetWidth;
         const height = container.offsetHeight;
         rendererRef.current.setSize(width, height, false);
-        const pixelRatio = Math.max(window.devicePixelRatio * 0.5, 0.5);
-        rendererRef.current.setPixelRatio(pixelRatio);
-        rendererRef.current.domElement.style.width = '100%';
-        rendererRef.current.domElement.style.height = '100%';
+        const deviceRatio = Math.max(window.devicePixelRatio * 0.35, 0.35);
+        const state = pixelRatioStateRef.current;
+        if (Math.abs(deviceRatio - state.base) > 0.05) {
+          state.base = deviceRatio;
+          state.max = deviceRatio;
+          state.min = Math.max(deviceRatio * 0.4, 0.25);
+          if (state.current > state.max) {
+            state.current = state.max;
+          }
+        }
+        const targetRatio = Math.min(state.max, Math.max(state.min, state.current));
+        updateRendererPixelRatio(rendererRef.current, targetRatio, { width, height, force: true });
         cameraRef.current.aspect = width / height;
         cameraRef.current.updateProjectionMatrix();
       }
@@ -50,7 +111,7 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     const resizeObserver = new window.ResizeObserver(handleResize);
     resizeObserver.observe(container);
     return () => resizeObserver.disconnect();
-  }, []);
+  }, [updateRendererPixelRatio]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -61,6 +122,10 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     return () => {
       if (controlsRef.current) {
         controlsRef.current.dispose();
+      }
+      if (longTaskObserverRef.current) {
+        longTaskObserverRef.current.disconnect();
+        longTaskObserverRef.current = null;
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,6 +194,87 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     }
   };
 
+  function setupPerformanceMonitoring(renderer: import('three').WebGLRenderer) {
+    if (typeof PerformanceObserver === 'undefined') {
+      return;
+    }
+
+    const supportedEntryTypes = (PerformanceObserver as unknown as { supportedEntryTypes?: string[] }).supportedEntryTypes;
+    if (supportedEntryTypes && !supportedEntryTypes.includes('longtask')) {
+      return;
+    }
+
+    if (longTaskObserverRef.current) {
+      longTaskObserverRef.current.disconnect();
+      longTaskObserverRef.current = null;
+    }
+
+    try {
+      const observer = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        const heavyTasks = entries.filter((entry) => entry.duration > 70);
+
+        if (!heavyTasks.length) {
+          return;
+        }
+
+        const state = pixelRatioStateRef.current;
+        if (!renderer) {
+          return;
+        }
+
+        const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+        if (now - state.lastAdjust < 700) {
+          return;
+        }
+
+        const reductionStep = Math.max(state.current * 0.15, 0.05);
+        updateRendererPixelRatio(renderer, state.current - reductionStep);
+      });
+
+      observer.observe({ entryTypes: ['longtask'] });
+      longTaskObserverRef.current = observer;
+    } catch {
+      // Ignorar errores si el navegador no soporta Long Tasks completamente
+    }
+  }
+
+  function evaluateFramePerformance(
+    delta: number,
+    renderer: import('three').WebGLRenderer,
+    frameSamples: number[],
+    sampleSize: number
+  ) {
+    if (!Number.isFinite(delta) || delta <= 0) {
+      return;
+    }
+
+    const state = pixelRatioStateRef.current;
+    if (frameSamples.length >= sampleSize) {
+      frameSamples.shift();
+    }
+    frameSamples.push(delta);
+
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    if (frameSamples.length < sampleSize || now - state.lastAdjust <= 1000) {
+      return;
+    }
+
+    const average = frameSamples.reduce((acc, value) => acc + value, 0) / frameSamples.length;
+    const slowFrames = frameSamples.filter((value) => value > 48).length;
+    const fastFrames = frameSamples.filter((value) => value < 24).length;
+
+    if ((average > 40 || slowFrames > sampleSize * 0.3) && state.current - state.min > 0.01) {
+      const reductionStep = Math.max(state.current * 0.15, 0.05);
+      updateRendererPixelRatio(renderer, state.current - reductionStep);
+      frameSamples.length = 0;
+    } else if (average < 24 && fastFrames > sampleSize * 0.6 && state.current < state.max - 0.01) {
+      const increaseStep = Math.max(state.current * 0.1, 0.05);
+      updateRendererPixelRatio(renderer, state.current + increaseStep);
+      frameSamples.length = 0;
+    }
+  }
+
   // Función auxiliar para inicializar el renderer
   function setupRenderer(
     THREE: typeof import('three'),
@@ -143,8 +289,14 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       preserveDrawingBuffer: true
     });
     renderer.setSize(width, height);
-    const pixelRatio = Math.max(window.devicePixelRatio * 0.35, 0.35);
-    renderer.setPixelRatio(pixelRatio);
+    const deviceRatio = Math.max(window.devicePixelRatio * 0.35, 0.35);
+    const state = pixelRatioStateRef.current;
+    state.base = deviceRatio;
+    state.max = deviceRatio;
+    state.min = Math.max(deviceRatio * 0.4, 0.25);
+    state.current = deviceRatio;
+    state.lastAdjust = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    updateRendererPixelRatio(renderer, deviceRatio, { width, height, force: true });
     renderer.setClearColor(0x000000, 0);
     renderer.shadowMap.enabled = false;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -311,8 +463,17 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     isUserInteractingRef: React.MutableRefObject<boolean>,
     controls?: import('three/examples/jsm/controls/OrbitControls.js').OrbitControls
   ) {
+    let lastFrameTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const frameSamples: number[] = [];
+    const sampleSize = 60;
+
     const animate = () => {
       requestAnimationFrame(animate);
+      const currentTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
+      const delta = currentTime - lastFrameTime;
+      lastFrameTime = currentTime;
+
+      evaluateFramePerformance(delta, renderer, frameSamples, sampleSize);
       
       // Solo rotar automáticamente si el usuario no está interactuando
       if (!isUserInteractingRef.current) {
@@ -348,6 +509,7 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       cameraRef.current = camera; // Guardar referencia a la cámara
       const renderer = setupRenderer(THREE, containerRef.current, width, height);
       rendererRef.current = renderer; // Guardar referencia al renderer
+  setupPerformanceMonitoring(renderer);
       camera.position.set(0, 0, 2.5);
       camera.lookAt(0, 0, 0);
       loadEnvironment(RGBELoader, THREE, scene);
