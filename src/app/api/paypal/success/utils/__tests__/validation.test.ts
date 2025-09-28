@@ -7,7 +7,8 @@ describe('PayPal Success Validation Utils', () => {
       direccion: 'Test Address',
       ciudad: 'Test City',
       estado: 'Test State',
-      pais: 'Test Country'
+      pais: 'Test Country',
+      nombreUsuarioVrChat: 'TestVR'
     };
 
     it('should return valid when all required fields are present', () => {
@@ -76,7 +77,8 @@ describe('PayPal Success Validation Utils', () => {
           direccion: 'Test Address',
           ciudad: 'Test City',
           estado: 'Test State',
-          pais: 'Test Country'
+          pais: 'Test Country',
+          nombreUsuarioVrChat: 'TestVR'
         }
       };
 
@@ -156,21 +158,21 @@ describe('PayPal Success Validation Utils', () => {
       expect(result.error).toBe('Missing required userData fields');
     });
 
-    it('should return valid even when optional fields are missing', () => {
+    it('should return invalid when vrchat username is missing or empty', () => {
       const body = {
         transactionId: 'txn_123',
         payerEmail: 'payer@example.com',
         amount: '99.99',
         userData: {
           ...validUserData,
-          nombreUsuarioVrChat: undefined // Optional field
+          nombreUsuarioVrChat: ' '
         }
       };
 
       const result = validateSuccessRequest(body);
 
-      expect(result.isValid).toBe(true);
-      expect(result.error).toBeUndefined();
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Missing VRChat username');
     });
 
     it('should handle empty string values as invalid', () => {

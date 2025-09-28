@@ -13,11 +13,11 @@ const mockFirebaseTrackingService = FirebaseTrackingService as jest.MockedClass<
 describe('PayPal Create Tracking Utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (mockTrackingManager.generateUserTracking as jest.Mock).mockReturnValue({
+    (mockTrackingManager.generateUserTracking as jest.Mock).mockImplementation((data) => ({
       id: 'tracking_123',
-      nombreUsuario: 'paypal_txn_123',
+      nombreUsuario: data.nombreUsuario,
       userHash: 'hash_123'
-    });
+    }));
     (mockFirebaseTrackingService.createTracking as jest.Mock).mockResolvedValue('tracking_id_123');
   });
 
@@ -27,7 +27,8 @@ describe('PayPal Create Tracking Utils', () => {
       direccion: 'Test Address',
       ciudad: 'Test City',
       estado: 'Test State',
-      pais: 'Chile'
+      pais: 'Chile',
+      nombreUsuarioVrChat: 'Nat_yat'
     };
 
     const mockProductData: PayPalProductData = {
@@ -49,7 +50,7 @@ describe('PayPal Create Tracking Utils', () => {
       );
 
       expect(mockTrackingManager.generateUserTracking).toHaveBeenCalledWith({
-        nombreUsuario: 'paypal_txn_123',
+        nombreUsuario: 'Nat_yat',
         contacto: 'test@example.com',
         fechaLimite: expect.any(String),
         totalUsd: 250,
@@ -72,7 +73,7 @@ describe('PayPal Create Tracking Utils', () => {
 
       expect(mockFirebaseTrackingService.createTracking).toHaveBeenCalledWith({
         id: 'tracking_123',
-        nombreUsuario: 'paypal_txn_123',
+        nombreUsuario: 'Nat_yat',
         userHash: 'hash_123',
         paymentMethod: 'PayPal',
         paymentTransactionId: 'txn_123',
@@ -83,7 +84,7 @@ describe('PayPal Create Tracking Utils', () => {
           cityState: 'Test City, Test State',
           country: 'Chile'
         },
-        vrchatUsername: undefined,
+        vrchatUsername: 'Nat_yat',
         extrasSeleccionados: {
           usbReceiver: {
             id: 'usb_3m',
@@ -112,7 +113,7 @@ describe('PayPal Create Tracking Utils', () => {
       );
 
       expect(mockTrackingManager.generateUserTracking).toHaveBeenCalledWith({
-        nombreUsuario: 'paypal_txn_456',
+        nombreUsuario: 'Nat_yat',
         contacto: 'test@example.com',
         fechaLimite: expect.any(String),
         totalUsd: 150,
@@ -137,7 +138,7 @@ describe('PayPal Create Tracking Utils', () => {
     });
 
     it('should use default country when not provided in userData', async () => {
-      const userDataWithoutCountry = { ...mockUserData, pais: undefined };
+      const userDataWithoutCountry: UserData = { ...mockUserData, pais: undefined };
       
       await createPendingTracking(
         'txn_789',
@@ -171,6 +172,17 @@ describe('PayPal Create Tracking Utils', () => {
       
       // Allow for small time differences in test execution
       expect(Math.abs(fechaLimite.getTime() - expectedDate.getTime())).toBeLessThan(1000);
+    });
+
+    it('should throw error when vrchat username is missing or empty', async () => {
+      const userDataWithoutVr = {
+        ...mockUserData,
+        nombreUsuarioVrChat: '   '
+      } as UserData;
+
+      await expect(
+        createPendingTracking('txn_error', 'test@example.com', 100, userDataWithoutVr)
+      ).rejects.toThrow('nombreUsuarioVrChat es requerido para crear un tracking de PayPal');
     });
   });
 });

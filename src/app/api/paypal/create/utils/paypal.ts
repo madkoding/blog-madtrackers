@@ -10,10 +10,12 @@ export function createPayPalCustomData(
   productData: PayPalProductData | undefined,
   amount: number
 ): string {
+  const vrchatUsername = userData.nombreUsuarioVrChat.trim();
+
   const customData: PayPalCustomData = {
     txnId: transactionId,
     email: email,
-    vrchat: userData.nombreUsuarioVrChat || '',
+    vrchat: vrchatUsername,
     trackers: productData?.numberOfTrackers || 6,
     amount: amount
   };

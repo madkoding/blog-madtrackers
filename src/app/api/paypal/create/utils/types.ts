@@ -20,7 +20,7 @@ export interface UserData {
   ciudad?: string;
   estado?: string;
   pais?: string;
-  nombreUsuarioVrChat?: string;
+  nombreUsuarioVrChat: string;
 }
 
 export interface PayPalCreateRequest {

@@ -48,18 +48,18 @@ describe('PayPal Create PayPal Utils', () => {
       expect(parsedResult.amount).toBe(150);
     });
 
-    it('should handle empty vrchat username', () => {
-      const userDataWithoutVrChat = { ...mockUserData, nombreUsuarioVrChat: undefined };
+    it('should trim vrchat username before serializing', () => {
+      const userDataWithSpaces = { ...mockUserData, nombreUsuarioVrChat: '  TestUser  ' };
       const result = createPayPalCustomData(
         'txn_789',
         'test@example.com',
-        userDataWithoutVrChat,
+        userDataWithSpaces,
         mockProductData,
         300
       );
 
       const parsedResult = JSON.parse(result);
-      expect(parsedResult.vrchat).toBe('');
+      expect(parsedResult.vrchat).toBe('TestUser');
     });
 
     it('should warn when custom data exceeds 256 characters', () => {

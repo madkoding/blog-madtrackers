@@ -83,10 +83,9 @@ describe('PayPal IPN Payment Utils', () => {
         tapa: 'Red'
       },
       shippingAddress: {
-        direccion: 'Test Address',
-        ciudad: 'Test City',
-        estado: 'Test State',
-        pais: 'Test Country'
+        address: 'Test Address',
+        cityState: 'Test City, Test State',
+        country: 'Test Country'
       },
       paymentMethod: 'PayPal',
       orderDate: '2024-01-01'

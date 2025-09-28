@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     logValidationSuccess(transactionId, payerEmail, amount, userData);
 
     // Generar nombre de usuario y crear tracking
-    const username = generateUsername(userData.email);
+  const username = generateUsername(userData);
     const trackingData = createTrackingData(username, userData, amount, productData);
     
     // Crear datos de tracking mejorados con información de PayPal

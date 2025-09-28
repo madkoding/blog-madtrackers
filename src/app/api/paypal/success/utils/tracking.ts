@@ -46,6 +46,8 @@ export function createEnhancedTrackingData(
   currency: string | undefined,
   userData: UserData
 ): UserTracking {
+  const vrchatUsername = userData.nombreUsuarioVrChat.trim();
+
   return {
     ...trackingData,
     paymentMethod: 'PayPal',
@@ -58,7 +60,7 @@ export function createEnhancedTrackingData(
       cityState: `${userData.ciudad}, ${userData.estado}`,
       country: userData.pais
     },
-    vrchatUsername: userData.nombreUsuarioVrChat
+    vrchatUsername
   };
 }
 

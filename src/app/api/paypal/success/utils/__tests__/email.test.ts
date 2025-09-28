@@ -222,7 +222,7 @@ describe('PayPal Success Email Utils', () => {
     it('should handle missing VRChat username gracefully', async () => {
       const userDataWithoutVR = {
         ...mockUserData,
-        nombreUsuarioVrChat: undefined
+        nombreUsuarioVrChat: undefined as unknown as string
       };
 
       (EmailService.sendPurchaseConfirmation as jest.Mock).mockResolvedValue(true);

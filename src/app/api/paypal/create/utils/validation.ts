@@ -3,6 +3,7 @@ interface PayPalCreateRequest {
   email: string;
   userData: {
     direccion: string;
+    nombreUsuarioVrChat: string;
     [key: string]: unknown;
   };
   transactionId: string;
@@ -27,6 +28,13 @@ export function validatePayPalCreateRequest(body: PayPalCreateRequest): { isVali
     return {
       isValid: false,
       error: 'Datos de usuario incompletos'
+    };
+  }
+
+  if (!userData?.nombreUsuarioVrChat || typeof userData.nombreUsuarioVrChat !== 'string' || userData.nombreUsuarioVrChat.trim() === '') {
+    return {
+      isValid: false,
+      error: 'Nombre de usuario VRChat es requerido'
     };
   }
 

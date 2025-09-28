@@ -3,8 +3,14 @@ import { UserData } from './types';
 /**
  * Genera un nombre de usuario basado en el email para el tracking
  */
-export function generateUsername(email: string): string {
-  return email.split('@')[0] + '_' + Date.now().toString().slice(-6);
+export function generateUsername(userData: Pick<UserData, 'nombreUsuarioVrChat'>): string {
+  const username = userData.nombreUsuarioVrChat?.trim();
+
+  if (!username) {
+    throw new Error('nombreUsuarioVrChat es requerido para generar el nombre de usuario');
+  }
+
+  return username;
 }
 
 interface RequestBody {
@@ -38,7 +44,7 @@ export function logValidationSuccess(
       ciudad: userData.ciudad,
       estado: userData.estado,
       pais: userData.pais,
-      nombreUsuarioVrChat: userData.nombreUsuarioVrChat || 'N/A'
+      nombreUsuarioVrChat: userData.nombreUsuarioVrChat
     }
   });
 }

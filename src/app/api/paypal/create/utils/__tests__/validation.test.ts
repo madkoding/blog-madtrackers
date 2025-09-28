@@ -8,7 +8,8 @@ describe('PayPal Create Validation Utils', () => {
         amount: 100,
         transactionId: 'txn_123',
         userData: {
-          direccion: 'Test Address'
+          direccion: 'Test Address',
+          nombreUsuarioVrChat: 'TestVR'
         }
       };
 
@@ -24,7 +25,8 @@ describe('PayPal Create Validation Utils', () => {
         amount: 100,
         transactionId: 'txn_123',
         userData: {
-          direccion: 'Test Address'
+          direccion: 'Test Address',
+          nombreUsuarioVrChat: 'TestVR'
         }
       };
 
@@ -40,7 +42,8 @@ describe('PayPal Create Validation Utils', () => {
         amount: 0,
         transactionId: 'txn_123',
         userData: {
-          direccion: 'Test Address'
+          direccion: 'Test Address',
+          nombreUsuarioVrChat: 'TestVR'
         }
       };
 
@@ -56,7 +59,8 @@ describe('PayPal Create Validation Utils', () => {
         amount: 100,
         transactionId: '',
         userData: {
-          direccion: 'Test Address'
+          direccion: 'Test Address',
+          nombreUsuarioVrChat: 'TestVR'
         }
       };
 
@@ -72,7 +76,8 @@ describe('PayPal Create Validation Utils', () => {
         amount: 100,
         transactionId: 'txn_123',
         userData: {
-          direccion: ''
+          direccion: '',
+          nombreUsuarioVrChat: 'TestVR'
         }
       };
 
@@ -88,7 +93,8 @@ describe('PayPal Create Validation Utils', () => {
         amount: 100,
         transactionId: 'txn_123',
         userData: {
-          direccion: ''
+          direccion: '',
+          nombreUsuarioVrChat: 'TestVR'
         }
       };
 
@@ -96,6 +102,23 @@ describe('PayPal Create Validation Utils', () => {
 
       expect(result.isValid).toBe(false);
       expect(result.error).toBe('Datos de usuario incompletos');
+    });
+
+    it('should return invalid when vrchat username is missing', () => {
+      const body = {
+        email: 'test@example.com',
+        amount: 100,
+        transactionId: 'txn_123',
+        userData: {
+          direccion: 'Test Address',
+          nombreUsuarioVrChat: ''
+        }
+      };
+
+      const result = validatePayPalCreateRequest(body);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Nombre de usuario VRChat es requerido');
     });
   });
 

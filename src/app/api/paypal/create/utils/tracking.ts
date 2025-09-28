@@ -13,8 +13,13 @@ export async function createPendingTracking(
   userData: UserData,
   productData?: PayPalProductData
 ): Promise<string> {
-  // Generar un nombre de usuario temporal basado en el transactionId
-  const username = `paypal_${transactionId}`;
+  const vrchatUsername = userData.nombreUsuarioVrChat?.trim();
+
+  if (!vrchatUsername) {
+    throw new Error('nombreUsuarioVrChat es requerido para crear un tracking de PayPal');
+  }
+
+  const username = vrchatUsername;
 
   console.log('📦 [PAYPAL CREATE] Creating pending tracking with product data:', productData);
 
@@ -31,7 +36,7 @@ export async function createPendingTracking(
     magneto: productData?.magnetometer || true,
     colorCase: productData?.caseColor || 'white', // Segundo color por defecto
     colorTapa: productData?.coverColor || 'white', // Primer color por defecto
-    paisEnvio: userData.pais || 'Chile',
+  paisEnvio: userData.pais || 'Chile',
     estadoPedido: OrderStatus.PENDING_PAYMENT, // Estado específico para pago pendiente
     porcentajes: {
       placa: 0,
@@ -50,7 +55,7 @@ export async function createPendingTracking(
     paymentStatus: 'PENDING',
     paymentCurrency: 'USD',
     // VRChat username  
-    vrchatUsername: userData.nombreUsuarioVrChat,
+  vrchatUsername,
     // Dirección de envío (solo si es diferente al país ya guardado)
     ...(userData.direccion && {
       shippingAddress: {

@@ -46,13 +46,33 @@ const getStatusLabel = (estadoPedido?: string | null): string => {
   return STATUS_LABELS[normalized] ?? estadoPedido;
 };
 
-const getUserInitial = (nombre?: string | null): string => {
-  return nombre?.charAt(0).toUpperCase() ?? "?";
+const getPrimaryUsername = (user: UserTracking): string | undefined => {
+  const vrchat = user.vrchatUsername?.trim();
+  if (vrchat) return vrchat;
+
+  const legacy = user.nombreUsuario?.trim();
+  if (legacy) return legacy;
+
+  return undefined;
+};
+
+const getUserInitial = (user: UserTracking): string => {
+  const primary = getPrimaryUsername(user);
+  if (primary) {
+    return primary.charAt(0).toUpperCase();
+  }
+
+  const contacto = user.contacto?.trim();
+  if (contacto) {
+    return contacto.charAt(0).toUpperCase();
+  }
+
+  return "?";
 };
 
 const getUserDisplayName = (user: UserTracking): string => {
   return (
-    user.nombreUsuario ||
+    getPrimaryUsername(user) ||
     user.contacto ||
     user.userHash ||
     (user.id ? `ID ${user.id}` : null) ||
@@ -135,10 +155,25 @@ const getManufacturingProgressColor = (percentage: number): string => {
 
 const getUserKey = (user: UserTracking): string => {
   if (user.id !== undefined && user.id !== null) return String(user.id);
+  const primary = getPrimaryUsername(user);
+  if (primary) return primary;
   if (user.userHash) return user.userHash;
   if (user.contacto) return user.contacto;
-  if (user.nombreUsuario) return user.nombreUsuario;
   return "unknown-user";
+};
+
+const isPendingPayment = (user: UserTracking): boolean => {
+  const status = user.estadoPedido?.toString().toLowerCase();
+  if (status === "pending_payment") return true;
+  if (user.isPendingPayment) return true;
+
+  const paymentInfo = calculatePaymentInfo(user);
+  return !paymentInfo.isComplete;
+};
+
+const isShippingStatus = (estadoPedido?: string | null): boolean => {
+  if (!estadoPedido) return false;
+  return estadoPedido.toLowerCase() === "shipping";
 };
 
 interface UserTableRowProps {
@@ -157,7 +192,8 @@ const UserTableRow = React.memo(({ user, onEdit, onDelete, isDeleting }: UserTab
   );
   const remainingDays = calculateRemainingDays(user.fechaEntrega);
   const statusLabel = getStatusLabel(user.estadoPedido);
-  const userInitial = getUserInitial(user.nombreUsuario);
+  const displayName = getUserDisplayName(user);
+  const userInitial = getUserInitial(user);
   const trackersCount = user.numeroTrackers ?? 0;
   const userIdentifier = String(user.userHash ?? user.id ?? "");
   const canEdit = Boolean(userIdentifier);
@@ -187,7 +223,7 @@ const UserTableRow = React.memo(({ user, onEdit, onDelete, isDeleting }: UserTab
                   : undefined
               }
             >
-              {user.nombreUsuario ?? "Sin nombre"}
+              {displayName ?? "Sin nombre"}
             </div>
             <div className="text-xs text-gray-500">
               {`${trackersCount} tracker${trackersCount !== 1 ? "s" : ""}`}
@@ -318,7 +354,7 @@ const AdminDashboard = React.memo(() => {
   const [addingUser, setAddingUser] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState<'active' | 'received'>("active");
+  const [activeTab, setActiveTab] = useState<'pending_payment' | 'shipping' | 'active' | 'received'>("active");
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const hasLoadedRef = useRef(false);
 
@@ -424,27 +460,57 @@ const AdminDashboard = React.memo(() => {
   }, [handleLogout]);
 
   const usersByStatus = useMemo(() => {
+    const pendingPaymentList: UserTracking[] = [];
+    const shippingList: UserTracking[] = [];
     const activeList: UserTracking[] = [];
     const deliveredList: UserTracking[] = [];
 
     users.forEach((user) => {
       if (isDeliveredStatus(user.estadoPedido)) {
         deliveredList.push(user);
-      } else {
-        activeList.push(user);
+        return;
       }
+
+      if (isPendingPayment(user)) {
+        pendingPaymentList.push(user);
+        return;
+      }
+
+      if (isShippingStatus(user.estadoPedido)) {
+        shippingList.push(user);
+        return;
+      }
+
+      activeList.push(user);
     });
 
     return {
       active: activeList,
       delivered: deliveredList,
+      pendingPayment: pendingPaymentList,
+      shipping: shippingList,
     };
   }, [users]);
 
-  const { active: activeUsers, delivered: deliveredUsers } = usersByStatus;
+  const {
+    active: activeUsers,
+    delivered: deliveredUsers,
+    pendingPayment: pendingPaymentUsers,
+    shipping: shippingUsers,
+  } = usersByStatus;
 
   const filteredUsers = useMemo(() => {
-    const pool = activeTab === 'active' ? activeUsers : deliveredUsers;
+    let pool: UserTracking[];
+
+    if (activeTab === 'pending_payment') {
+      pool = pendingPaymentUsers;
+    } else if (activeTab === 'shipping') {
+      pool = shippingUsers;
+    } else if (activeTab === 'active') {
+      pool = activeUsers;
+    } else {
+      pool = deliveredUsers;
+    }
 
     if (!searchTerm) {
       return pool;
@@ -453,26 +519,48 @@ const AdminDashboard = React.memo(() => {
     const normalizedTerm = searchTerm.toLowerCase();
 
     return pool.filter(
-      (user) =>
-        user.nombreUsuario?.toLowerCase().includes(normalizedTerm) ||
-        user.contacto?.toLowerCase().includes(normalizedTerm)
+      (user) => {
+        const username = getPrimaryUsername(user)?.toLowerCase();
+        const contact = user.contacto?.toLowerCase();
+        const userHash = user.userHash?.toLowerCase();
+        const paymentId = user.paymentTransactionId?.toLowerCase();
+
+        return (
+          (username && username.includes(normalizedTerm)) ||
+          (contact && contact.includes(normalizedTerm)) ||
+          (userHash && userHash.includes(normalizedTerm)) ||
+          (paymentId && paymentId.includes(normalizedTerm))
+        );
+      }
     );
-  }, [activeTab, activeUsers, deliveredUsers, searchTerm]);
+  }, [activeTab, activeUsers, deliveredUsers, pendingPaymentUsers, shippingUsers, searchTerm]);
 
   const statistics = {
     total: users.length,
     active: activeUsers.length,
     delivered: deliveredUsers.length,
+    pendingPayment: pendingPaymentUsers.length,
+    shipping: shippingUsers.length,
   };
 
   const emptyStateMessage = useMemo(() => {
     if (searchTerm) return 'No se encontraron usuarios que coincidan con la búsqueda';
-    return activeTab === 'active'
-      ? 'No hay usuarios pendientes de entrega'
-      : 'No hay usuarios marcados como recibidos';
+    if (activeTab === 'pending_payment') {
+      return 'No hay usuarios pendientes de pago';
+    }
+
+    if (activeTab === 'shipping') {
+      return 'No hay usuarios en envío';
+    }
+
+    if (activeTab === 'active') {
+      return 'No hay usuarios pendientes de entrega';
+    }
+
+    return 'No hay usuarios marcados como recibidos';
   }, [searchTerm, activeTab]);
 
-  const handleTabChange = useCallback((tab: 'active' | 'received') => {
+  const handleTabChange = useCallback((tab: 'pending_payment' | 'shipping' | 'active' | 'received') => {
     setActiveTab(tab);
   }, []);
 
@@ -552,7 +640,7 @@ const AdminDashboard = React.memo(() => {
           </div>
 
           {/* Estadísticas */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 mb-6">
             <div className="bg-white rounded-lg shadow p-4">
               <div className="flex items-center">
                 <span className="text-2xl mr-3">👥</span>
@@ -564,10 +652,28 @@ const AdminDashboard = React.memo(() => {
             </div>
             <div className="bg-white rounded-lg shadow p-4">
               <div className="flex items-center">
+                <span className="text-2xl mr-3">�</span>
+                <div>
+                  <p className="text-sm text-gray-600">Pendientes de Pago</p>
+                  <p className="text-2xl font-bold text-gray-800">{statistics.pendingPayment}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="flex items-center">
                 <span className="text-2xl mr-3">📦</span>
                 <div>
-                  <p className="text-sm text-gray-600">Pedidos Activos</p>
+                  <p className="text-sm text-gray-600">Pedidos en Proceso</p>
                   <p className="text-2xl font-bold text-gray-800">{statistics.active}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="flex items-center">
+                <span className="text-2xl mr-3">🚛</span>
+                <div>
+                  <p className="text-sm text-gray-600">En Envío</p>
+                  <p className="text-2xl font-bold text-gray-800">{statistics.shipping}</p>
                 </div>
               </div>
             </div>
@@ -608,6 +714,17 @@ const AdminDashboard = React.memo(() => {
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               <div className="flex flex-wrap gap-2 bg-gray-50 border-b border-gray-200 px-4 py-2">
                 <button
+                  onClick={() => handleTabChange('pending_payment')}
+                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
+                    activeTab === 'pending_payment'
+                      ? 'bg-white text-blue-600 border border-b-white border-blue-200 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white border border-transparent'
+                  }`}
+                >
+                  Pendientes de pago ({statistics.pendingPayment})
+                </button>
+
+                <button
                   onClick={() => handleTabChange('active')}
                   className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
                     activeTab === 'active'
@@ -615,8 +732,20 @@ const AdminDashboard = React.memo(() => {
                       : 'text-gray-600 hover:text-gray-800 hover:bg-white border border-transparent'
                   }`}
                 >
-                  Pendientes ({statistics.active})
+                  En proceso ({statistics.active})
                 </button>
+
+                <button
+                  onClick={() => handleTabChange('shipping')}
+                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
+                    activeTab === 'shipping'
+                      ? 'bg-white text-blue-600 border border-b-white border-blue-200 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white border border-transparent'
+                  }`}
+                >
+                  En envío ({statistics.shipping})
+                </button>
+                
                 <button
                   onClick={() => handleTabChange('received')}
                   className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${

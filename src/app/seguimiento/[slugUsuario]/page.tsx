@@ -150,20 +150,6 @@ export default function UserTrackingPage() {
     return colorData?.hex ?? "#FFFFFF";
   };
 
-  const getSensorAndMagneto = () => {
-    if (tracking?.sensor?.includes('+ QMC6309')) {
-      const parts = tracking.sensor.split('+ QMC6309');
-      return {
-        sensor: parts[0].trim(),
-        magneto: 'QMC6309'
-      };
-    }
-    return {
-      sensor: tracking?.sensor || '',
-      magneto: tracking?.magneto || ''
-    };
-  };
-
   // Mostrar loading mientras se cargan los datos
   if (loading) {
     return (
@@ -323,8 +309,7 @@ export default function UserTrackingPage() {
   const paidAmountUsd = getPaidAmount();
   const pendingAmountUsd = totalAmountUsd - paidAmountUsd;
   const progressPercentage = totalAmountUsd > 0 ? (paidAmountUsd / totalAmountUsd) * 100 : 0;
-  const { sensor, magneto } = getSensorAndMagneto();
-
+  const displayUsername = tracking.vrchatUsername?.trim() || tracking.nombreUsuario || "-";
   return (
     <div className="min-h-screen bg-gray-50 pt-32">
       <div className="container mx-auto px-4 py-8">
@@ -368,7 +353,7 @@ export default function UserTrackingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Información del Usuario */}
             <InfoCard title={t.userInfo}>
-              <InfoRow label={t.username} value={tracking.nombreUsuario} />
+              <InfoRow label={t.username} value={displayUsername} />
               <InfoRow label={t.deliveryDate} value={formatDate(tracking.fechaEntrega)} />
               <InfoRow label={t.shippingCountry} value={tracking.paisEnvio} />
             </InfoCard>
@@ -396,6 +381,11 @@ export default function UserTrackingPage() {
                 colorClass="text-orange-600"
               />
               
+              <InfoRow 
+                label={t.paymentDate}
+                value={tracking.createdAt ? formatDate(tracking.createdAt) : "-"}
+              />
+              
               <InfoRow label={t.shippingPaid} value={tracking.envioPagado} />
               
               <div className="mt-4">
@@ -416,8 +406,6 @@ export default function UserTrackingPage() {
             <InfoCard title={t.orderDetails}>
               <div className="space-y-6">
                 <InfoRow label={t.numberOfTrackers} value={tracking.numeroTrackers} />
-                <InfoRow label={t.sensor} value={sensor} />
-                <InfoRow label={t.magnetometer} value={magneto} />
                 
                 {/* Vista Previa del Tracker */}
                 <div className="flex flex-col items-center pt-4 ">

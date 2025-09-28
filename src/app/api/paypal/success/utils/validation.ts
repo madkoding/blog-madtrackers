@@ -5,6 +5,7 @@ interface PayPalSuccessRequestBody {
   userData: {
     email: string;
     direccion: string;
+    nombreUsuarioVrChat: string;
     [key: string]: unknown;
   };
   [key: string]: unknown;
@@ -34,6 +35,13 @@ export function validateSuccessRequest(body: PayPalSuccessRequestBody): { isVali
     return {
       isValid: false,
       error: 'Missing required userData fields'
+    };
+  }
+
+  if (!userData.nombreUsuarioVrChat || typeof userData.nombreUsuarioVrChat !== 'string' || userData.nombreUsuarioVrChat.trim() === '') {
+    return {
+      isValid: false,
+      error: 'Missing VRChat username'
     };
   }
 
