@@ -157,7 +157,7 @@ export function NavBar() {
   return (
     <nav
       id="header"
-      className={`fixed w-full z-10 top-0 ${headerClass} transition-all duration-300 ease-in-out`}
+      className={`fixed w-full z-[200] top-0 ${headerClass} transition-all duration-300 ease-in-out`}
     >
       <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
         <div className="pl-4 flex items-center space-x-2">

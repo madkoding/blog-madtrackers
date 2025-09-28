@@ -127,6 +127,11 @@ p {
   filter: invert(1) brightness(1.05);
 }
 
+[data-theme="dark"] .color-swatch-white {
+  background-color: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.8) !important;
+  color: #000000 !important;
+}
 
 .text-white a,
 .text-white strong,
@@ -179,12 +184,6 @@ p {
   background-color: var(--color-surface-1) !important;
   color: var(--color-text-primary) !important;
   box-shadow: var(--color-shadow-soft);
-}
-
-[data-theme="dark"] button.color-swatch-white {
-  background-color: #ffffff !important;
-  border-color: rgba(148, 163, 184, 0.8) !important;
-  color: #000000 !important;
 }
 
 [data-theme="dark"] .bg-white\/90,

@@ -3,6 +3,7 @@
 import { useLang } from "../../lang-context";
 import { translations } from "../../i18n";
 import RotatingModel from "../RotatingModel";
+import SkyDomeBackground from "./SkyDomeBackground";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 type Props = {
@@ -40,8 +41,9 @@ export function HeroPost({ isMaintenanceMode = false }: Readonly<Props & { isMai
   const currentSubtitle = subtitles[subtitleIndex] || "";
 
   return (
-    <section>
-      <div className="pt-16">
+    <section className="relative overflow-hidden">
+      <SkyDomeBackground />
+      <div className="relative z-10 pt-16">
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center md:items-stretch">
           {/* Modelo 3D */}
           <div className="w-full md:w-3/6 flex justify-center md:justify-end items-center md:items-end">
@@ -77,7 +79,7 @@ export function HeroPost({ isMaintenanceMode = false }: Readonly<Props & { isMai
               </a>
             )}
 
-            <div className="h-8" />
+            <div className="h-6" />
           </div>
         </div>
       </div>

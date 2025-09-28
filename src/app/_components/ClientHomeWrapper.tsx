@@ -3,7 +3,6 @@
 import React from 'react';
 import { HeroPost } from "@/app/_components/common/hero-post";
 import { getAllPosts } from "@/lib/api";
-import WaveDivider from "../_components/common/wave-divider";
 import DeferredComponent from "../_components/common/DeferredLoading";
 import dynamic from "next/dynamic";
 import BrandBenefits from "../_components/common/BrandBenefits";
@@ -91,8 +90,6 @@ export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapp
           subtitle={heroContent.subtitle} 
           isMaintenanceMode={isMaintenanceMode} 
         />
-        
-        <WaveDivider />
        
         <BrandBenefits />
         

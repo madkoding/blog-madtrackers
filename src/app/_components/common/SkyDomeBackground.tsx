@@ -1,0 +1,181 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
+const SkyDomeBackground = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    let animationFrameId: number;
+    let resizeObserver: ResizeObserver | null = null;
+
+    let renderer: import("three").WebGLRenderer | null = null;
+    let scene: import("three").Scene | null = null;
+    let camera: import("three").PerspectiveCamera | null = null;
+    let wireframe: import("three").LineSegments<import("three").WireframeGeometry, import("three").LineBasicMaterial> | null = null;
+    let glowSphere: import("three").Mesh<import("three").SphereGeometry, import("three").MeshBasicMaterial> | null = null;
+    let starField: import("three").Points<import("three").BufferGeometry, import("three").PointsMaterial> | null = null;
+
+    const cleanup = () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+      if (renderer) {
+        renderer.dispose();
+        if (renderer.domElement && renderer.domElement.parentNode) {
+          renderer.domElement.parentNode.removeChild(renderer.domElement);
+        }
+      }
+      if (wireframe) {
+        wireframe.geometry.dispose();
+        wireframe.material.dispose();
+      }
+      if (glowSphere) {
+        glowSphere.geometry.dispose();
+        glowSphere.material.dispose();
+      }
+      if (starField) {
+        starField.geometry.dispose();
+        starField.material.dispose();
+      }
+    };
+
+    const init = async () => {
+      if (!containerRef.current) return;
+
+      const THREE = await import("three");
+      if (!mounted || !containerRef.current) return;
+
+      const container = containerRef.current;
+      const { clientWidth: width, clientHeight: height } = container;
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(55, width / height || 1, 0.1, 200);
+      camera.position.set(0, 0, 28);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(width, height, false);
+      renderer.setClearColor(0x000000, 0);
+      renderer.toneMappingExposure = 1.1;
+      renderer.domElement.style.position = "absolute";
+      renderer.domElement.style.top = "0";
+      renderer.domElement.style.left = "0";
+      renderer.domElement.style.width = "100%";
+      renderer.domElement.style.height = "100%";
+      renderer.domElement.style.pointerEvents = "none";
+
+      container.innerHTML = "";
+      container.appendChild(renderer.domElement);
+
+      const clock = new THREE.Clock();
+
+      // Dome wireframe
+      const sphereGeometry = new THREE.SphereGeometry(30, 64, 64);
+      const wireframeGeometry = new THREE.WireframeGeometry(sphereGeometry);
+      const wireframeMaterial = new THREE.LineBasicMaterial({
+        color: new THREE.Color("#3bf0ff"),
+        transparent: true,
+        opacity: 0.25
+      });
+      wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
+      wireframe.rotation.x = -0.2;
+      scene.add(wireframe);
+
+      // Inner glow sphere
+      const glowGeometry = new THREE.SphereGeometry(18, 48, 48);
+      const glowMaterial = new THREE.MeshBasicMaterial({
+        color: new THREE.Color("#0b1120"),
+        transparent: true,
+        opacity: 0.08
+      });
+      glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
+      scene.add(glowSphere);
+
+      // Star field / particles
+      const starCount = 600;
+      const starPositions = new Float32Array(starCount * 3);
+      for (let i = 0; i < starCount; i++) {
+        const radius = 10 + Math.random() * 16;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        starPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+        starPositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+        starPositions[i * 3 + 2] = radius * Math.cos(phi);
+      }
+      const starGeometry = new THREE.BufferGeometry();
+      starGeometry.setAttribute("position", new THREE.Float32BufferAttribute(starPositions, 3));
+      const starMaterial = new THREE.PointsMaterial({
+        color: new THREE.Color("#38bdf8"),
+        size: 0.25,
+        transparent: true,
+        opacity: 0.45
+      });
+      starField = new THREE.Points(starGeometry, starMaterial);
+      scene.add(starField);
+
+      const handleResize = () => {
+        if (!containerRef.current || !renderer || !camera) return;
+        const { clientWidth, clientHeight } = containerRef.current;
+        renderer.setSize(clientWidth, clientHeight, false);
+        camera.aspect = (clientWidth || 1) / (clientHeight || 1);
+        camera.updateProjectionMatrix();
+      };
+
+      if ("ResizeObserver" in window) {
+        resizeObserver = new window.ResizeObserver(handleResize);
+        resizeObserver.observe(container);
+      }
+
+      const animate = () => {
+        if (!mounted || !renderer || !scene || !camera) return;
+        const elapsed = clock.getElapsedTime();
+
+        if (wireframe) {
+          wireframe.rotation.y = elapsed * 0.12;
+          wireframe.rotation.x = -0.2 + Math.sin(elapsed * 0.2) * 0.05;
+        }
+
+        if (glowSphere) {
+          const scale = 1 + Math.sin(elapsed * 0.45) * 0.06;
+          glowSphere.scale.setScalar(scale);
+          glowSphere.material.opacity = 0.06 + 0.04 * (1 + Math.sin(elapsed * 0.6)) * 0.5;
+        }
+
+        if (starField) {
+          starField.rotation.y = elapsed * 0.05;
+          starField.rotation.x = Math.sin(elapsed * 0.15) * 0.08;
+        }
+
+        renderer.render(scene, camera);
+        animationFrameId = requestAnimationFrame(animate);
+      };
+
+      handleResize();
+      renderer.render(scene, camera);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    init();
+
+    return () => {
+      mounted = false;
+      cleanup();
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="pointer-events-none absolute inset-0 opacity-100"
+      style={{ filter: "saturate(120%)" }}
+      aria-hidden="true"
+    />
+  );
+};
+
+export default SkyDomeBackground;
