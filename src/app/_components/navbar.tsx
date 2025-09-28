@@ -48,16 +48,20 @@ const LanguageSelector = React.memo<{
     <li className="flex space-x-2 ml-4">
       <button
         onClick={handleSelectEnglish}
-        className={`px-2 py-1 rounded ${
-          lang === "en" ? "bg-gray-800 text-white" : "bg-gray-200 text-gray-800"
+        className={`px-2 py-1 rounded transition-colors ${
+          lang === "en"
+            ? "bg-slate-900 text-white dark:bg-white/20 dark:text-white"
+            : "bg-slate-200 text-slate-900 hover:bg-slate-300 dark:bg-transparent dark:text-white/80 dark:hover:bg-white/10"
         }`}
       >
         EN
       </button>
       <button
         onClick={handleSelectSpanish}
-        className={`px-2 py-1 rounded ${
-          lang === "es" ? "bg-gray-800 text-white" : "bg-gray-200 text-gray-800"
+        className={`px-2 py-1 rounded transition-colors ${
+          lang === "es"
+            ? "bg-slate-900 text-white dark:bg-white/20 dark:text-white"
+            : "bg-slate-200 text-slate-900 hover:bg-slate-300 dark:bg-transparent dark:text-white/80 dark:hover:bg-white/10"
         }`}
       >
         ES
@@ -72,6 +76,7 @@ export function NavBar() {
   const [scrollpos, setScrollpos] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCountryMenuOpen, setIsCountryMenuOpen] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
   const pathname = usePathname();
 
   const { lang, setLang } = useLang();
@@ -90,21 +95,62 @@ export function NavBar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const root = document.documentElement;
+
+    const updateThemeState = () => {
+      setIsDarkTheme(root.dataset.theme !== "light");
+    };
+
+    updateThemeState();
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === "attributes" && mutation.attributeName === "data-theme") {
+          updateThemeState();
+          break;
+        }
+      }
+    });
+
+    observer.observe(root, { attributes: true });
+
+    return () => observer.disconnect();
+  }, []);
+
   // Detectar si no estamos en la página de inicio
   const isNotHomePage = pathname !== "/";
 
   // Lógica de estilos del header
   let headerClass = "";
   if (scrollpos > 10 || isMenuOpen) {
-    headerClass = "bg-white shadow";
+    headerClass = "theme-surface border-b theme-border shadow";
   } else if (isNotHomePage) {
     headerClass = "bg-gradient-to-r from-blue-900 via-blue-700 to-purple-700 shadow-lg";
   }
 
-  const navContentClass = scrollpos > 10 || isMenuOpen ? "bg-white" : "";
+  const navContentClass = scrollpos > 10 || isMenuOpen ? "theme-surface" : "";
   const textColorClass =
-    scrollpos > 10 || isMenuOpen ? "text-gray-800" : "text-white";
-  const svgClass = scrollpos > 10 || isMenuOpen ? "" : "invert";
+    scrollpos > 10 || isMenuOpen
+      ? "theme-text-primary"
+      : "theme-text-on-accent text-white";
+  const isScrolledOrMenuOpen = scrollpos > 10 || isMenuOpen;
+  const shouldInvertLogo = isDarkTheme || !isScrolledOrMenuOpen;
+
+  const logoFilterParts = [
+    shouldInvertLogo ? "invert(1)" : "",
+    "drop-shadow(-1.2px -1.2px 0 rgba(0, 0, 0, 0.85))",
+    "drop-shadow(1.2px -1.2px 0 rgba(0, 0, 0, 0.85))",
+    "drop-shadow(-1.2px 1.2px 0 rgba(0, 0, 0, 0.85))",
+    "drop-shadow(1.2px 1.2px 0 rgba(0, 0, 0, 0.85))"
+  ].filter(Boolean);
+
+  const logoFilter = logoFilterParts.join(" ");
+  const iconInvertClass = shouldInvertLogo ? "invert" : "";
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -124,7 +170,8 @@ export function NavBar() {
               alt="Logo"
               width={60}
               height={60}
-              className={svgClass}
+              className="transition-all duration-300 ease-in-out"
+              style={{ filter: logoFilter }}
             />
             <span className="ml-2">madTrackers</span>
           </Link>
@@ -136,7 +183,7 @@ export function NavBar() {
             className="flex items-center p-1 text-pink-800 hover:text-gray-900 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
           >
             <svg
-              className={`fill-current h-6 w-6 ${svgClass} transition-all duration-300 ease-in-out`}
+              className={`fill-current h-6 w-6 ${iconInvertClass} transition-all duration-300 ease-in-out`}
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -148,7 +195,7 @@ export function NavBar() {
         <div
           className={`w-full flex-grow lg:flex lg:items-center lg:w-auto ${
             isMenuOpen ? "" : "hidden"
-          } mt-2 lg:mt-0 ${navContentClass} text-black p-4 lg:p-0 z-20 transition-all duration-300 ease-in-out`}
+          } mt-2 lg:mt-0 ${navContentClass} theme-text-primary p-4 lg:p-0 z-20 transition-all duration-300 ease-in-out`}
           id="nav-content"
         >
           <ul
@@ -163,7 +210,7 @@ export function NavBar() {
             {/* Menú desplegable de países */}
             <li className="mr-3 relative">
               <button
-                className={`inline-block ${textColorClass} no-underline hover:text-gray-800 hover:text-underline py-2 px-4 transition-all duration-300 ease-in-out flex items-center`}
+                className={`inline-block ${textColorClass} no-underline hover:opacity-80 hover:text-underline py-2 px-4 transition-all duration-300 ease-in-out flex items-center`}
                 onMouseEnter={() => setIsCountryMenuOpen(true)}
                 onMouseLeave={() => setIsCountryMenuOpen(false)}
                 onClick={() => setIsCountryMenuOpen(!isCountryMenuOpen)}
@@ -186,14 +233,14 @@ export function NavBar() {
               </button>
               {isCountryMenuOpen && (
                 <ul 
-                  className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 z-50"
+                  className="absolute top-full left-0 theme-surface theme-border border shadow-lg rounded-lg py-2 w-48 z-50"
                   onMouseEnter={() => setIsCountryMenuOpen(true)}
                   onMouseLeave={() => setIsCountryMenuOpen(false)}
                 >
                   <li>
                     <Link 
                       href="/trackers-slimevr-chile" 
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      className="block px-4 py-2 theme-text-primary hover:bg-slate-100 dark:hover:bg-white/10"
                       onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                           setIsCountryMenuOpen(false);
@@ -206,7 +253,7 @@ export function NavBar() {
                   <li>
                     <Link 
                       href="/trackers-slimevr-espana" 
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      className="block px-4 py-2 theme-text-primary hover:bg-slate-100 dark:hover:bg-white/10"
                       onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                           setIsCountryMenuOpen(false);
@@ -219,7 +266,7 @@ export function NavBar() {
                   <li>
                     <Link 
                       href="/trackers-slimevr-mexico" 
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      className="block px-4 py-2 theme-text-primary hover:bg-slate-100 dark:hover:bg-white/10"
                       onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                           setIsCountryMenuOpen(false);
@@ -232,7 +279,7 @@ export function NavBar() {
                   <li>
                     <Link 
                       href="/trackers-slimevr-argentina" 
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      className="block px-4 py-2 theme-text-primary hover:bg-slate-100 dark:hover:bg-white/10"
                       onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                           setIsCountryMenuOpen(false);
@@ -248,7 +295,7 @@ export function NavBar() {
                   <li>
                     <Link 
                       href="/posts/Envios_Internacionales_Trackers_SlimeVR" 
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      className="block px-4 py-2 theme-text-primary hover:bg-slate-100 dark:hover:bg-white/10"
                       onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                           setIsCountryMenuOpen(false);

@@ -11,16 +11,13 @@ const WaveDivider = React.memo(() => {
         className="w-full h-auto"
       >
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-          <g
-            transform="translate(-2.000000, 44.000000)"
-            fill="#FFFFFF"
-            fillRule="nonzero"
-          >
+          <g transform="translate(-2.000000, 44.000000)" fillRule="nonzero">
             <path
               d="M0,0 C90.7283404,0.927527913 147.912752,27.187927 291.910178,59.9119003 
               C387.908462,81.7278826 543.605069,89.334785 759,82.7326078 
               C469.336065,156.254352 216.336065,153.6679 0,74.9732496"
               opacity="0.1"
+              style={{ fill: "var(--color-wave-1)" }}
             ></path>
             <path
               d="M100,104.708498 C277.413333,72.2345949 426.147877,52.5246657 
@@ -29,17 +26,18 @@ const WaveDivider = React.memo(() => {
               616.699903,111.243176 C423.096539,147.640838 250.863238,145.462612 
               100,104.708498 Z"
               opacity="0.1"
+              style={{ fill: "var(--color-wave-2)" }}
             ></path>
             <path
               d="M1046,51.6521276 C1130.83045,29.328812 1279.08318,17.607883 
               1439,40.1656806 L1439,120 C1271.17211,77.9435312 1140.17211,55.1609071 
               1046,51.6521276 Z"
               opacity="0.2"
+              style={{ fill: "var(--color-wave-3)" }}
             ></path>
           </g>
           <g
             transform="translate(-4.000000, 76.000000)"
-            fill="#FFFFFF"
             fillRule="nonzero"
           >
             <path
@@ -55,6 +53,7 @@ const WaveDivider = React.memo(() => {
               C1161.703,9.219 1208.621,17.821 1235.4,22.304 
               C1285.855,30.748 1354.351,47.432 1440.886,72.354 
               L1441.191,104.352 L1.121,104.031 L0.457,34.035 Z"
+              style={{ fill: "var(--color-wave-2)" }}
             ></path>
           </g>
         </g>

@@ -1,22 +1,280 @@
-/* Critical CSS optimized - Fonts now loaded via Next.js optimization */
+/* Critical CSS optimizado - las fuentes ahora se cargan vía optimización de Next.js */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --color-background: #080b1d;
+  --color-background-secondary: rgba(22, 27, 54, 0.85);
+  --color-gradient: linear-gradient(135deg, #090b27 0%, #151a43 35%, #2d2369 68%, #4d2686 100%);
+  --color-text-primary: #f8fbff;
+  --color-text-secondary: #d1dcff;
+  --color-text-muted: #9aa4da;
+  --color-text-on-accent: #f9fafb;
+  --color-surface-1: rgba(24, 28, 60, 0.92);
+  --color-surface-2: rgba(18, 22, 49, 0.88);
+  --color-surface-3: rgba(13, 16, 39, 0.94);
+  --color-surface-soft: rgba(35, 39, 75, 0.55);
+  --color-surface-contrast: rgba(129, 140, 248, 0.16);
+  --color-surface: var(--color-surface-1);
+  --color-surface-strong: var(--color-surface-3);
+  --color-border: rgba(114, 124, 255, 0.32);
+  --color-border-strong: rgba(140, 149, 255, 0.5);
+  --color-shadow: 0 28px 60px -25px rgba(12, 16, 42, 0.75);
+  --color-shadow-soft: 0 18px 52px -24px rgba(11, 15, 37, 0.55);
+  --color-accent: #818cf8;
+  --color-wave-1: rgba(36, 39, 71, 0.76);
+  --color-wave-2: rgba(18, 20, 41, 0.709);
+  --color-wave-3: rgb(15, 17, 40);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --color-background: #eef2ff;
+  --color-background-secondary: rgba(255, 255, 255, 0.75);
+  --color-gradient: linear-gradient(135deg, #f1f5ff 0%, #e4ecff 35%, #dbe4ff 68%, #d6dcff 100%);
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #5f6f94;
+  --color-text-on-accent: #0f172a;
+  --color-surface-1: rgba(255, 255, 255, 0.95);
+  --color-surface-2: rgba(246, 248, 255, 0.86);
+  --color-surface-3: rgba(232, 236, 255, 0.92);
+  --color-surface-soft: rgba(226, 232, 255, 0.6);
+  --color-surface-contrast: rgba(79, 70, 229, 0.06);
+  --color-surface: var(--color-surface-1);
+  --color-surface-strong: var(--color-surface-3);
+  --color-border: rgba(148, 163, 184, 0.45);
+  --color-border-strong: rgba(79, 70, 229, 0.25);
+  --color-shadow: 0 20px 45px -18px rgba(15, 23, 42, 0.22);
+  --color-shadow-soft: 0 10px 28px -15px rgba(15, 23, 42, 0.18);
+  --color-accent: #4338ca;
+  --color-wave-1: rgba(79, 70, 229, 0.18);
+  --color-wave-2: rgba(129, 140, 248, 0.12);
+  --color-wave-3: rgba(165, 180, 252, 0.1);
+}
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-accent-1 text-accent-7;
+  background-color: var(--color-background);
+  background-image: var(--color-gradient);
+  color: var(--color-text-primary);
   font-family: var(--font-exo2), "Exo 2", sans-serif;
-  background-image: linear-gradient(to right top, #051937, #002667, #0f2e97, #492ec4, #8612eb);
+  transition: background-color 0.4s ease, background-image 0.4s ease, color 0.2s ease;
 }
 
 p {
   text-align: justify;
   letter-spacing: -0.03em;
+  color: var(--color-text-secondary);
+}
+
+.theme-text-primary {
+  color: var(--color-text-primary) !important;
+}
+
+.theme-text-secondary {
+  color: var(--color-text-secondary) !important;
+}
+
+.theme-text-muted {
+  color: var(--color-text-muted) !important;
+}
+
+.theme-text-on-accent {
+  color: var(--color-text-on-accent) !important;
+}
+
+.text-white, p, h1, h2, h3, h4, h5, h6 {
+  color: #ffffff !important;
+  -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.85);
+  text-shadow:
+    -1.2px -1.2px 1px rgba(0, 0, 0, 0.9),
+    1.2px -1.2px 1px rgba(0, 0, 0, 0.9),
+    -1.2px 1.2px 1px rgba(0, 0, 0, 0.9),
+    1.2px 1.2px 1px rgba(0, 0, 0, 0.9);
+  paint-order: stroke fill;
+}
+
+#header .theme-text-primary,
+#header .theme-text-on-accent {
+  -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.75);
+  text-shadow:
+    -1.2px -1.2px 1px rgba(0, 0, 0, 0.85),
+    1.2px -1.2px 1px rgba(0, 0, 0, 0.85),
+    -1.2px 1.2px 1px rgba(0, 0, 0, 0.85),
+    1.2px 1.2px 1px rgba(0, 0, 0, 0.85);
+  paint-order: stroke fill;
+}
+
+#header .theme-text-primary a,
+#header .theme-text-primary strong,
+#header .theme-text-primary span,
+#header .theme-text-on-accent a,
+#header .theme-text-on-accent strong,
+#header .theme-text-on-accent span {
+  -webkit-text-stroke: inherit;
+  text-shadow: inherit;
+  paint-order: inherit;
+}
+
+[data-theme="dark"] .theme-invert-dark {
+  filter: invert(1) brightness(1.05);
+}
+
+
+.text-white a,
+.text-white strong,
+.text-white span {
+  -webkit-text-stroke: inherit;
+  text-shadow: inherit;
+  paint-order: stroke fill;
+}
+
+.theme-surface {
+  backdrop-filter: blur(14px);
+  box-shadow: var(--color-shadow-soft);
+}
+
+.theme-surface-soft {
+  background-color: var(--color-surface-2);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--color-shadow-soft);
+}
+
+.theme-surface-muted {
+  background-color: var(--color-surface-soft);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--color-shadow-soft);
+}
+
+.theme-surface-strong {
+  background-color: var(--color-surface-3);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--color-shadow);
+}
+
+.theme-surface-contrast {
+  background-color: var(--color-surface-contrast);
+  backdrop-filter: blur(24px);
+}
+
+.theme-border {
+  border-color: var(--color-border) !important;
+}
+
+.theme-border-strong {
+  border-color: var(--color-border-strong) !important;
+}
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .bg-slate-50,
+[data-theme="dark"] .bg-gray-50,
+[data-theme="dark"] .bg-neutral-50 {
+  background-color: var(--color-surface-1) !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: var(--color-shadow-soft);
+}
+
+[data-theme="dark"] button.color-swatch-white {
+  background-color: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.8) !important;
+  color: #000000 !important;
+}
+
+[data-theme="dark"] .bg-white\/90,
+[data-theme="dark"] .bg-white\/80,
+[data-theme="dark"] .bg-slate-100,
+[data-theme="dark"] .bg-gray-100,
+[data-theme="dark"] .bg-neutral-100 {
+  background-color: var(--color-surface-2) !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: var(--color-shadow-soft);
+}
+
+[data-theme="dark"] .bg-white\/70,
+[data-theme="dark"] .bg-white\/60,
+[data-theme="dark"] .bg-white\/50,
+[data-theme="dark"] .bg-gray-200,
+[data-theme="dark"] .bg-gray-300,
+[data-theme="dark"] .bg-slate-200,
+[data-theme="dark"] .bg-slate-300 {
+  background-color: var(--color-surface-3) !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: var(--color-shadow);
+}
+
+[data-theme="dark"] .bg-white\/40,
+[data-theme="dark"] .bg-white\/30,
+[data-theme="dark"] .bg-white\/20,
+[data-theme="dark"] .bg-white\/10 {
+  background-color: var(--color-surface-contrast) !important;
+  color: var(--color-text-secondary) !important;
+}
+
+[data-theme="dark"] .border-gray-100,
+[data-theme="dark"] .border-gray-200,
+[data-theme="dark"] .border-gray-300,
+[data-theme="dark"] .border-neutral-200,
+[data-theme="dark"] .border-neutral-300 {
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] .border-blue-200,
+[data-theme="dark"] .border-indigo-200,
+[data-theme="dark"] .border-slate-200 {
+  border-color: var(--color-border-strong) !important;
+}
+
+[data-theme="dark"] .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+[data-theme="dark"] .divide-gray-200 > :not([hidden]) ~ :not([hidden]),
+[data-theme="dark"] .divide-neutral-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] .text-gray-500,
+[data-theme="dark"] .text-neutral-500,
+[data-theme="dark"] .text-slate-500 {
+  color: var(--color-text-muted) !important;
+}
+
+[data-theme="dark"] .text-gray-600,
+[data-theme="dark"] .text-gray-700,
+[data-theme="dark"] .text-neutral-600,
+[data-theme="dark"] .text-neutral-700,
+[data-theme="dark"] .text-slate-600,
+[data-theme="dark"] .text-slate-700 {
+  color: var(--color-text-secondary) !important;
+}
+
+[data-theme="dark"] .text-gray-800,
+[data-theme="dark"] .text-gray-900,
+[data-theme="dark"] .text-black,
+[data-theme="dark"] .text-slate-800,
+[data-theme="dark"] .text-slate-900,
+[data-theme="dark"] .text-neutral-800,
+[data-theme="dark"] .text-neutral-900 {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .hover\:bg-gray-100:hover,
+[data-theme="dark"] .hover\:bg-gray-200:hover,
+[data-theme="dark"] .hover\:bg-slate-100:hover,
+[data-theme="dark"] .hover\:bg-white\/80:hover {
+  background-color: rgba(129, 140, 248, 0.18) !important;
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .shadow,
+[data-theme="dark"] .shadow-sm,
+[data-theme="dark"] .shadow-md,
+[data-theme="dark"] .shadow-lg {
+  box-shadow: var(--color-shadow-soft) !important;
 }
 
 /* Contenedor CRT */

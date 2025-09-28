@@ -54,6 +54,8 @@ const ColorSelector: React.FC<ColorSelectorProps> = React.memo(({
       <div key={color.id} className="flex justify-center items-center">
         <button
           className={`w-14 h-14 rounded-full border-2 ${color.color} ${
+            color.id === "white" ? "color-swatch-white" : ""
+          } ${
             selectedColorTapa.id === color.id ? "ring-2 ring-black" : ""
           }`}
           onClick={() => handleColorTapaSelect(color)}
@@ -66,6 +68,8 @@ const ColorSelector: React.FC<ColorSelectorProps> = React.memo(({
       <div key={color.id} className="flex justify-center items-center">
         <button
           className={`w-14 h-14 rounded-full border-2 ${color.color} ${
+            color.id === "white" ? "color-swatch-white" : ""
+          } ${
             selectedColorCase.id === color.id ? "ring-2 ring-black" : ""
           }`}
           onClick={() => handleColorCaseSelect(color)}

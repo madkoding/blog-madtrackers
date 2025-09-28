@@ -14,6 +14,7 @@ import GlobalProductStructuredData from "./_components/common/GlobalProductStruc
 import RecaptchaProvider from "./_components/RecaptchaProvider";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.madtrackers.com"),
   title: "madTrackers - Trackers SlimeVR Compatible Chile | Sensores de Movimiento VR",
   description: "Trackers SlimeVR Compatible fabricados en Chile. Sensores de movimiento inalámbricos para VRChat, full body tracking, batería ultra-duradera. Envíos a todo Chile.",
   keywords: "trackers slimevr compatible chile, sensores movimiento vr, vrchat chile, full body tracking chile, madtrackers, slimevr compatible chile, vr tracking chile",
@@ -66,10 +67,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): JSX.Element {
   return (
-    <html lang="en" className={`${exo2.variable} ${faustina.variable}`}>
+    <html lang="en" data-theme="dark" className={`${exo2.variable} ${faustina.variable} dark`}>
       <head>
         {/* CSS crítico inline para optimizar First Paint */}
         <CriticalCSS />
+
+        <Script id="preferred-color-scheme" strategy="beforeInteractive">
+          {`
+            (function() {
+              const root = document.documentElement;
+              const applyTheme = (isDark) => {
+                root.dataset.theme = isDark ? "dark" : "light";
+                root.classList.toggle("dark", isDark);
+              };
+
+              try {
+                const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+                applyTheme(mediaQuery.matches);
+
+                if (typeof mediaQuery.addEventListener === "function") {
+                  mediaQuery.addEventListener("change", (event) => applyTheme(event.matches));
+                } else if (typeof mediaQuery.addListener === "function") {
+                  mediaQuery.addListener((event) => applyTheme(event.matches));
+                }
+              } catch (error) {
+                // Fallback seguro para navegadores sin soporte de matchMedia
+                root.dataset.theme = "dark";
+                root.classList.add("dark");
+              }
+            })();
+          `}
+        </Script>
         
         {/* Preconnect para optimizar carga de recursos */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -142,7 +170,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="madTrackers" />
         <link rel="manifest" href="/favicon/site.webmanifest" />
       </head>
-      <body className={`leading-normal tracking-normal text-white gradient ${exo2.className}`}>
+      <body className={`leading-normal tracking-normal ${exo2.className} transition-colors duration-300`}>
         <ResourceOptimizer />
         <ConditionalAnalytics />
         <RecaptchaProvider>

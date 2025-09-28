@@ -91,7 +91,7 @@ export async function DELETE(request: NextRequest) {
       try {
         const body = await request.json();
         id = body?.id ?? body?.userId ?? body?.trackingId ?? null;
-      } catch (error) {
+      } catch {
         id = null;
       }
     }
