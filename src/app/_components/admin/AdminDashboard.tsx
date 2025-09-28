@@ -6,6 +6,306 @@ import { UserTracking } from "../../../interfaces/tracking";
 import { useAdminAuth } from "../../../hooks/useAdminAuth";
 import PriceCalculator from "./PriceCalculator";
 
+const DELIVERED_STATUSES = new Set(["received", "delivered"]);
+
+const COLOR_NAMES: Record<string, string> = {
+  black: "Negro",
+  white: "Blanco",
+  blue: "Azul",
+  red: "Rojo",
+  green: "Verde",
+  yellow: "Amarillo",
+  orange: "Naranjo",
+  purple: "Morado",
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  pending_payment: "💰 Pendiente de pago",
+  waiting: "⏳ En espera",
+  manufacturing: "🔧 Fabricando",
+  testing: "🧪 Probando",
+  shipping: "📦 Enviando",
+  received: "✅ Recibido",
+  delivered: "✅ Entregado",
+  production: "🔧 Producción",
+};
+
+const isDeliveredStatus = (estadoPedido?: string | null): boolean => {
+  if (!estadoPedido) return false;
+  return DELIVERED_STATUSES.has(estadoPedido.toLowerCase());
+};
+
+const getColorName = (colorKey?: string | null): string => {
+  if (!colorKey) return "-";
+  return COLOR_NAMES[colorKey] ?? colorKey;
+};
+
+const getStatusLabel = (estadoPedido?: string | null): string => {
+  if (!estadoPedido) return "-";
+  const normalized = estadoPedido.toLowerCase();
+  return STATUS_LABELS[normalized] ?? estadoPedido;
+};
+
+const getUserInitial = (nombre?: string | null): string => {
+  return nombre?.charAt(0).toUpperCase() ?? "?";
+};
+
+const getUserDisplayName = (user: UserTracking): string => {
+  return (
+    user.nombreUsuario ||
+    user.contacto ||
+    user.userHash ||
+    (user.id ? `ID ${user.id}` : null) ||
+    "este usuario"
+  );
+};
+
+const formatDateTime = (value?: string | null): string => {
+  if (!value) return "-";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat('es-CL', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date);
+};
+
+const calculateRemainingDays = (fechaEntrega?: string | null): string => {
+  if (!fechaEntrega) return "-";
+  const hoy = new Date();
+  const entrega = new Date(fechaEntrega);
+  const diff = Math.ceil(
+    (entrega.setHours(0, 0, 0, 0) - hoy.setHours(0, 0, 0, 0)) /
+      (1000 * 60 * 60 * 24)
+  );
+  return diff > 0 ? String(diff) : "0";
+};
+
+interface PaymentInfo {
+  faltanFormatted: string;
+  porcentajePago: number;
+  total: number;
+  abonado: number;
+  isComplete: boolean;
+}
+
+const calculatePaymentInfo = (user: UserTracking): PaymentInfo => {
+  const total = user.totalUsd ?? (user.total ? user.total / 1000 : 0);
+  const abonado = user.abonadoUsd ?? (user.abonado ? user.abonado / 1000 : 0);
+  const faltan = Math.max(0, total - abonado);
+  const porcentajePago = total > 0 ? Math.min(100, (abonado / total) * 100) : 0;
+
+  return {
+    faltanFormatted: faltan.toFixed(2),
+    porcentajePago,
+    total,
+    abonado,
+    isComplete: faltan === 0,
+  };
+};
+
+const calculateManufacturingProgress = (user: UserTracking): number => {
+  if (!user.porcentajes) return 0;
+  const {
+    placa = 0,
+    straps = 0,
+    cases = 0,
+    baterias = 0,
+  } = user.porcentajes;
+  const promedio = (placa + straps + cases + baterias) / 4;
+  return Math.max(0, Math.min(100, promedio));
+};
+
+const getPaymentProgressColor = (percentage: number): string => {
+  if (percentage >= 100) return "bg-green-500";
+  if (percentage >= 75) return "bg-blue-500";
+  if (percentage >= 50) return "bg-yellow-500";
+  return "bg-red-500";
+};
+
+const getManufacturingProgressColor = (percentage: number): string => {
+  if (percentage >= 100) return "bg-green-500";
+  if (percentage >= 75) return "bg-blue-500";
+  if (percentage >= 50) return "bg-yellow-500";
+  if (percentage >= 25) return "bg-orange-500";
+  return "bg-red-500";
+};
+
+const getUserKey = (user: UserTracking): string => {
+  if (user.id !== undefined && user.id !== null) return String(user.id);
+  if (user.userHash) return user.userHash;
+  if (user.contacto) return user.contacto;
+  if (user.nombreUsuario) return user.nombreUsuario;
+  return "unknown-user";
+};
+
+interface UserTableRowProps {
+  user: UserTracking;
+  onEdit: (userIdentifier: string) => void;
+  onDelete: (user: UserTracking) => void;
+  isDeleting: boolean;
+}
+
+const UserTableRow = React.memo(({ user, onEdit, onDelete, isDeleting }: UserTableRowProps) => {
+  const paymentInfo = calculatePaymentInfo(user);
+  const manufacturingProgress = calculateManufacturingProgress(user);
+  const paymentBarColor = getPaymentProgressColor(paymentInfo.porcentajePago);
+  const manufacturingBarColor = getManufacturingProgressColor(
+    manufacturingProgress
+  );
+  const remainingDays = calculateRemainingDays(user.fechaEntrega);
+  const statusLabel = getStatusLabel(user.estadoPedido);
+  const userInitial = getUserInitial(user.nombreUsuario);
+  const trackersCount = user.numeroTrackers ?? 0;
+  const userIdentifier = String(user.userHash ?? user.id ?? "");
+  const canEdit = Boolean(userIdentifier);
+  const trackingId = user.userHash ?? user.id;
+  const trackingLink = trackingId ? `/seguimiento/${trackingId}` : null;
+  const isFullyPaid = paymentInfo.isComplete;
+  const canDelete = Boolean(user.id);
+  const paymentDateDisplay = formatDateTime(
+    user.paymentCompletedAt ?? user.createdAt
+  );
+
+  return (
+    <tr className="hover:bg-gray-50">
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="flex items-center">
+          <div className="flex-shrink-0 h-10 w-10">
+            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <span className="text-blue-600 font-medium">{userInitial}</span>
+            </div>
+          </div>
+          <div className="ml-4">
+            <div
+              className="text-sm font-medium text-gray-900"
+              style={
+                isFullyPaid
+                  ? { color: "#16a34a", fontWeight: 700 }
+                  : undefined
+              }
+            >
+              {user.nombreUsuario ?? "Sin nombre"}
+            </div>
+            <div className="text-xs text-gray-500">
+              {`${trackersCount} tracker${trackersCount !== 1 ? "s" : ""}`}
+            </div>
+            <div className="text-xs text-gray-400">{user.sensor ?? "-"}</div>
+            <div className="text-xs text-gray-400">{user.paisEnvio ?? "-"}</div>
+            <div className="text-xs text-gray-400">Pago: {paymentDateDisplay}</div>
+          </div>
+        </div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="flex items-center gap-2">
+          <span
+            style={{ backgroundColor: user.colorCase || "#eee" }}
+            className="inline-block w-5 h-5 rounded-full border border-gray-300"
+          ></span>
+          <span className="text-xs text-gray-700">{getColorName(user.colorCase)}</span>
+        </div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="flex items-center gap-2">
+          <span
+            style={{ backgroundColor: user.colorTapa || "#eee" }}
+            className="inline-block w-5 h-5 rounded-full border border-gray-300"
+          ></span>
+          <span className="text-xs text-gray-700">{getColorName(user.colorTapa)}</span>
+        </div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="text-sm text-gray-900">{remainingDays}</div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div>
+          {paymentInfo.faltanFormatted === "0.00" ? (
+            <span className="text-green-600 font-bold">completo</span>
+          ) : (
+            <div className="text-sm text-gray-900">
+              ${paymentInfo.faltanFormatted}
+            </div>
+          )}
+          <div className="mt-1">
+            <div className="flex items-center">
+              <div className="flex-1 mr-2">
+                <div className="w-full bg-gray-200 rounded-full h-1">
+                  <div
+                    className={`h-1 rounded-full transition-all duration-300 ${paymentBarColor}`}
+                    style={{ width: `${paymentInfo.porcentajePago}%` }}
+                  ></div>
+                </div>
+              </div>
+              <span className="text-xs text-gray-500">
+                {paymentInfo.porcentajePago.toFixed(0)}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div>
+          <div className="text-xs text-gray-600 mb-1">{statusLabel}</div>
+          <div className="flex items-center">
+            <div className="flex-1 mr-2">
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all duration-300 ${manufacturingBarColor}`}
+                  style={{ width: `${manufacturingProgress}%` }}
+                ></div>
+              </div>
+            </div>
+            <span className="text-xs text-gray-600 min-w-[35px]">
+              {manufacturingProgress.toFixed(0)}%
+            </span>
+          </div>
+        </div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={() => canEdit && onEdit(userIdentifier)}
+            disabled={!canEdit || isDeleting}
+            className={`bg-blue-600 text-white px-3 py-1 rounded transition-colors ${
+              canEdit && !isDeleting
+                ? "hover:bg-blue-700"
+                : "opacity-60 cursor-not-allowed"
+            }`}
+          >
+            ✏️ Editar
+          </button>
+          <button
+            onClick={() => canDelete && !isDeleting && onDelete(user)}
+            disabled={!canDelete || isDeleting}
+            className={`bg-red-600 text-white px-3 py-1 rounded transition-colors ${
+              canDelete && !isDeleting
+                ? "hover:bg-red-700"
+                : "opacity-60 cursor-not-allowed"
+            }`}
+          >
+            {isDeleting ? "Eliminando..." : "🗑️ Eliminar"}
+          </button>
+          <a
+            href={trackingLink ?? "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled={!trackingLink}
+            className={`bg-gray-600 text-white px-3 py-1 rounded transition-colors ${
+              trackingLink ? "hover:bg-gray-700" : "opacity-60 cursor-not-allowed"
+            }`}
+          >
+            👁️ Ver
+          </a>
+        </div>
+      </td>
+    </tr>
+  );
+});
+
+UserTableRow.displayName = "UserTableRow";
+
 const AdminDashboard = React.memo(() => {
   const router = useRouter();
   
@@ -18,6 +318,8 @@ const AdminDashboard = React.memo(() => {
   const [addingUser, setAddingUser] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState<'active' | 'received'>("active");
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const hasLoadedRef = useRef(false);
 
   // Memoizar función loadUsers para evitar re-creaciones innecesarias
@@ -74,19 +376,105 @@ const AdminDashboard = React.memo(() => {
     router.push(`/admin/seguimiento/${userIdentifier}`);
   }, [router]);
 
-  // Memoizar filtrado de usuarios para evitar cálculos innecesarios
-  const filteredUsers = useMemo(() => 
-    users.filter(user =>
-      user.nombreUsuario?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.contacto?.toLowerCase().includes(searchTerm.toLowerCase())
-    ), [users, searchTerm]);
+  const handleDeleteUser = useCallback(async (user: UserTracking) => {
+    const userId = user.id;
+    if (!userId) {
+      setError('No es posible eliminar un usuario sin identificador.');
+      return;
+    }
 
-  // Memoizar estadísticas para evitar cálculos en cada render
-  const statistics = useMemo(() => ({
+    if (typeof window !== 'undefined') {
+      const displayName = getUserDisplayName(user);
+      const confirmed = window.confirm(
+        `¿Eliminar definitivamente a ${displayName}? Esta acción no se puede deshacer.`
+      );
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    setDeletingUserId(userId);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/admin/users?id=${encodeURIComponent(userId)}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('madtrackers_jwt')}`,
+        },
+      });
+
+      if (response.status === 401) {
+        handleLogout();
+        return;
+      }
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error ?? 'Error al eliminar el usuario');
+      }
+
+      setUsers((prev) => prev.filter((item) => item.id !== userId));
+    } catch (err) {
+      console.error('Error deleting user:', err);
+      setError(err instanceof Error ? err.message : 'Error desconocido al eliminar');
+    } finally {
+      setDeletingUserId(null);
+    }
+  }, [handleLogout]);
+
+  const usersByStatus = useMemo(() => {
+    const activeList: UserTracking[] = [];
+    const deliveredList: UserTracking[] = [];
+
+    users.forEach((user) => {
+      if (isDeliveredStatus(user.estadoPedido)) {
+        deliveredList.push(user);
+      } else {
+        activeList.push(user);
+      }
+    });
+
+    return {
+      active: activeList,
+      delivered: deliveredList,
+    };
+  }, [users]);
+
+  const { active: activeUsers, delivered: deliveredUsers } = usersByStatus;
+
+  const filteredUsers = useMemo(() => {
+    const pool = activeTab === 'active' ? activeUsers : deliveredUsers;
+
+    if (!searchTerm) {
+      return pool;
+    }
+
+    const normalizedTerm = searchTerm.toLowerCase();
+
+    return pool.filter(
+      (user) =>
+        user.nombreUsuario?.toLowerCase().includes(normalizedTerm) ||
+        user.contacto?.toLowerCase().includes(normalizedTerm)
+    );
+  }, [activeTab, activeUsers, deliveredUsers, searchTerm]);
+
+  const statistics = {
     total: users.length,
-    active: users.filter(u => u.estadoPedido !== 'received').length,
-    delivered: users.filter(u => u.estadoPedido === 'received').length
-  }), [users]);
+    active: activeUsers.length,
+    delivered: deliveredUsers.length,
+  };
+
+  const emptyStateMessage = useMemo(() => {
+    if (searchTerm) return 'No se encontraron usuarios que coincidan con la búsqueda';
+    return activeTab === 'active'
+      ? 'No hay usuarios pendientes de entrega'
+      : 'No hay usuarios marcados como recibidos';
+  }, [searchTerm, activeTab]);
+
+  const handleTabChange = useCallback((tab: 'active' | 'received') => {
+    setActiveTab(tab);
+  }, []);
 
   if (isLoading) {
     return (
@@ -218,6 +606,28 @@ const AdminDashboard = React.memo(() => {
           {/* Lista de usuarios */}
           {!loading && !error && (
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="flex flex-wrap gap-2 bg-gray-50 border-b border-gray-200 px-4 py-2">
+                <button
+                  onClick={() => handleTabChange('active')}
+                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
+                    activeTab === 'active'
+                      ? 'bg-white text-blue-600 border border-b-white border-blue-200 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white border border-transparent'
+                  }`}
+                >
+                  Pendientes ({statistics.active})
+                </button>
+                <button
+                  onClick={() => handleTabChange('received')}
+                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
+                    activeTab === 'received'
+                      ? 'bg-white text-blue-600 border border-b-white border-blue-200 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-white border border-transparent'
+                  }`}
+                >
+                  Entregados ({statistics.delivered})
+                </button>
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50">
@@ -235,179 +645,19 @@ const AdminDashboard = React.memo(() => {
                     {filteredUsers.length === 0 ? (
                       <tr>
                         <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
-                          {searchTerm ? 'No se encontraron usuarios que coincidan con la búsqueda' : 'No hay usuarios registrados'}
+                          {emptyStateMessage}
                         </td>
                       </tr>
                     ) : (
-                      filteredUsers.map((user) => {
-                        // Calcular días restantes
-                        let diasRestantes = '-';
-                        if (user.fechaEntrega) {
-                          const hoy = new Date();
-                          const entrega = new Date(user.fechaEntrega);
-                          const diff = Math.ceil((entrega.setHours(0,0,0,0) - hoy.setHours(0,0,0,0)) / (1000 * 60 * 60 * 24));
-                          diasRestantes = diff > 0 ? String(diff) : '0';
-                        }
-                        // Calcular faltan
-                        const total = user.totalUsd ?? (user.total ? user.total / 1000 : 0);
-                        const abonado = user.abonadoUsd ?? (user.abonado ? user.abonado / 1000 : 0);
-                        const faltan = Math.max(0, total - abonado).toFixed(2);
-                        
-                        // Calcular porcentaje de progreso
-                        const porcentajeProgreso = total > 0 ? Math.min(100, (abonado / total) * 100) : 0;
-                        
-                        // Calcular progreso de fabricación
-                        const progresoFabricacion = user.porcentajes ? 
-                          ((user.porcentajes.placa + user.porcentajes.straps + user.porcentajes.cases + user.porcentajes.baterias) / 4) : 0;
-                        
-                        // Función para obtener el nombre del color
-                        const getColorName = (colorKey: string): string => {
-                          if (!colorKey) return '-';
-                          const colorMap: Record<string, string> = {
-                            black: 'Negro',
-                            white: 'Blanco',
-                            blue: 'Azul',
-                            red: 'Rojo',
-                            green: 'Verde',
-                            yellow: 'Amarillo',
-                            orange: 'Naranjo',
-                            purple: 'Morado'
-                          };
-                          return colorMap.hasOwnProperty(colorKey) ? colorMap[colorKey] : colorKey;
-                        };
-                        return (
-                          <tr key={user.id} className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10">
-                                  <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <span className="text-blue-600 font-medium">
-                                      {user.nombreUsuario.charAt(0).toUpperCase()}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900"
-  style={user.abonadoUsd && user.totalUsd && user.abonadoUsd >= user.totalUsd ? { color: '#16a34a', fontWeight: 700 } : {}}>
-  {user.nombreUsuario}
-</div>
-                                  <div className="text-xs text-gray-500">
-                                    {user.numeroTrackers} tracker{user.numeroTrackers !== 1 ? 's' : ''}
-                                  </div>
-                                  <div className="text-xs text-gray-400">
-                                    {user.sensor ?? '-'}
-                                  </div>
-                                  <div className="text-xs text-gray-400">
-                                    {user.paisEnvio ?? '-'}
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center gap-2">
-                                <span style={{backgroundColor: user.colorCase || '#eee'}} className="inline-block w-5 h-5 rounded-full border border-gray-300"></span>
-                                <span className="text-xs text-gray-700">{getColorName(user.colorCase)}</span>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center gap-2">
-                                <span style={{backgroundColor: user.colorTapa || '#eee'}} className="inline-block w-5 h-5 rounded-full border border-gray-300"></span>
-                                <span className="text-xs text-gray-700">{getColorName(user.colorTapa)}</span>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{diasRestantes}</div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div>
-                                {faltan === '0.00' ? (
-                                  <span className="text-green-600 font-bold">completo</span>
-                                ) : (
-                                  <div className="text-sm text-gray-900">${faltan}</div>
-                                )}
-                                {/* Progreso de pago */}
-                                <div className="mt-1">
-                                  <div className="flex items-center">
-                                    <div className="flex-1 mr-2">
-                                      <div className="w-full bg-gray-200 rounded-full h-1">
-                                        <div 
-                                          className={`h-1 rounded-full transition-all duration-300 ${
-                                            porcentajeProgreso === 100 
-                                              ? 'bg-green-500' 
-                                              : porcentajeProgreso >= 75 
-                                                ? 'bg-blue-500' 
-                                                : porcentajeProgreso >= 50 
-                                                  ? 'bg-yellow-500' 
-                                                  : 'bg-red-500'
-                                          }`}
-                                          style={{ width: `${porcentajeProgreso}%` }}
-                                        ></div>
-                                      </div>
-                                    </div>
-                                    <span className="text-xs text-gray-500">
-                                      {porcentajeProgreso.toFixed(0)}%
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div>
-                                {/* Estado del pedido */}
-                                <div className="text-xs text-gray-600 mb-1">
-                                  {user.estadoPedido === 'waiting' && '⏳ En espera'}
-                                  {user.estadoPedido === 'manufacturing' && '🔧 Fabricando'}
-                                  {user.estadoPedido === 'testing' && '🧪 Probando'}
-                                  {user.estadoPedido === 'shipping' && '📦 Enviando'}
-                                  {user.estadoPedido === 'received' && '✅ Recibido'}
-                                  {user.estadoPedido === 'DELIVERED' && '✅ Entregado'}
-                                  {user.estadoPedido === 'PRODUCTION' && '🔧 Producción'}
-                                </div>
-                                {/* Progreso de fabricación */}
-                                <div className="flex items-center">
-                                  <div className="flex-1 mr-2">
-                                    <div className="w-full bg-gray-200 rounded-full h-2">
-                                      <div 
-                                        className={`h-2 rounded-full transition-all duration-300 ${
-                                          progresoFabricacion === 100 
-                                            ? 'bg-green-500' 
-                                            : progresoFabricacion >= 75 
-                                              ? 'bg-blue-500' 
-                                              : progresoFabricacion >= 50 
-                                                ? 'bg-yellow-500' 
-                                                : progresoFabricacion >= 25
-                                                  ? 'bg-orange-500'
-                                                  : 'bg-red-500'
-                                        }`}
-                                        style={{ width: `${progresoFabricacion}%` }}
-                                      ></div>
-                                    </div>
-                                  </div>
-                                  <span className="text-xs text-gray-600 min-w-[35px]">
-                                    {progresoFabricacion.toFixed(0)}%
-                                  </span>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <button
-                                onClick={() => handleEditUser(user.userHash ?? user.id ?? '')}
-                                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors mr-2"
-                              >
-                                ✏️ Editar
-                              </button>
-                              <a
-                                href={`/seguimiento/${user.userHash ?? user.id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors"
-                              >
-                                👁️ Ver
-                              </a>
-                            </td>
-                          </tr>
-                        );
-                      })
+                      filteredUsers.map((user) => (
+                        <UserTableRow
+                          key={getUserKey(user)}
+                          user={user}
+                          onEdit={handleEditUser}
+                          onDelete={handleDeleteUser}
+                          isDeleting={Boolean(user.id && deletingUserId === user.id)}
+                        />
+                      ))
                     )}
                   </tbody>
                 </table>

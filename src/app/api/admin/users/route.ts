@@ -76,3 +76,53 @@ export async function POST(request: NextRequest) {
     });
   }
 }
+
+// DELETE - Eliminar un usuario existente
+export async function DELETE(request: NextRequest) {
+  try {
+    const auth = validateApiKeyOrJWT(request, 'admin');
+    if (!auth.valid) {
+      return jwtUnauthorizedResponse(auth.message);
+    }
+
+    let id = request.nextUrl.searchParams.get('id');
+
+    if (!id) {
+      try {
+        const body = await request.json();
+        id = body?.id ?? body?.userId ?? body?.trackingId ?? null;
+      } catch (error) {
+        id = null;
+      }
+    }
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'El parámetro id es obligatorio para eliminar un usuario' },
+        {
+          status: 400,
+          headers: corsHeaders,
+        }
+      );
+    }
+
+    await FirebaseTrackingService.deleteTracking(id);
+
+    return NextResponse.json(
+      { message: 'Usuario eliminado correctamente' },
+      {
+        status: 200,
+        headers: corsHeaders,
+      }
+    );
+  } catch (error) {
+    console.error('DELETE /api/admin/users error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      {
+        status: 500,
+        headers: corsHeaders,
+      }
+    );
+  }
+}
