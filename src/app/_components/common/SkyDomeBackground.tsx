@@ -57,8 +57,8 @@ const SkyDomeBackground = () => {
       camera = new THREE.PerspectiveCamera(55, width / height || 1, 0.1, 200);
       camera.position.set(0, 0, 28);
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setPixelRatio(window.devicePixelRatio);
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.max(window.devicePixelRatio * 0.25, 0.25));
       renderer.setSize(width, height, false);
       renderer.setClearColor(0x000000, 0);
       renderer.toneMappingExposure = 1.1;

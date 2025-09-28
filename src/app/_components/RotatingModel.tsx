@@ -37,6 +37,8 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
         const width = container.offsetWidth;
         const height = container.offsetHeight;
         rendererRef.current.setSize(width, height, false);
+        const pixelRatio = Math.max(window.devicePixelRatio * 0.5, 0.5);
+        rendererRef.current.setPixelRatio(pixelRatio);
         rendererRef.current.domElement.style.width = '100%';
         rendererRef.current.domElement.style.height = '100%';
         cameraRef.current.aspect = width / height;
@@ -141,10 +143,10 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       preserveDrawingBuffer: true
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    const pixelRatio = Math.max(window.devicePixelRatio * 0.35, 0.35);
+    renderer.setPixelRatio(pixelRatio);
     renderer.setClearColor(0x000000, 0);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = false;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -183,9 +185,7 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     directionalLight.position.set(2, 2, 2);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 1024;
-    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.castShadow = false;
     scene.add(directionalLight);
   }
 
@@ -221,8 +221,6 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       }
     });
     fbx.position.set(0, 0, 0);
-    fbx.castShadow = true;
-    fbx.receiveShadow = true;
   }
 
   // Refactorización de applyMaterials para reducir complejidad
@@ -236,8 +234,6 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     fbx.traverse((child: import('three').Object3D) => {
       if ((child as import('three').Mesh).isMesh) {
         const mesh = child as import('three').Mesh;
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
             mesh.material = mesh.material.map((mat, index: number) => {
