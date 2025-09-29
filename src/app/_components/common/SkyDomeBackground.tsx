@@ -110,7 +110,7 @@ const SkyDomeBackground = () => {
       frameSamples.push(fps);
 
       const now = typeof performance !== "undefined" ? performance.now() : Date.now();
-      if (frameSamples.length < sampleSize || now - state.lastAdjust <= 1000) {
+      if (frameSamples.length < sampleSize || now - state.lastAdjust <= 1500) {
         return;
       }
 
@@ -118,12 +118,15 @@ const SkyDomeBackground = () => {
       const lowFpsFrames = frameSamples.filter((value) => value < 30).length;
       const highFpsFrames = frameSamples.filter((value) => value > 55).length;
 
-      if ((averageFps < 30 || lowFpsFrames > sampleSize * 0.3) && state.current - state.min > 0.01) {
-        const reductionStep = Math.max(state.current * 0.15, 0.05);
+      const sustainedLowFps = averageFps < 28 || lowFpsFrames > sampleSize * 0.5;
+      const sustainedHighFps = averageFps > 42 || highFpsFrames > sampleSize * 0.4;
+
+      if (sustainedLowFps && state.current - state.min > 0.01) {
+        const reductionStep = Math.max(state.current * 0.1, 0.04);
         updateRendererPixelRatio(instance, state.current - reductionStep);
         frameSamples.length = 0;
-      } else if (averageFps > 45 && highFpsFrames > sampleSize * 0.6 && state.current < state.max - 0.01) {
-        const increaseStep = Math.max(state.current * 0.1, 0.05);
+      } else if (sustainedHighFps && state.current < state.max - 0.01) {
+        const increaseStep = Math.max(state.current * 0.08, 0.04);
         updateRendererPixelRatio(instance, state.current + increaseStep);
         frameSamples.length = 0;
       }
