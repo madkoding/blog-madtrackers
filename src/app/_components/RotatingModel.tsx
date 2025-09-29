@@ -289,7 +289,7 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       preserveDrawingBuffer: true
     });
     renderer.setSize(width, height);
-    const deviceRatio = Math.max(window.devicePixelRatio * 0.35, 0.35);
+    const deviceRatio = Math.max(window.devicePixelRatio, 1);
     const state = pixelRatioStateRef.current;
     state.base = deviceRatio;
     state.max = deviceRatio;
