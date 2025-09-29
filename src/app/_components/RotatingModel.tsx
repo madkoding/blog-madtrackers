@@ -89,15 +89,13 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
         const width = container.offsetWidth;
         const height = container.offsetHeight;
         rendererRef.current.setSize(width, height, false);
-        const deviceRatio = Math.max(window.devicePixelRatio * 0.35, 0.35);
+        const deviceRatio = Math.min(Math.max(window.devicePixelRatio, 1), 3);
         const state = pixelRatioStateRef.current;
         if (Math.abs(deviceRatio - state.base) > 0.05) {
           state.base = deviceRatio;
           state.max = deviceRatio;
-          state.min = Math.max(deviceRatio * 0.4, 0.25);
-          if (state.current > state.max) {
-            state.current = state.max;
-          }
+          state.min = Math.max(deviceRatio * 0.9, 0.9);
+          state.current = Math.min(state.max, Math.max(state.min, state.current));
         }
         const targetRatio = Math.min(state.max, Math.max(state.min, state.current));
         updateRendererPixelRatio(rendererRef.current, targetRatio, { width, height, force: true });
@@ -212,17 +210,17 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     }
 
     const averageFps = frameSamples.reduce((acc, value) => acc + value, 0) / frameSamples.length;
-    const lowFpsFrames = frameSamples.filter((value) => value < 30).length;
-    const highFpsFrames = frameSamples.filter((value) => value > 55).length;
-    const sustainedLowFps = averageFps < 28 || lowFpsFrames > sampleSize * 0.5;
-    const sustainedHighFps = averageFps > 42 || highFpsFrames > sampleSize * 0.4;
+    const lowFpsFrames = frameSamples.filter((value) => value < 20).length;
+    const highFpsFrames = frameSamples.filter((value) => value > 30).length;
+    const sustainedLowFps = averageFps < 20 || lowFpsFrames > sampleSize * 0.7;
+    const sustainedHighFps = averageFps > 30 || highFpsFrames > sampleSize * 0.4;
 
-    if (sustainedLowFps && state.current - state.min > 0.01) {
-      const reductionStep = Math.max(state.current * 0.1, 0.04);
+    if (sustainedLowFps && state.current - state.min > 0.03) {
+      const reductionStep = Math.max(state.current * 0.05, 0.03);
       updateRendererPixelRatio(renderer, state.current - reductionStep);
       frameSamples.length = 0;
     } else if (sustainedHighFps && state.current < state.max - 0.01) {
-      const increaseStep = Math.max(state.current * 0.08, 0.04);
+      const increaseStep = Math.max(state.current * 0.06, 0.03);
       updateRendererPixelRatio(renderer, state.current + increaseStep);
       frameSamples.length = 0;
     }
@@ -242,12 +240,12 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       preserveDrawingBuffer: true
     });
     renderer.setSize(width, height);
-    const deviceRatio = Math.max(window.devicePixelRatio, 1);
+  const deviceRatio = Math.min(Math.max(window.devicePixelRatio, 1), 3);
     const state = pixelRatioStateRef.current;
     state.base = deviceRatio;
     state.max = deviceRatio;
-    state.min = Math.max(deviceRatio * 0.4, 0.25);
-    state.current = deviceRatio;
+  state.min = Math.max(deviceRatio * 0.9, 0.9);
+  state.current = Math.min(state.max, Math.max(state.min, deviceRatio));
     state.lastAdjust = typeof performance !== 'undefined' ? performance.now() : Date.now();
     updateRendererPixelRatio(renderer, deviceRatio, { width, height, force: true });
     renderer.setClearColor(0x000000, 0);
@@ -467,6 +465,10 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       loadEnvironment(RGBELoader, THREE, scene);
       addLights(THREE, scene);
       const normalTexture = loadNormalTexture(THREE, normalTextureRef);
+      if (normalTexture && renderer.capabilities?.getMaxAnisotropy) {
+        normalTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        normalTexture.needsUpdate = true;
+      }
       
       // Configurar controles de órbita
       const controls = setupOrbitControls(OrbitControls, camera, renderer);

@@ -115,18 +115,19 @@ const SkyDomeBackground = () => {
       }
 
       const averageFps = frameSamples.reduce((acc, value) => acc + value, 0) / frameSamples.length;
-      const lowFpsFrames = frameSamples.filter((value) => value < 30).length;
+      const lowFpsFrames = frameSamples.filter((value) => value < 26).length;
       const highFpsFrames = frameSamples.filter((value) => value > 55).length;
 
-      const sustainedLowFps = averageFps < 28 || lowFpsFrames > sampleSize * 0.5;
-      const sustainedHighFps = averageFps > 42 || highFpsFrames > sampleSize * 0.4;
+      const sustainedLowFps = averageFps < 24 || lowFpsFrames > sampleSize * 0.7;
+      const sustainedHighFps = averageFps > 48 || highFpsFrames > sampleSize * 0.4;
 
-      if (sustainedLowFps && state.current - state.min > 0.01) {
-        const reductionStep = Math.max(state.current * 0.1, 0.04);
+
+      if (sustainedLowFps && state.current - state.min > 0.03) {
+        const reductionStep = Math.max(state.current * 0.05, 0.03);
         updateRendererPixelRatio(instance, state.current - reductionStep);
         frameSamples.length = 0;
       } else if (sustainedHighFps && state.current < state.max - 0.01) {
-        const increaseStep = Math.max(state.current * 0.08, 0.04);
+        const increaseStep = Math.max(state.current * 0.06, 0.03);
         updateRendererPixelRatio(instance, state.current + increaseStep);
         frameSamples.length = 0;
       }
@@ -138,20 +139,20 @@ const SkyDomeBackground = () => {
       const THREE = await import("three");
       if (!mounted || !containerRef.current) return;
 
-      const container = containerRef.current;
-      const { clientWidth: width, clientHeight: height } = container;
+    const container = containerRef.current;
+    const { clientWidth: width, clientHeight: height } = container;
 
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(55, width / height || 1, 0.1, 200);
       camera.position.set(0, 0, 28);
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      const deviceRatio = Math.max(window.devicePixelRatio, 1);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const deviceRatio = Math.min(Math.max(window.devicePixelRatio, 1), 3);
       const state = pixelRatioStateRef.current;
       state.base = deviceRatio;
       state.max = deviceRatio;
-      state.min = Math.max(deviceRatio * 0.4, 0.2);
-      state.current = deviceRatio;
+    state.min = Math.max(deviceRatio * 0.9, 0.9);
+    state.current = Math.min(state.max, Math.max(state.min, deviceRatio));
       state.lastAdjust = typeof performance !== "undefined" ? performance.now() : Date.now();
       updateRendererPixelRatio(renderer, deviceRatio, { width, height, force: true });
       renderer.setClearColor(0x000000, 0);
