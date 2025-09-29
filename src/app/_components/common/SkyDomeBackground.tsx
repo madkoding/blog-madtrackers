@@ -11,7 +11,6 @@ const SkyDomeBackground = () => {
     max: 0.5,
     lastAdjust: 0
   });
-  const longTaskObserverRef = useRef<PerformanceObserver | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -24,9 +23,9 @@ const SkyDomeBackground = () => {
     let wireframe: import("three").LineSegments<import("three").WireframeGeometry, import("three").LineBasicMaterial> | null = null;
     let glowSphere: import("three").Mesh<import("three").SphereGeometry, import("three").MeshBasicMaterial> | null = null;
     let starField: import("three").Points<import("three").BufferGeometry, import("three").PointsMaterial> | null = null;
-  const frameSamples: number[] = [];
-  const sampleSize = 60;
-  let lastFrameTime = typeof performance !== "undefined" ? performance.now() : Date.now();
+    const frameSamples: number[] = [];
+    const sampleSize = 60;
+    let lastFrameTime = typeof performance !== "undefined" ? performance.now() : Date.now();
 
     const cleanup = () => {
       if (animationFrameId) {
@@ -35,15 +34,9 @@ const SkyDomeBackground = () => {
       if (resizeObserver) {
         resizeObserver.disconnect();
       }
-      if (longTaskObserverRef.current) {
-        longTaskObserverRef.current.disconnect();
-        longTaskObserverRef.current = null;
-      }
       if (renderer) {
         renderer.dispose();
-        if (renderer.domElement && renderer.domElement.parentNode) {
-          renderer.domElement.parentNode.removeChild(renderer.domElement);
-        }
+        renderer.domElement?.parentNode?.removeChild(renderer.domElement);
       }
       if (wireframe) {
         wireframe.geometry.dispose();
@@ -109,74 +102,30 @@ const SkyDomeBackground = () => {
         return;
       }
 
+      const fps = 1000 / delta;
       const state = pixelRatioStateRef.current;
       if (frameSamples.length >= sampleSize) {
         frameSamples.shift();
       }
-      frameSamples.push(delta);
+      frameSamples.push(fps);
 
       const now = typeof performance !== "undefined" ? performance.now() : Date.now();
       if (frameSamples.length < sampleSize || now - state.lastAdjust <= 1000) {
         return;
       }
 
-      const average = frameSamples.reduce((acc, value) => acc + value, 0) / frameSamples.length;
-      const slowFrames = frameSamples.filter((value) => value > 48).length;
-      const fastFrames = frameSamples.filter((value) => value < 24).length;
+      const averageFps = frameSamples.reduce((acc, value) => acc + value, 0) / frameSamples.length;
+      const lowFpsFrames = frameSamples.filter((value) => value < 30).length;
+      const highFpsFrames = frameSamples.filter((value) => value > 55).length;
 
-      if ((average > 40 || slowFrames > sampleSize * 0.3) && state.current - state.min > 0.01) {
+      if ((averageFps < 30 || lowFpsFrames > sampleSize * 0.3) && state.current - state.min > 0.01) {
         const reductionStep = Math.max(state.current * 0.15, 0.05);
         updateRendererPixelRatio(instance, state.current - reductionStep);
         frameSamples.length = 0;
-      } else if (average < 24 && fastFrames > sampleSize * 0.6 && state.current < state.max - 0.01) {
+      } else if (averageFps > 45 && highFpsFrames > sampleSize * 0.6 && state.current < state.max - 0.01) {
         const increaseStep = Math.max(state.current * 0.1, 0.05);
         updateRendererPixelRatio(instance, state.current + increaseStep);
         frameSamples.length = 0;
-      }
-    }
-
-    function setupPerformanceMonitoring(instance: import("three").WebGLRenderer) {
-      if (typeof PerformanceObserver === "undefined") {
-        return;
-      }
-
-      const supportedEntryTypes = (PerformanceObserver as unknown as { supportedEntryTypes?: string[] }).supportedEntryTypes;
-      if (supportedEntryTypes && !supportedEntryTypes.includes("longtask")) {
-        return;
-      }
-
-      if (longTaskObserverRef.current) {
-        longTaskObserverRef.current.disconnect();
-        longTaskObserverRef.current = null;
-      }
-
-      try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const heavyTasks = entries.filter((entry) => entry.duration > 70);
-
-          if (!heavyTasks.length) {
-            return;
-          }
-
-          const state = pixelRatioStateRef.current;
-          if (!instance) {
-            return;
-          }
-
-          const now = typeof performance !== "undefined" ? performance.now() : Date.now();
-          if (now - state.lastAdjust < 700) {
-            return;
-          }
-
-          const reductionStep = Math.max(state.current * 0.15, 0.05);
-          updateRendererPixelRatio(instance, state.current - reductionStep);
-        });
-
-        observer.observe({ entryTypes: ["longtask"] });
-        longTaskObserverRef.current = observer;
-      } catch {
-        // Ignorar si el navegador no soporta completamente Long Tasks
       }
     }
 
@@ -194,7 +143,7 @@ const SkyDomeBackground = () => {
       camera.position.set(0, 0, 28);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      const deviceRatio = Math.max(window.devicePixelRatio * 0.35, 0.25);
+      const deviceRatio = Math.max(window.devicePixelRatio, 1);
       const state = pixelRatioStateRef.current;
       state.base = deviceRatio;
       state.max = deviceRatio;
@@ -215,7 +164,6 @@ const SkyDomeBackground = () => {
       container.appendChild(renderer.domElement);
 
       const clock = new THREE.Clock();
-      setupPerformanceMonitoring(renderer);
 
       // Dome wireframe
       const sphereGeometry = new THREE.SphereGeometry(30, 64, 64);

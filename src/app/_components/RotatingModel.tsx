@@ -34,7 +34,6 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     max: 0.5,
     lastAdjust: 0
   });
-  const longTaskObserverRef = useRef<PerformanceObserver | null>(null);
 
   const applyRendererPixelRatio = React.useCallback((
     renderer: import('three').WebGLRenderer,
@@ -123,10 +122,6 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       if (controlsRef.current) {
         controlsRef.current.dispose();
       }
-      if (longTaskObserverRef.current) {
-        longTaskObserverRef.current.disconnect();
-        longTaskObserverRef.current = null;
-      }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -194,51 +189,6 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     }
   };
 
-  function setupPerformanceMonitoring(renderer: import('three').WebGLRenderer) {
-    if (typeof PerformanceObserver === 'undefined') {
-      return;
-    }
-
-    const supportedEntryTypes = (PerformanceObserver as unknown as { supportedEntryTypes?: string[] }).supportedEntryTypes;
-    if (supportedEntryTypes && !supportedEntryTypes.includes('longtask')) {
-      return;
-    }
-
-    if (longTaskObserverRef.current) {
-      longTaskObserverRef.current.disconnect();
-      longTaskObserverRef.current = null;
-    }
-
-    try {
-      const observer = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        const heavyTasks = entries.filter((entry) => entry.duration > 70);
-
-        if (!heavyTasks.length) {
-          return;
-        }
-
-        const state = pixelRatioStateRef.current;
-        if (!renderer) {
-          return;
-        }
-
-        const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-        if (now - state.lastAdjust < 700) {
-          return;
-        }
-
-        const reductionStep = Math.max(state.current * 0.15, 0.05);
-        updateRendererPixelRatio(renderer, state.current - reductionStep);
-      });
-
-      observer.observe({ entryTypes: ['longtask'] });
-      longTaskObserverRef.current = observer;
-    } catch {
-      // Ignorar errores si el navegador no soporta Long Tasks completamente
-    }
-  }
-
   function evaluateFramePerformance(
     delta: number,
     renderer: import('three').WebGLRenderer,
@@ -249,26 +199,27 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       return;
     }
 
+    const fps = 1000 / delta;
     const state = pixelRatioStateRef.current;
     if (frameSamples.length >= sampleSize) {
       frameSamples.shift();
     }
-    frameSamples.push(delta);
+    frameSamples.push(fps);
 
     const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
     if (frameSamples.length < sampleSize || now - state.lastAdjust <= 1000) {
       return;
     }
 
-    const average = frameSamples.reduce((acc, value) => acc + value, 0) / frameSamples.length;
-    const slowFrames = frameSamples.filter((value) => value > 48).length;
-    const fastFrames = frameSamples.filter((value) => value < 24).length;
+    const averageFps = frameSamples.reduce((acc, value) => acc + value, 0) / frameSamples.length;
+    const lowFpsFrames = frameSamples.filter((value) => value < 30).length;
+    const highFpsFrames = frameSamples.filter((value) => value > 55).length;
 
-    if ((average > 40 || slowFrames > sampleSize * 0.3) && state.current - state.min > 0.01) {
+    if ((averageFps < 30 || lowFpsFrames > sampleSize * 0.3) && state.current - state.min > 0.01) {
       const reductionStep = Math.max(state.current * 0.15, 0.05);
       updateRendererPixelRatio(renderer, state.current - reductionStep);
       frameSamples.length = 0;
-    } else if (average < 24 && fastFrames > sampleSize * 0.6 && state.current < state.max - 0.01) {
+    } else if (averageFps > 45 && highFpsFrames > sampleSize * 0.6 && state.current < state.max - 0.01) {
       const increaseStep = Math.max(state.current * 0.1, 0.05);
       updateRendererPixelRatio(renderer, state.current + increaseStep);
       frameSamples.length = 0;
@@ -507,9 +458,8 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
       cameraRef.current = camera; // Guardar referencia a la cámara
-      const renderer = setupRenderer(THREE, containerRef.current, width, height);
-      rendererRef.current = renderer; // Guardar referencia al renderer
-  setupPerformanceMonitoring(renderer);
+    const renderer = setupRenderer(THREE, containerRef.current, width, height);
+    rendererRef.current = renderer; // Guardar referencia al renderer
       camera.position.set(0, 0, 2.5);
       camera.lookAt(0, 0, 0);
       loadEnvironment(RGBELoader, THREE, scene);
