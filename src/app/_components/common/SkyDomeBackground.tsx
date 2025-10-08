@@ -1,14 +1,35 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const VIDEO_SRC = "/assets/fondo_trackers.mp4";
+const VIDEO_SRC_WEBM = "/assets/fondo_trackers.webm";
+const VIDEO_SRC_MP4 = "/assets/fondo_trackers.mp4";
 
 const SkyDomeBackground = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
 
   useEffect(() => {
+    // Lazy load: cargar el video después de que la página haya cargado
+    if (typeof window !== "undefined") {
+      const loadVideo = () => {
+        // Pequeño delay adicional para priorizar contenido crítico
+        setTimeout(() => setShouldLoadVideo(true), 500);
+      };
+
+      if (document.readyState === "complete") {
+        loadVideo();
+      } else {
+        window.addEventListener("load", loadVideo);
+        return () => window.removeEventListener("load", loadVideo);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoadVideo) return;
+
     const container = containerRef.current;
     const video = videoRef.current;
     if (!container || !video) {
@@ -63,7 +84,7 @@ const SkyDomeBackground = () => {
       video.pause();
       video.currentTime = 0;
     };
-  }, []);
+  }, [shouldLoadVideo]);
 
   return (
     <div
@@ -71,17 +92,20 @@ const SkyDomeBackground = () => {
       className="pointer-events-none absolute inset-0 bg-slate-950"
       aria-hidden="true"
     >
-      <video
-        ref={videoRef}
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-100"
-        muted
-        loop
-        playsInline
-        preload="auto"
-        autoPlay
-      >
-        <source src={VIDEO_SRC} type="video/mp4" />
-      </video>
+      {shouldLoadVideo && (
+        <video
+          ref={videoRef}
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-100 transition-opacity duration-1000"
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          autoPlay
+        >
+          <source src={VIDEO_SRC_WEBM} type="video/webm" />
+          <source src={VIDEO_SRC_MP4} type="video/mp4" />
+        </video>
+      )}
       {/* Interlace/Scanlines overlay - simula CRT con efecto de desentrelazado */}
       <div
         className="pointer-events-none absolute inset-0"
