@@ -92,23 +92,25 @@ p {
 
 .text-white, p, h1, h2, h3, h4, h5, h6 {
   color: #ffffff !important;
-  -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.85);
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.95);
   text-shadow:
-    -1.2px -1.2px 1px rgba(0, 0, 0, 0.9),
-    1.2px -1.2px 1px rgba(0, 0, 0, 0.9),
-    -1.2px 1.2px 1px rgba(0, 0, 0, 0.9),
-    1.2px 1.2px 1px rgba(0, 0, 0, 0.9);
+    -2px -2px 2px rgba(0, 0, 0, 0.95),
+    2px -2px 2px rgba(0, 0, 0, 0.95),
+    -2px 2px 2px rgba(0, 0, 0, 0.95),
+    2px 2px 2px rgba(0, 0, 0, 0.95),
+    0 0 8px rgba(0, 0, 0, 0.8);
   paint-order: stroke fill;
 }
 
 #header .theme-text-primary,
 #header .theme-text-on-accent {
-  -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.75);
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.9);
   text-shadow:
-    -1.2px -1.2px 1px rgba(0, 0, 0, 0.85),
-    1.2px -1.2px 1px rgba(0, 0, 0, 0.85),
-    -1.2px 1.2px 1px rgba(0, 0, 0, 0.85),
-    1.2px 1.2px 1px rgba(0, 0, 0, 0.85);
+    -2px -2px 2px rgba(0, 0, 0, 0.9),
+    2px -2px 2px rgba(0, 0, 0, 0.9),
+    -2px 2px 2px rgba(0, 0, 0, 0.9),
+    2px 2px 2px rgba(0, 0, 0, 0.9),
+    0 0 8px rgba(0, 0, 0, 0.75);
   paint-order: stroke fill;
 }
 
