@@ -25,13 +25,15 @@ export function HeroPost({ isMaintenanceMode = false }: Readonly<Props & { isMai
     setFade(false);
     setTimeout(() => {
       setSubtitleIndex((prev) => (prev + 1) % subtitles.length);
-      setFade(true);
-    }, 400); // Duración del fade out
+      setTimeout(() => {
+        setFade(true);
+      }, 30); // Pequeño delay para asegurar que el texto cambie antes de quitar el glitch
+    }, 250); // Duración del glitch más rápida
   }, [subtitles.length]);
 
   useEffect(() => {
     setFade(true); // Asegura que el primer render sea visible
-    intervalRef.current = setInterval(nextSubtitle, 3000);
+    intervalRef.current = setInterval(nextSubtitle, 2500);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -70,8 +72,9 @@ export function HeroPost({ isMaintenanceMode = false }: Readonly<Props & { isMai
             <div className="flex flex-col w-full">
               <h1 className="my-0 text-5xl font-bold leading-tight theme-text-primary">madTrackers</h1>
               <h3
-                className={`my-0 text-2xl font-bold leading-tight min-h-[2.5rem] transition-all duration-700 ease-in-out theme-text-secondary ${fade ? 'opacity-100' : 'opacity-0'}`}
-                style={{ transitionProperty: 'opacity' }}
+                className={`my-0 text-2xl font-bold leading-tight min-h-[2.5rem] theme-text-secondary relative ${fade ? '' : 'glitch-effect'}`}
+                data-text={currentSubtitle}
+                style={{ zIndex: 10 }}
               >
                 {currentSubtitle}
               </h3>
