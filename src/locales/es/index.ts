@@ -12,6 +12,7 @@ import { colors } from './colors';
 import { dates } from './dates';
 import { faq } from './faq';
 import { maintenance } from './maintenance';
+import { videos } from './videos';
 
 export const es = {
   ...common,
@@ -28,4 +29,5 @@ export const es = {
   ...dates,
   ...faq,
   ...maintenance,
+  ...videos,
 } as const;

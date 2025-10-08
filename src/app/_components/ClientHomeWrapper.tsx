@@ -7,6 +7,7 @@ import { getAllPosts } from "@/lib/api";
 import DeferredComponent from "../_components/common/DeferredLoading";
 import dynamic from "next/dynamic";
 import BrandBenefits from "../_components/common/BrandBenefits";
+import TutorialVideosCarousel from "../_components/common/TutorialVideosCarousel";
 import { useLang } from "@/app/lang-context";
 
 // Lazy load del componente de pricing que no es crítico para First Paint
@@ -93,8 +94,9 @@ export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapp
           isMaintenanceMode={isMaintenanceMode} 
         />
        
-        <BrandBenefits />
-        
+    <BrandBenefits />
+    <TutorialVideosCarousel />
+
         <div id="pricing" ></div>
         <DeferredComponent
           className="bg-white"
