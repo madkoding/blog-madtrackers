@@ -4,6 +4,8 @@ import { FirebaseTrackingService } from '../../../../lib/firebaseTrackingService
 import { UserTracking } from '../../../../interfaces/tracking';
 import { validateApiKeyOrJWT, corsHeaders, jwtUnauthorizedResponse } from '../../../../lib/apiAuth';
 
+export const dynamic = 'force-dynamic';
+
 interface SendEmailsRequest {
   recipients: 'all' | 'selected';
   selectedUserIds?: string[];

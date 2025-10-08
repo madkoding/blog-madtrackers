@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FirebaseTrackingService } from '../../../../lib/firebaseTrackingService';
 import { validateApiKeyOrJWT, corsHeaders, jwtUnauthorizedResponse } from '../../../../lib/apiAuth';
 
+export const dynamic = 'force-dynamic';
+
 // OPTIONS - Handle CORS preflight
 export async function OPTIONS() {
   return new Response(null, {

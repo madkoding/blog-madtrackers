@@ -16,24 +16,26 @@ const TutorialVideosCarousel = () => {
   const videos = t.tutorialVideos as readonly TutorialVideo[];
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const handlePrevious = useCallback(() => {
+    if (!videos?.length) return;
+    setCurrentIndex((prev) => (prev - 1 + videos.length) % videos.length);
+  }, [videos]);
+
+  const handleNext = useCallback(() => {
+    if (!videos?.length) return;
+    setCurrentIndex((prev) => (prev + 1) % videos.length);
+  }, [videos]);
+
+  const handleSelect = useCallback((index: number) => {
+    setCurrentIndex(index);
+  }, []);
+
   if (!videos?.length) {
     return null;
   }
 
   const safeIndex = ((currentIndex % videos.length) + videos.length) % videos.length;
   const currentVideo = videos[safeIndex];
-
-  const handlePrevious = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + videos.length) % videos.length);
-  }, [videos.length]);
-
-  const handleNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % videos.length);
-  }, [videos.length]);
-
-  const handleSelect = useCallback((index: number) => {
-    setCurrentIndex(index);
-  }, []);
 
   const formattedIndex = (safeIndex + 1).toString().padStart(2, "0");
 

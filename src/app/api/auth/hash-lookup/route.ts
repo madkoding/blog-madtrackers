@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { corsHeaders } from '../../../../lib/apiAuth';
 
+export const dynamic = 'force-dynamic';
+
 // OPTIONS - Handle CORS preflight
 export async function OPTIONS() {
   return new Response(null, {
