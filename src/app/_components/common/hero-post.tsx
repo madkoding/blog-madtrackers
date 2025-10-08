@@ -41,9 +41,16 @@ export function HeroPost({ isMaintenanceMode = false }: Readonly<Props & { isMai
   const currentSubtitle = subtitles[subtitleIndex] || "";
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden min-h-screen md:min-h-0 flex items-center">
       <SkyDomeBackground />
-      <div className="relative z-10 pt-16">
+      {/* Degradado inferior */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none" 
+        style={{
+          background: 'linear-gradient(to top, rgba(24, 28, 60, 1) 0%, transparent 100%)'
+        }}
+      />
+      <div className="relative z-10 pt-16 w-full">
         <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center md:items-stretch">
           {/* Modelo 3D */}
           <div className="w-full md:w-3/6 flex justify-center md:justify-end items-center md:items-end">
@@ -73,7 +80,11 @@ export function HeroPost({ isMaintenanceMode = false }: Readonly<Props & { isMai
             {!isMaintenanceMode && (
               <a
                 href="#pricing"
-                className="hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                className="hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 focus:outline-none transform transition hover:scale-105 duration-300 ease-in-out relative"
+                style={{
+                  boxShadow: '0 0 25px 5px rgba(168, 85, 247, 0.9), 0 0 50px 10px rgba(168, 85, 247, 0.6), 0 0 80px 15px rgba(168, 85, 247, 0.4), 0 4px 6px -1px rgba(0, 0, 0, 0.3)',
+                  border: '2px solid rgba(168, 85, 247, 0.5)'
+                }}
               >
                 {t?.heroButton || "Order a pack now!"}
               </a>
