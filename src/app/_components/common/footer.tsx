@@ -113,7 +113,57 @@ const Footer: React.FC<FooterProps> = () => {
           </div>
         </div>
       </div>
-      <div className="mt-8 text-center text-gray-500 text-sm">
+      
+      {/* Aviso de reCAPTCHA (requerido cuando el badge está oculto) */}
+      <div className="mt-6 text-center text-gray-500 text-xs">
+        {lang === 'es' ? (
+          <>
+            Este sitio está protegido por reCAPTCHA y se aplican la{' '}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-400"
+            >
+              Política de privacidad
+            </a>{' '}
+            y los{' '}
+            <a
+              href="https://policies.google.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-400"
+            >
+              Términos de servicio
+            </a>{' '}
+            de Google.
+          </>
+        ) : (
+          <>
+            This site is protected by reCAPTCHA and the Google{' '}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-400"
+            >
+              Privacy Policy
+            </a>{' '}
+            and{' '}
+            <a
+              href="https://policies.google.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-400"
+            >
+              Terms of Service
+            </a>{' '}
+            apply.
+          </>
+        )}
+      </div>
+      
+      <div className="mt-4 text-center text-gray-500 text-sm">
         {t.rights.replace("{year}", String(new Date().getFullYear()))}
       </div>
     </footer>

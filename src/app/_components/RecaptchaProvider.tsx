@@ -28,6 +28,11 @@ export default function RecaptchaProvider({ children }: RecaptchaProviderProps) 
     
     script.onload = () => {
       console.log('reCAPTCHA script cargado exitosamente');
+      
+      // Ocultar el badge de reCAPTCHA
+      const style = document.createElement('style');
+      style.innerHTML = '.grecaptcha-badge { visibility: hidden; }';
+      document.head.appendChild(style);
     };
     
     script.onerror = () => {
