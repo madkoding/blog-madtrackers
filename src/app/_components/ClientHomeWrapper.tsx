@@ -8,6 +8,7 @@ import DeferredComponent from "../_components/common/DeferredLoading";
 import dynamic from "next/dynamic";
 import BrandBenefits from "../_components/common/BrandBenefits";
 import TutorialVideosCarousel from "../_components/common/TutorialVideosCarousel";
+import SupportedGamesCarousel from "../_components/common/SupportedGamesCarousel";
 import { useLang } from "@/app/lang-context";
 
 // Lazy load del componente de pricing que no es crítico para First Paint
@@ -96,6 +97,7 @@ export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapp
        
     <BrandBenefits />
     <TutorialVideosCarousel />
+    <SupportedGamesCarousel />
 
         <div id="pricing" ></div>
         <DeferredComponent
