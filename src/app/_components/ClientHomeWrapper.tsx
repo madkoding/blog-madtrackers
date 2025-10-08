@@ -10,6 +10,7 @@ import BrandBenefits from "../_components/common/BrandBenefits";
 import TutorialVideosCarousel from "../_components/common/TutorialVideosCarousel";
 import SupportedGamesCarousel from "../_components/common/SupportedGamesCarousel";
 import { useLang } from "@/app/lang-context";
+import ShippingCountries from './common/ShippingCountries';
 
 // Lazy load del componente de pricing que no es crítico para First Paint
 const Pricing = dynamic(() => import("../_components/pricing/pricing"), {
@@ -96,6 +97,7 @@ export default function ClientHomeWrapper({ allPosts }: Readonly<ClientHomeWrapp
         />
        
     <BrandBenefits />
+    <ShippingCountries />
     <TutorialVideosCarousel />
     <SupportedGamesCarousel />
 

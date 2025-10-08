@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useLang } from '@/app/lang-context';
 
@@ -170,14 +170,14 @@ export default function SupportedGamesCarousel() {
       rel="noopener noreferrer"
       className="flex-shrink-0 group"
     >
-      <div className="relative w-64 h-32 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div className="relative w-[calc((100vw-4rem)/3)] sm:w-48 md:w-56 lg:w-64 h-24 sm:h-28 md:h-32 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl border border-gray-200 dark:border-gray-700">
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 dark:from-black/60 to-transparent z-10" />
         <Image
           src={game.logo}
           alt={game.name}
           fill
-          className="object-contain p-4"
-          sizes="(max-width: 768px) 256px, 256px"
+          className="object-contain p-3 sm:p-4"
+          sizes="(max-width: 640px) 33vw, (max-width: 1024px) 224px, 256px"
         />
         {/* <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
           <h3 className="text-white font-semibold text-sm truncate drop-shadow-lg">
@@ -191,12 +191,12 @@ export default function SupportedGamesCarousel() {
   );
 
   return (
-    <section className="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
+    <section className="py-8 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="text-center mb-4">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
             {t.title}
-          </h2>
+          </h3>
           {/* <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             {t.subtitle}
           </p> */}
@@ -212,7 +212,7 @@ export default function SupportedGamesCarousel() {
               WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
             }}
           >
-            <div className="flex gap-8 py-4">
+            <div className="flex gap-4 sm:gap-6 lg:gap-8 py-4">
               {/* Duplicamos los juegos para crear un efecto de loop infinito */}
               {[...firstRow, ...firstRow, ...firstRow].map((game, index) => renderGameCard(game, index))}
             </div>
@@ -227,7 +227,7 @@ export default function SupportedGamesCarousel() {
               WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
             }}
           >
-            <div className="flex gap-8 py-4">
+            <div className="flex gap-4 sm:gap-6 lg:gap-8 py-4">
               {/* Duplicamos los juegos para crear un efecto de loop infinito */}
               {[...secondRow, ...secondRow, ...secondRow].map((game, index) => renderGameCard(game, index + firstRow.length))}
             </div>

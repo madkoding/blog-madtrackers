@@ -1,249 +1,473 @@
 "use client";
 
 import { useLang } from "../../lang-context";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
+
+interface Country {
+  name: string;
+  code: string; // Código ISO del país
+  link: string;
+  flag: string;
+  shipping: "free" | "ups";
+}
+
+interface CountryPosition {
+  css: { x: number; y: number };
+  svg: { x: number; y: number };
+}
+
+const SVG_HEIGHT = 58.5;
+const PLANE_ROTATION_OFFSET = 90;
+const FRAME_INTERVAL = 1000 / 30; // 30 FPS para reducir uso de CPU
+const HIGHLIGHT_COLOR = "#22d3ee";
+
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+const computeRouteControl = (origin: CountryPosition, target: CountryPosition) => {
+  const originSvg = origin.svg;
+  const targetSvg = target.svg;
+  const midX = (originSvg.x + targetSvg.x) / 2;
+  const distance = Math.hypot(targetSvg.x - originSvg.x, targetSvg.y - originSvg.y);
+  const curveOffset = Math.min(distance * 0.3, 12);
+  const controlSvgY = clamp((originSvg.y + targetSvg.y) / 2 - curveOffset, 0, SVG_HEIGHT);
+
+  return {
+    svg: { x: midX, y: controlSvgY },
+    css: { x: midX, y: (controlSvgY / SVG_HEIGHT) * 100 },
+  };
+};
+
+const quadraticBezier = (p0: number, p1: number, p2: number, t: number) => {
+  const oneMinusT = 1 - t;
+  return oneMinusT * oneMinusT * p0 + 2 * oneMinusT * t * p1 + t * t * p2;
+};
+
+const quadraticBezierDerivative = (p0: number, p1: number, p2: number, t: number) => {
+  const oneMinusT = 1 - t;
+  return 2 * oneMinusT * (p1 - p0) + 2 * t * (p2 - p1);
+};
 
 const ShippingCountries = () => {
   const { lang } = useLang();
-  const carouselRef = useRef<HTMLButtonElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [currentTransform, setCurrentTransform] = useState(0);
+  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
+  const [currentDestination, setCurrentDestination] = useState(0);
+  const [countryPositions, setCountryPositions] = useState<Record<string, CountryPosition>>({});
+  const [mapMarkup, setMapMarkup] = useState<string | null>(null);
+  const svgContainerRef = useRef<HTMLDivElement>(null);
+  const planeRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll animation
+  // Países con sus códigos ISO 3166-1 alpha-2 (deben coincidir con los IDs del SVG)
+  const countries: Country[] = useMemo(() => ([
+    { name: "Chile", code: "cl", link: "/trackers-slimevr-chile", flag: "🇨🇱", shipping: "free" },
+    { name: "Argentina", code: "ar", link: "/trackers-slimevr-argentina", flag: "🇦🇷", shipping: "ups" },
+    { name: "México", code: "mx", link: "/trackers-slimevr-mexico", flag: "🇲🇽", shipping: "ups" },
+    { name: "Colombia", code: "co", link: "/posts/Envios_Internacionales_Trackers_SlimeVR", flag: "🇨🇴", shipping: "ups" },
+    { name: "Perú", code: "pe", link: "/posts/Envios_Internacionales_Trackers_SlimeVR", flag: "🇵🇪", shipping: "ups" },
+    { name: "Estados Unidos", code: "us", link: "/posts/Envios_Internacionales_Trackers_SlimeVR", flag: "🇺🇸", shipping: "ups" },
+    { name: "Canadá", code: "ca", link: "/posts/Envios_Internacionales_Trackers_SlimeVR", flag: "🇨🇦", shipping: "ups" },
+    { name: "España", code: "es", link: "/trackers-slimevr-espana", flag: "🇪🇸", shipping: "ups" },
+    { name: "Italia", code: "it", link: "/posts/Envios_Internacionales_Trackers_SlimeVR", flag: "🇮🇹", shipping: "ups" },
+    { name: "Alemania", code: "de", link: "/posts/Envios_Internacionales_Trackers_SlimeVR", flag: "🇩🇪", shipping: "ups" },
+  ]), []);
+
+  // Calcular posiciones dinámicamente usando el SVG real para asegurar precisión milimétrica
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const container = svgContainerRef.current;
+    if (!container) return;
+
+    let isMounted = true;
+
+    const loadAndMeasure = async () => {
+      try {
+        const response = await fetch("/assets/simple-world-map.svg");
+        if (!response.ok) {
+          throw new Error(`No se pudo cargar el mapa: ${response.status}`);
+        }
+
+        const svgMarkup = await response.text();
+        if (!isMounted) return;
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgMarkup, "image/svg+xml");
+        const svgElement = doc.querySelector("svg");
+
+        if (!svgElement) {
+          console.warn("No se pudo encontrar el elemento SVG principal");
+          return;
+        }
+
+        svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        svgElement.setAttribute("width", "100%");
+        svgElement.setAttribute("height", "100%");
+        const svgNamespace = "http://www.w3.org/2000/svg";
+
+        let defs = svgElement.querySelector("defs");
+        if (!defs) {
+          defs = doc.createElementNS(svgNamespace, "defs");
+          svgElement.insertBefore(defs, svgElement.firstChild);
+        }
+
+        if (!svgElement.querySelector("#cyanGlow")) {
+          const glowFilter = doc.createElementNS(svgNamespace, "filter");
+          glowFilter.setAttribute("id", "cyanGlow");
+          glowFilter.setAttribute("x", "-40%");
+          glowFilter.setAttribute("y", "-40%");
+          glowFilter.setAttribute("width", "180%");
+          glowFilter.setAttribute("height", "180%");
+
+          const dropShadow = doc.createElementNS(svgNamespace, "feDropShadow");
+          dropShadow.setAttribute("dx", "0");
+          dropShadow.setAttribute("dy", "0");
+          dropShadow.setAttribute("stdDeviation", "1.2");
+          dropShadow.setAttribute("flood-color", HIGHLIGHT_COLOR);
+          dropShadow.setAttribute("flood-opacity", "0.9");
+
+          glowFilter.appendChild(dropShadow);
+          defs?.appendChild(glowFilter);
+        }
+
+        svgElement.setAttribute("stroke-linejoin", "round");
+        svgElement.setAttribute("stroke-linecap", "round");
+
+        const outlineElements = svgElement.querySelectorAll("path, polyline, polygon, line");
+        outlineElements.forEach((element) => {
+          element.setAttribute("stroke", HIGHLIGHT_COLOR);
+          if (!element.getAttribute("stroke-width")) {
+            element.setAttribute("stroke-width", "0.5");
+          }
+          element.setAttribute("filter", "url(#cyanGlow)");
+          const fillValue = element.getAttribute("fill");
+          if (fillValue && fillValue !== "none") {
+            element.setAttribute("fill-opacity", "0.08");
+          }
+        });
+
+        const measurementSvg = svgElement.cloneNode(true) as SVGSVGElement;
+        container.innerHTML = "";
+        container.appendChild(measurementSvg);
+
+        const viewBox = measurementSvg.viewBox.baseVal;
+        const positions: Record<string, CountryPosition> = {};
+
+        countries.forEach((country) => {
+          const baseNode = measurementSvg.querySelector(`#${country.code}`) as SVGGraphicsElement | null;
+          let node: SVGGraphicsElement | null = baseNode;
+
+          if (baseNode instanceof SVGGElement) {
+            const mainland = baseNode.querySelector<SVGGraphicsElement>(".mainland");
+            if (mainland) {
+              node = mainland;
+            }
+          }
+
+          if (!node) {
+            console.warn(`No se encontró el país ${country.name} (${country.code}) en el mapa`);
+            return;
+          }
+
+          try {
+            const { x, y, width, height } = node.getBBox();
+            const centerX = x + width / 2;
+            const centerY = y + height / 2;
+
+            const percentX = ((centerX - viewBox.x) / viewBox.width) * 100;
+            const percentY = ((centerY - viewBox.y) / viewBox.height) * 100;
+
+            positions[country.code] = {
+              css: {
+                x: percentX,
+                y: percentY,
+              },
+              svg: {
+                x: percentX,
+                y: (percentY / 100) * SVG_HEIGHT,
+              },
+            };
+          } catch (error) {
+            console.warn(`No se pudo calcular el bounding box para ${country.name}`, error);
+          }
+        });
+
+        const chilePosition = positions["cl"];
+        if (chilePosition) {
+          const correctedX = 27;
+          positions["cl"] = {
+            css: {
+              x: correctedX,
+              y: chilePosition.css.y,
+            },
+            svg: {
+              x: correctedX,
+              y: chilePosition.svg.y,
+            },
+          };
+        }
+
+        if (isMounted) {
+          setCountryPositions(positions);
+          setMapMarkup(svgElement.outerHTML);
+        }
+
+        container.innerHTML = "";
+      } catch (error) {
+        console.error("Error al procesar el mapa SVG", error);
+      }
+    };
+
+    loadAndMeasure();
+
+    return () => {
+      isMounted = false;
+      container.innerHTML = "";
+    };
+  }, [countries]);
+
+  // Animación del avión
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!isDragging && carouselRef.current) {
-        setCurrentTransform(prev => {
-          const newValue = prev - 1;
-          const maxScroll = carouselRef.current!.scrollWidth / 2;
-          return Math.abs(newValue) >= maxScroll ? 0 : newValue;
-        });
-      }
-    }, 16);
+      setCurrentDestination((prev) => {
+        const nextDestination = (prev + 1) % countries.length;
+        return nextDestination === 0 ? 1 : nextDestination; // Saltamos Chile
+      });
+    }, 3000); // Cambia de destino cada 3 segundos
 
     return () => clearInterval(interval);
-  }, [isDragging]);
+  }, [countries]);
 
-  // Apply transform
+  // Actualizar posición y rotación del avión siguiendo la misma curva que las rutas
   useEffect(() => {
-    if (carouselRef.current) {
-      carouselRef.current.style.transform = `translateX(${currentTransform}px)`;
-    }
-  }, [currentTransform]);
+    const origin = countryPositions[countries[0].code];
+    const destination = countryPositions[countries[currentDestination].code];
+    const planeEl = planeRef.current;
 
-  // Drag handlers
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setStartX(e.clientX - currentTransform);
-  };
+    if (!origin || !destination || !planeEl) return;
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const newX = e.clientX - startX;
-    setCurrentTransform(newX);
-  };
+  const control = computeRouteControl(origin, destination);
+  const duration = 5000;
+  const startTime = performance.now();
+  let lastFrameTime = startTime;
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+    const applyPlaneStyles = (x: number, y: number, angleDeg: number) => {
+      planeEl.style.left = `${x}%`;
+      planeEl.style.top = `${y}%`;
+      planeEl.style.transform = `translate(-50%, -50%) rotate(${angleDeg + PLANE_ROTATION_OFFSET}deg)`;
+    };
 
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
+    const initialDx = quadraticBezierDerivative(origin.svg.x, control.svg.x, destination.svg.x, 0);
+    const initialDy = quadraticBezierDerivative(origin.svg.y, control.svg.y, destination.svg.y, 0);
+    applyPlaneStyles(origin.css.x, origin.css.y, (Math.atan2(initialDy, initialDx) * 180) / Math.PI);
 
-  // Touch handlers for mobile
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true);
-    setStartX(e.touches[0].clientX - currentTransform);
-  };
+    let currentFrameId = 0;
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const newX = e.touches[0].clientX - startX;
-    setCurrentTransform(newX);
-  };
+    const animate = () => {
+      const now = performance.now();
+      if (now - lastFrameTime < FRAME_INTERVAL) {
+        currentFrameId = requestAnimationFrame(animate);
+        return;
+      }
 
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-  };
+      lastFrameTime = now;
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
 
-  const countries = [
-    // Países hispanohablantes con enlaces específicos
-    { name: "España", flag: "🇪🇸", shipping: "ups", link: "/trackers-slimevr-espana" },
-    { name: "México", flag: "🇲🇽", shipping: "ups", link: "/trackers-slimevr-mexico" },
-    { name: "Argentina", flag: "🇦🇷", shipping: "ups", link: "/trackers-slimevr-argentina" },
-    { name: "Colombia", flag: "🇨🇴", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Perú", flag: "🇵🇪", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Venezuela", flag: "🇻🇪", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Ecuador", flag: "🇪🇨", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Guatemala", flag: "🇬🇹", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Bolivia", flag: "🇧🇴", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    // Chile - envío gratis
-    { name: "Chile", flag: "🇨🇱", shipping: "free", link: "/trackers-slimevr-chile" },
-    { name: "República Dominicana", flag: "🇩🇴", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Honduras", flag: "🇭🇳", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Paraguay", flag: "🇵🇾", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Nicaragua", flag: "🇳🇮", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "El Salvador", flag: "🇸🇻", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Costa Rica", flag: "🇨🇷", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Panamá", flag: "🇵🇦", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Uruguay", flag: "🇺🇾", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Guinea Ecuatorial", flag: "🇬🇶", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    // Países adicionales
-    { name: "Estados Unidos", flag: "🇺🇸", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Francia", flag: "🇫🇷", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Italia", flag: "🇮🇹", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Canadá", flag: "🇨🇦", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-    { name: "Brasil", flag: "🇧🇷", shipping: "ups", link: "/posts/Envios_Internacionales_Trackers_SlimeVR" },
-  ];
+      const xCss = quadraticBezier(origin.css.x, control.css.x, destination.css.x, easeProgress);
+      const yCss = quadraticBezier(origin.css.y, control.css.y, destination.css.y, easeProgress);
+      const dxSvg = quadraticBezierDerivative(origin.svg.x, control.svg.x, destination.svg.x, easeProgress);
+      const dySvg = quadraticBezierDerivative(origin.svg.y, control.svg.y, destination.svg.y, easeProgress);
+
+      applyPlaneStyles(xCss, yCss, (Math.atan2(dySvg, dxSvg) * 180) / Math.PI);
+
+      if (progress < 1) {
+        currentFrameId = requestAnimationFrame(animate);
+      }
+    };
+
+    currentFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(currentFrameId);
+    };
+  }, [currentDestination, countryPositions, countries]);
 
   return (
-    <div className="bg-white py-8">
+    <div className="bg-gradient-to-b from-slate-900 to-slate-800 py-12">
       <div className="container mx-auto px-4">
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          {/* Títulos de envío */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-8">
-            {/* Envío gratis Chile */}
-            <div className="flex items-center gap-3 bg-green-50 px-4 py-2 rounded-full">
-              <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-              </svg>
-              <span className="text-green-700 font-semibold">
-                {lang === 'es' ? 'Envío GRATIS Chile' : 'FREE Shipping Chile'}
-              </span>
+  <div className="w-full bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-2xl overflow-hidden">
+          <div className="grid lg:grid-cols-2">
+            <div className="p-8">
+              <h2 className="text-3xl font-bold text-white mb-2">
+                {lang === 'es' ? 'Envíos Internacionales' : 'International Shipping'}
+              </h2>
+              <p className="text-cyan-300 mb-6">
+                {lang === 'es'
+                  ? 'Desde Chile hacia el mundo via UPS'
+                  : 'From Chile to the world via UPS'}
+              </p>
+
+              <div className="grid grid-cols-5 sm:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-3">
+                {countries.map((country) => (
+                  <Link
+                    key={`list-${country.code}`}
+                    href={country.link}
+                    className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg bg-slate-900/40 hover:bg-slate-900/60 transition-colors sm:flex-row sm:justify-between sm:gap-3 sm:p-3"
+                  >
+                    <div className="flex flex-col items-center gap-1 sm:flex-row sm:items-center sm:gap-3">
+                      <span className="text-xl sm:text-2xl" aria-hidden>{country.flag}</span>
+                      <span className="hidden text-white font-semibold sm:inline">{country.name}</span>
+                    </div>
+                    {country.code === 'cl' && (
+                      <span className="hidden text-xs font-semibold uppercase tracking-wide px-2 py-1 rounded-full bg-green-500/20 text-green-300 sm:inline-flex">
+                        {lang === 'es' ? 'Gratis' : 'Free'}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+              </div>
             </div>
 
-            {/* Envío internacional */}
-            <div className="flex items-center gap-3 bg-blue-50 px-4 py-2 rounded-full">
-              <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-              </svg>
-              <span className="text-blue-700 font-semibold">
-                {lang === 'es' ? 'Internacional vía UPS' : 'International via UPS'}
-              </span>
-            </div>
-          </div>
-
-          {/* Carrusel infinito de banderas */}
-          <section 
-            className="relative overflow-hidden rounded-lg"
-            aria-label={lang === 'es' ? 'Carrusel de países con envío disponible' : 'Carousel of countries with shipping available'}
-          >
-            <button
-              ref={carouselRef}
-              className="flex select-none cursor-grab w-full border-0 p-0 bg-transparent"
-              aria-label={lang === 'es' ? 'Carrusel interactivo de países. Use las flechas del teclado o arrastre para navegar' : 'Interactive countries carousel. Use arrow keys or drag to navigate'}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseLeave}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              onKeyDown={(e) => {
-                if (e.key === 'ArrowLeft') {
-                  setCurrentTransform(prev => prev + 50);
-                } else if (e.key === 'ArrowRight') {
-                  setCurrentTransform(prev => prev - 50);
-                }
-              }}
-              style={{ 
-                userSelect: 'none',
-                cursor: isDragging ? 'grabbing' : 'grab',
-                touchAction: 'none' // Previene el scroll nativo en móviles
-              }}
-            >
-              {/* Primera copia de países */}
-              {countries.map((country) => (
-								<Link
-                  key={`first-${country.name}`}
-                  href={country.link}
-                  className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] hover:scale-105 transition-transform cursor-pointer ${
-									country.shipping === "free" 
-										? "bg-green-50 hover:bg-green-100" 
-										: "bg-gray-50 hover:bg-gray-100"
-									}`}
-								>
-									<div className="text-6xl sm:text-8xl mb-1 sm:mb-2">
-									{country.flag}
-									</div>
-									<p className="text-xs sm:text-sm text-center font-medium text-gray-700 whitespace-nowrap px-1 mb-0">
-										{country.name}
-									</p>
-									{country.shipping === "free" && (
-										<span className="text-xs sm:text-sm text-green-600 font-bold mt-0.5 sm:mt-1">
-											{lang === 'es' ? 'ENVIO GRATIS' : 'FREE SHIPPING'}
-										</span>
-									)}
-								</Link>
-              ))}
-              {/* Segunda copia para efecto infinito */}
-              {countries.map((country) => (
-                <Link
-                  key={`second-${country.name}`}
-                  href={country.link}
-                  className={`flex flex-col items-center rounded-lg mx-2 sm:mx-3 min-w-[120px] sm:min-w-[160px] hover:scale-105 transition-transform cursor-pointer ${
-                    country.shipping === "free" 
-                      ? "bg-green-50 hover:bg-green-100" 
-                      : "bg-gray-50 hover:bg-gray-100"
-                  }`}
-                >
-                  <div className="text-6xl sm:text-8xl mb-1 sm:mb-2">
-                    {country.flag}
-                  </div>
-                  <p className="text-xs sm:text-sm text-center font-medium text-gray-700 whitespace-nowrap px-1">
-                    {country.name}
-                  </p>
-                  {country.shipping === "free" && (
-                    <span className="text-xs sm:text-sm text-green-600 font-bold mt-1 sm:mt-2">
-                      {lang === 'es' ? 'GRATIS' : 'FREE'}
-                    </span>
+            <div className="p-6 lg:p-8">
+              <div className="relative w-full aspect-[1.71/1] bg-slate-900/50 rounded-lg overflow-hidden">
+                {/* Mapa SVG de fondo */}
+                <div className="absolute inset-0 opacity-40">
+                  {mapMarkup ? (
+                    <div
+                      className="w-full h-full"
+                      dangerouslySetInnerHTML={{ __html: mapMarkup }}
+                    />
+                  ) : (
+                    <div className="relative w-full h-full">
+                      <Image
+                        src="/assets/simple-world-map.svg"
+                        alt="World Map"
+                        fill
+                        className="object-contain"
+                        loading="lazy"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                      />
+                    </div>
                   )}
-                </Link>
-              ))}
-            </button>
-          </section>
+                </div>
 
-          {/* Call to action para países hispanos */}
-          <div className="mt-8 text-center">
-            <p className="text-gray-600 mb-4 text-center">
-              {lang === 'es' 
-                ? 'Descubre información específica de envío, precios y soporte para tu país' 
-                : 'Discover specific shipping information, prices and support for your country'}
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link 
-                href="/trackers-slimevr-espana" 
-                className="bg-gradient-to-r from-red-500 to-yellow-500 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-yellow-600 transition-all duration-300 transform hover:scale-105"
-              >
-                🇪🇸 España
-              </Link>
-              <Link 
-                href="/trackers-slimevr-mexico" 
-                className="bg-gradient-to-r from-green-600 to-red-600 text-white px-4 py-2 rounded-lg hover:from-green-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105"
-              >
-                🇲🇽 México
-              </Link>
-              <Link 
-                href="/trackers-slimevr-argentina" 
-                className="bg-gradient-to-r from-blue-500 to-white text-gray-900 px-4 py-2 rounded-lg hover:from-blue-600 hover:to-gray-100 transition-all duration-300 transform hover:scale-105"
-              >
-                🇦🇷 Argentina
-              </Link>
-              <Link 
-                href="/posts/Envios_Internacionales_Trackers_SlimeVR" 
-                className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
-              >
-                🌎 {lang === 'es' ? 'Todos los Países' : 'All Countries'}
-              </Link>
+                {/* Capa de overlay para líneas de ruta */}
+                <svg
+                  viewBox="0 0 100 58.5"
+                  className="absolute inset-0 w-full h-full"
+                  preserveAspectRatio="xMidYMid meet"
+                >
+                  {/* Líneas de ruta desde Chile con curvas */}
+                  {countries.slice(1).map((country, index) => {
+                    const chilePos = countryPositions[countries[0].code];
+                    const countryPos = countryPositions[country.code];
+
+                    if (!chilePos || !countryPos) return null;
+
+                    const origin = chilePos.svg;
+                    const target = countryPos.svg;
+                    const control = computeRouteControl(chilePos, countryPos);
+
+                    return (
+                      <path
+                        key={`route-${country.name}`}
+                        d={`M ${origin.x} ${origin.y} Q ${control.svg.x} ${control.svg.y} ${target.x} ${target.y}`}
+                        fill="none"
+                        stroke={currentDestination === index + 1 ? "rgba(6, 182, 212, 0.8)" : "rgba(6, 182, 212, 0.3)"}
+                        strokeWidth={currentDestination === index + 1 ? "0.4" : "0.2"}
+                        strokeDasharray="2,1"
+                        style={{
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                      </path>
+                    );
+                  })}
+                </svg>
+
+                {/* Puntos de países superpuestos */}
+                {countries.map((country) => {
+                  const position = countryPositions[country.code];
+                  if (!position) return null;
+
+                  return (
+                    <div
+                      key={country.name}
+                      className="absolute group cursor-pointer z-30"
+                      style={{
+                        left: `${position.css.x}%`,
+                        top: `${position.css.y}%`,
+                        transform: 'translate(-50%, -50%)'
+                      }}
+                      onMouseEnter={() => setHoveredCountry(country.name)}
+                      onMouseLeave={() => setHoveredCountry(null)}
+                    >
+                      {/* Punto brillante */}
+                      <div className="relative">
+                        <div className={`w-3.5 h-3.5 rounded-full ${
+                          country.shipping === 'free'
+                            ? 'bg-green-400'
+                            : 'bg-cyan-400'
+                        }`} />
+                      </div>
+
+                      {/* Tooltip */}
+                      {hoveredCountry === country.name && (
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-4 py-2 bg-slate-800/95 rounded-lg whitespace-nowrap z-50">
+                          <div className="text-white font-semibold text-sm flex items-center gap-2">
+                            <span className="text-xl">{country.flag}</span>
+                            {country.name}
+                            {country.shipping === 'free' && (
+                              <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full animate-pulse">
+                                {lang === 'es' ? 'GRATIS' : 'FREE'}
+                              </span>
+                            )}
+                          </div>
+                          {/* Flecha del tooltip */}
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                            <div className="border-[6px] border-transparent border-t-slate-800/95" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {/* Avión animado */}
+                <div
+                  ref={planeRef}
+                  className="absolute w-10 h-10 z-40 pointer-events-none will-change-transform"
+                  style={{ left: "0%", top: "0%", transform: "translate(-50%, -50%)" }}
+                >
+                  <svg viewBox="0 0 24 24" className="w-full h-full text-cyan-300">
+                    <path
+                      fill="currentColor"
+                      d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <div
+        ref={svgContainerRef}
+        aria-hidden="true"
+        style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}
+      />
+
+      {/* Estilos para la animación de las líneas */}
+      <style jsx>{`
+        @keyframes dash {
+          to {
+            stroke-dashoffset: -10;
+          }
+        }
+      `}</style>
     </div>
   );
 };
