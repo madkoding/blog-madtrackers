@@ -124,38 +124,60 @@ interface ClientHomeWrapperProps {
 
 class ClientErrorBoundary extends React.Component<
   { children: React.ReactNode },
-  { hasError: boolean }
+  { hasError: boolean; errorMessage?: string }
 > {
   constructor(props: { children: React.ReactNode }) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, errorMessage: undefined };
   }
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, errorMessage: error.message };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ClientErrorBoundary caught an error:', error, errorInfo);
+    console.error('Error stack:', error.stack);
+    console.error('Component stack:', errorInfo.componentStack);
+    
+    // Enviar error a servicio de análisis si existe
+    if (typeof window !== 'undefined' && 'gtag' in window) {
+      const windowWithGtag = window as Window & { gtag?: (event: string, action: string, params: Record<string, unknown>) => void };
+      windowWithGtag.gtag?.('event', 'exception', {
+        description: error.message,
+        fatal: false,
+      });
+    }
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-          <div className="text-center p-8">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+          <div className="text-center p-8 max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl">
+            <div className="text-6xl mb-6">🎮</div>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
               Algo salió mal
             </h1>
-            <p className="text-gray-600 mb-4">
-              Ha ocurrido un error inesperado. Por favor, recarga la página.
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Ha ocurrido un error inesperado. Por favor, recarga la página o intenta más tarde.
             </p>
+            {process.env.NODE_ENV === 'development' && this.state.errorMessage && (
+              <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 rounded-lg text-left">
+                <p className="text-xs text-red-800 dark:text-red-200 font-mono break-words">
+                  {this.state.errorMessage}
+                </p>
+              </div>
+            )}
             <button
               onClick={() => window.location.reload()}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all hover:shadow-xl"
             >
               Recargar página
             </button>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+              Si el problema persiste, contacta con soporte
+            </p>
           </div>
         </div>
       );

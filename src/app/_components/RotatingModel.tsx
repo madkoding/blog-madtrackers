@@ -26,6 +26,7 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   const cameraRef = useRef<import('three').PerspectiveCamera | null>(null);
   const controlsRef = useRef<import('three/examples/jsm/controls/OrbitControls.js').OrbitControls | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(false);
   const isUserInteractingRef = useRef(false);
   const pixelRatioStateRef = useRef({
     base: 0.5,
@@ -113,6 +114,19 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       testThreeJS();
+      
+      // Timeout de seguridad: si después de 15 segundos no ha cargado, mostrar error
+      const timeoutId = setTimeout(() => {
+        if (loading) {
+          console.warn('Timeout: El modelo tardó demasiado en cargar');
+          setLoading(false);
+          setError(true);
+        }
+      }, 15000);
+      
+      return () => {
+        clearTimeout(timeoutId);
+      };
     }
     
     // Cleanup function para limpiar los controles al desmontar
@@ -175,6 +189,28 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
 
   const testThreeJS = async () => {
     try {
+      // Verificar si WebGL está disponible antes de intentar cargar Three.js
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl', { 
+        failIfMajorPerformanceCaveat: false 
+      }) || canvas.getContext('experimental-webgl', {
+        failIfMajorPerformanceCaveat: false
+      });
+      
+      if (!gl) {
+        console.warn('WebGL no está disponible en este dispositivo');
+        setLoading(false);
+        setError(true);
+        return;
+      }
+
+      // Verificar si hay suficiente memoria disponible (solo en navegadores que lo soportan)
+      // @ts-expect-error: deviceMemory no está en todos los navegadores
+      if (navigator.deviceMemory && navigator.deviceMemory < 2) {
+        console.warn('Dispositivo con memoria limitada detectado');
+        // Continuar pero con precaución
+      }
+
       const [THREE, { FBXLoader }, { RGBELoader }, { OrbitControls }] = await Promise.all([
         import('three'),
         import('three/examples/jsm/loaders/FBXLoader.js'),
@@ -182,8 +218,10 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
         import('three/examples/jsm/controls/OrbitControls.js')
       ]);
       createBasicScene(THREE, FBXLoader, RGBELoader, OrbitControls);
-    } catch {
-      // error silencioso
+    } catch (error) {
+      console.error('Error cargando Three.js:', error);
+      setLoading(false);
+      setError(true);
     }
   };
 
@@ -233,18 +271,39 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
     width: number,
     height: number
   ): import('three').WebGLRenderer {
+    // Detectar dispositivos móviles para ajustar la configuración
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
     const renderer = new THREE.WebGLRenderer({ 
       alpha: true, 
-      antialias: true,
+      antialias: !isMobile, // Desactivar antialiasing en móviles para mejor rendimiento
       premultipliedAlpha: false,
-      preserveDrawingBuffer: true
+      preserveDrawingBuffer: false, // Cambiar a false para mejor rendimiento en móviles
+      powerPreference: isMobile ? 'low-power' : 'high-performance',
+      failIfMajorPerformanceCaveat: false // No fallar si el rendimiento es bajo
     });
+    
+    // Manejar pérdida de contexto WebGL (común en móviles)
+    renderer.domElement.addEventListener('webglcontextlost', (event) => {
+      event.preventDefault();
+      console.warn('Contexto WebGL perdido');
+      setError(true);
+    }, false);
+    
+    renderer.domElement.addEventListener('webglcontextrestored', () => {
+      console.log('Contexto WebGL restaurado');
+      // Reintentar cargar el modelo
+      if (typeof window !== 'undefined') {
+        testThreeJS();
+      }
+    }, false);
+    
     renderer.setSize(width, height);
-  const deviceRatio = Math.min(Math.max(window.devicePixelRatio, 1), 3);
+  const deviceRatio = isMobile ? Math.min(window.devicePixelRatio, 2) : Math.min(Math.max(window.devicePixelRatio, 1), 3);
     const state = pixelRatioStateRef.current;
     state.base = deviceRatio;
     state.max = deviceRatio;
-  state.min = Math.max(deviceRatio * 0.9, 0.9);
+  state.min = isMobile ? 0.5 : Math.max(deviceRatio * 0.9, 0.9);
   state.current = Math.min(state.max, Math.max(state.min, deviceRatio));
     state.lastAdjust = typeof performance !== 'undefined' ? performance.now() : Date.now();
     updateRendererPixelRatio(renderer, deviceRatio, { width, height, force: true });
@@ -486,12 +545,16 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
           setLoading(false);
         },
         undefined,
-        () => {
+        (error) => {
+          console.error('Error cargando modelo FBX:', error);
           setLoading(false);
+          setError(true);
         }
       );
-    } catch {
+    } catch (error) {
+      console.error('Error en createBasicScene:', error);
       setLoading(false);
+      setError(true);
     }
   };
 
@@ -506,9 +569,19 @@ const RotatingModel: React.FC<RotatingModelProps> = ({ colors }) => {
         backgroundOrigin: "border-box"
       }}
     >
-      {loading && (
+      {loading && !error && (
         <div className="absolute z-10 flex items-center justify-center w-full h-full bg-transparent">
           <LoadingSpinner />
+        </div>
+      )}
+      {error && (
+        <div className="absolute z-10 flex items-center justify-center w-full h-full bg-transparent px-4">
+          <div className="text-center">
+            <div className="text-4xl mb-3">🎮</div>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
+              Modelo 3D no disponible en este dispositivo
+            </p>
+          </div>
         </div>
       )}
       <div 

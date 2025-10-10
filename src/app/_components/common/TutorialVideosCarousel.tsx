@@ -15,6 +15,7 @@ const TutorialVideosCarousel = () => {
   const t = translations[lang];
   const videos = t.tutorialVideos as readonly TutorialVideo[];
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [videoError, setVideoError] = useState(false);
 
   const handlePrevious = useCallback(() => {
     if (!videos?.length) return;
@@ -28,6 +29,7 @@ const TutorialVideosCarousel = () => {
 
   const handleSelect = useCallback((index: number) => {
     setCurrentIndex(index);
+    setVideoError(false); // Resetear error al cambiar de video
   }, []);
 
   if (!videos?.length) {
@@ -158,16 +160,38 @@ const TutorialVideosCarousel = () => {
           </div>
           <div className="order-1 w-full lg:order-2">
             <div className="relative overflow-hidden rounded-3xl border border-gray-300 dark:border-white/10 bg-gray-100 dark:bg-black/80 shadow-2xl">
-              <div className="aspect-video">
-                <iframe
-                  key={currentVideo.id}
-                  src={`https://www.youtube.com/embed/${currentVideo.id}?rel=0`}
-                  title={currentVideo.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  loading="lazy"
-                  className="h-full w-full"
-                />
+              <div className="aspect-video relative">
+                {videoError ? (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 dark:bg-gray-800 p-6 text-center">
+                    <div className="text-5xl mb-4">📹</div>
+                    <p className="text-gray-700 dark:text-gray-300 mb-2 font-medium">
+                      Video no disponible
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <a 
+                        href={`https://www.youtube.com/watch?v=${currentVideo.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        Ver en YouTube
+                      </a>
+                    </p>
+                  </div>
+                ) : (
+                  <iframe
+                    key={currentVideo.id}
+                    src={`https://www.youtube.com/embed/${currentVideo.id}?rel=0&modestbranding=1&playsinline=1`}
+                    title={currentVideo.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    loading="lazy"
+                    className="h-full w-full border-0"
+                    style={{ border: 0 }}
+                    sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"
+                    onError={() => setVideoError(true)}
+                  />
+                )}
               </div>
             </div>
           </div>
