@@ -91,12 +91,12 @@ const Pricing = () => {
   const isPricingValidAndNonZero = isPricingValid && parseFloat(totalPrice) > 0;
 
   return (
-    <section className="py-4 px-4 bg-white text-black">
-      <div className="bg-gray-100 p-4 rounded-lg shadow-lg max-w-2xl mx-auto text-center">
-        <h1 className="text-3xl font-semibold">
+    <section className="py-4 px-4 bg-white dark:bg-slate-900 text-black dark:text-white">
+      <div className="bg-gray-100 dark:bg-slate-800 p-4 rounded-lg shadow-lg max-w-2xl mx-auto text-center">
+        <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
           {t.buildYourTrackers}
         </h1>
-        <h3 className="text-sm font-semibold">{t.precisionWithTrackers}</h3>
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t.precisionWithTrackers}</h3>
         <br />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center items-center">

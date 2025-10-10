@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { translations } from "../i18n";
 import { useLang } from "../lang-context";
+import { ThemeToggle } from "./ThemeToggle";
 
 /**
  * Botón de navegación genérico
@@ -134,19 +135,28 @@ export function NavBar() {
   }
 
   const navContentClass = scrollpos > 10 || isMenuOpen ? "theme-surface" : "";
+  const isScrolledOrMenuOpen = scrollpos > 10 || isMenuOpen;
+  
+  // Cuando está sobre el hero (sin scroll), SIEMPRE usar texto blanco con sombra
+  // Cuando tiene scroll, usar el color del tema actual
   const textColorClass =
     scrollpos > 10 || isMenuOpen
       ? "theme-text-primary"
-      : "theme-text-on-accent text-white";
-  const isScrolledOrMenuOpen = scrollpos > 10 || isMenuOpen;
+      : "theme-text-on-accent text-white"; // Siempre blanco sobre el hero
+  
   const shouldInvertLogo = isDarkTheme || !isScrolledOrMenuOpen;
+  
+  // Siempre aplicar sombra al logo cuando está sobre el hero (sin scroll)
+  const shouldApplyShadow = !isScrolledOrMenuOpen;
 
   const logoFilterParts = [
     shouldInvertLogo ? "invert(1)" : "",
-    "drop-shadow(-1.2px -1.2px 0 rgba(0, 0, 0, 0.85))",
-    "drop-shadow(1.2px -1.2px 0 rgba(0, 0, 0, 0.85))",
-    "drop-shadow(-1.2px 1.2px 0 rgba(0, 0, 0, 0.85))",
-    "drop-shadow(1.2px 1.2px 0 rgba(0, 0, 0, 0.85))"
+    ...(shouldApplyShadow ? [
+      "drop-shadow(-1.2px -1.2px 0 rgba(0, 0, 0, 0.85))",
+      "drop-shadow(1.2px -1.2px 0 rgba(0, 0, 0, 0.85))",
+      "drop-shadow(-1.2px 1.2px 0 rgba(0, 0, 0, 0.85))",
+      "drop-shadow(1.2px 1.2px 0 rgba(0, 0, 0, 0.85))"
+    ] : [])
   ].filter(Boolean);
 
   const logoFilter = logoFilterParts.join(" ");
@@ -157,7 +167,7 @@ export function NavBar() {
   return (
     <nav
       id="header"
-      className={`fixed w-full z-[200] top-0 ${headerClass} transition-all duration-300 ease-in-out`}
+      className={`fixed w-full z-[200] top-0 ${headerClass} ${scrollpos > 10 || isMenuOpen ? 'header-scrolled' : ''} transition-all duration-300 ease-in-out`}
     >
       <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
         <div className="pl-4 flex items-center space-x-2">
@@ -318,8 +328,11 @@ export function NavBar() {
               label={t.firstConfig}
               className={textColorClass}
             />
-            <NavButton href="/faq" label={t.faq} className={textColorClass} />
+            {/* <NavButton href="/faq" label={t.faq} className={textColorClass} /> */}
             <LanguageSelector lang={lang} onChange={handleLangChange} />
+            <li className="ml-2">
+              <ThemeToggle />
+            </li>
           </ul>
         </div>
       </div>

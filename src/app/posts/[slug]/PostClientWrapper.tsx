@@ -19,12 +19,12 @@ export default function PostClientWrapper({ post, esContent, enContent }: PostCl
   const htmlContent = lang === 'es' ? esContent : enContent;
 
   return (
-    <main>
-      <section>
+    <main className="bg-white dark:bg-slate-900">
+      <section className="bg-white dark:bg-slate-900">
         <div className="pt-8">
           <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
             <div className="flex flex-col w-full justify-center items-start text-center md:text-left">
-              <h1 className="my-4 text-5xl font-bold leading-tight py-8 pb-16">
+              <h1 className="my-4 text-5xl font-bold leading-tight py-8 pb-16 text-gray-900 dark:text-white">
                 {currentContent.title}
               </h1>
             </div>

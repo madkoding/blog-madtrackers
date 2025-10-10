@@ -43,7 +43,7 @@ export function HeroPost({ isMaintenanceMode = false }: Readonly<Props & { isMai
   const currentSubtitle = subtitles[subtitleIndex] || "";
 
   return (
-    <section className="relative overflow-hidden min-h-screen md:min-h-0 flex items-center">
+    <section className="hero-post-section relative overflow-hidden min-h-screen md:min-h-0 flex items-center">
       <SkyDomeBackground />
       {/* Degradado inferior */}
       <div 

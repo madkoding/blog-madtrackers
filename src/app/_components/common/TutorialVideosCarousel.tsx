@@ -40,10 +40,10 @@ const TutorialVideosCarousel = () => {
   const formattedIndex = (safeIndex + 1).toString().padStart(2, "0");
 
   return (
-    <section className="bg-slate-950 py-16 sm:py-20">
+    <section className="bg-slate-100 dark:bg-slate-950 py-16 sm:py-20">
       <div className="container mx-auto px-4">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div className="order-2 flex flex-col gap-8 text-white lg:order-1">
+          <div className="order-2 flex flex-col gap-8 text-gray-900 dark:text-white lg:order-1">
             {/* <div>
               <span className="inline-block rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-blue-200 shadow-sm">
                 YouTube
@@ -56,21 +56,21 @@ const TutorialVideosCarousel = () => {
               </p>
             </div> */}
 
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-md md:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-blue-200">
+            <div className="rounded-3xl border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 p-6 shadow-2xl backdrop-blur-md md:p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-blue-600 dark:text-blue-200">
                 {formattedIndex} • {t.tutorialWatchNow}
               </p>
-              <h3 className="mt-4 text-2xl font-semibold text-white md:text-3xl">
+              <h3 className="mt-4 text-2xl font-semibold text-gray-900 dark:text-white md:text-3xl">
                 {currentVideo.title}
               </h3>
-              <p className="mt-4 text-base leading-relaxed text-gray-300 md:text-lg">
+              <p className="mt-4 text-base leading-relaxed text-gray-700 dark:text-gray-300 md:text-lg">
                 {currentVideo.description}
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <button
                   type="button"
                   onClick={handlePrevious}
-                  className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:border-blue-400/60 hover:bg-white/20"
+                  className="group inline-flex items-center gap-2 rounded-full border border-gray-300 dark:border-white/20 bg-gray-100 dark:bg-white/10 px-4 py-2 text-sm font-medium text-gray-900 dark:text-white transition hover:border-blue-400/60 hover:bg-gray-200 dark:hover:bg-white/20"
                   aria-label={t.tutorialPrevious}
                 >
                   <span>{t.tutorialPrevious}</span>
@@ -115,23 +115,23 @@ const TutorialVideosCarousel = () => {
                     type="button"
                     onClick={() => handleSelect(index)}
                     aria-pressed={isActive}
-                    className={`group flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
+                    className={`group flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-100 dark:focus-visible:ring-offset-slate-950 ${
                       isActive
-                        ? "border-blue-400 bg-white text-slate-900 shadow-lg"
-                        : "border-white/10 bg-white/5 text-white hover:border-blue-300/70 hover:bg-white/10"
+                        ? "border-blue-500 bg-blue-500 dark:bg-white dark:border-blue-400 text-white dark:text-slate-900 shadow-lg"
+                        : "border-gray-300 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white hover:border-blue-300/70 hover:bg-gray-100 dark:hover:bg-white/10"
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <span
-                        className={`${
-                          isActive ? "text-blue-600" : "text-blue-300"
-                        } text-sm font-semibold`}
+                        className={`text-sm font-semibold ${
+                          isActive ? "text-white dark:text-blue-600" : "text-blue-600 dark:text-blue-300"
+                        }`}
                       >
                         {(index + 1).toString().padStart(2, "0")}
                       </span>
                       <span
                         className={`text-sm font-medium md:text-base ${
-                          isActive ? "text-slate-900" : "text-white"
+                          isActive ? "text-white dark:text-slate-900" : "text-gray-900 dark:text-white"
                         }`}
                       >
                         {video.title}
@@ -145,8 +145,8 @@ const TutorialVideosCarousel = () => {
                       strokeWidth="1.5"
                       className={`h-5 w-5 transition-transform ${
                         isActive
-                          ? "text-blue-600"
-                          : "text-blue-200 group-hover:translate-x-1"
+                          ? "text-white dark:text-blue-600"
+                          : "text-blue-600 dark:text-blue-200 group-hover:translate-x-1"
                       }`}
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -157,7 +157,7 @@ const TutorialVideosCarousel = () => {
             </div>
           </div>
           <div className="order-1 w-full lg:order-2">
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/80 shadow-2xl">
+            <div className="relative overflow-hidden rounded-3xl border border-gray-300 dark:border-white/10 bg-gray-100 dark:bg-black/80 shadow-2xl">
               <div className="aspect-video">
                 <iframe
                   key={currentVideo.id}

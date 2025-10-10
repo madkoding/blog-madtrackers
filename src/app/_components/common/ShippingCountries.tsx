@@ -295,15 +295,15 @@ const ShippingCountries = () => {
   }, [currentDestination, countryPositions, countries]);
 
   return (
-    <div className="bg-gradient-to-b from-slate-900 to-slate-800 py-12">
+    <div className="bg-gradient-to-b from-slate-200 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-12">
       <div className="container mx-auto px-4">
-  <div className="w-full bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-2xl overflow-hidden">
+  <div className="w-full bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-2xl overflow-hidden">
           <div className="grid lg:grid-cols-2">
             <div className="p-8">
-              <h2 className="text-3xl font-bold text-white mb-2">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 {lang === 'es' ? 'Envíos Internacionales' : 'International Shipping'}
               </h2>
-              <p className="text-cyan-300 mb-6">
+              <p className="text-cyan-600 dark:text-cyan-300 mb-6">
                 {lang === 'es'
                   ? 'Desde Chile hacia el mundo via UPS'
                   : 'From Chile to the world via UPS'}
@@ -314,14 +314,14 @@ const ShippingCountries = () => {
                   <Link
                     key={`list-${country.code}`}
                     href={country.link}
-                    className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg bg-slate-900/40 hover:bg-slate-900/60 transition-colors sm:flex-row sm:justify-between sm:gap-3 sm:p-3"
+                    className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg bg-gray-100 dark:bg-slate-900/40 hover:bg-gray-200 dark:hover:bg-slate-900/60 transition-colors sm:flex-row sm:justify-between sm:gap-3 sm:p-3"
                   >
                     <div className="flex flex-col items-center gap-1 sm:flex-row sm:items-center sm:gap-3">
                       <span className="text-xl sm:text-2xl" aria-hidden>{country.flag}</span>
-                      <span className="hidden text-white font-semibold sm:inline">{country.name}</span>
+                      <span className="hidden text-gray-900 dark:text-white font-semibold sm:inline">{country.name}</span>
                     </div>
                     {country.code === 'cl' && (
-                      <span className="hidden text-xs font-semibold uppercase tracking-wide px-2 py-1 rounded-full bg-green-500/20 text-green-300 sm:inline-flex">
+                      <span className="hidden text-xs font-semibold uppercase tracking-wide px-2 py-1 rounded-full bg-green-500/20 text-green-700 dark:text-green-300 sm:inline-flex">
                         {lang === 'es' ? 'Gratis' : 'Free'}
                       </span>
                     )}
@@ -331,9 +331,9 @@ const ShippingCountries = () => {
             </div>
 
             <div className="p-6 lg:p-8">
-              <div className="relative w-full aspect-[1.71/1] bg-slate-900/50 rounded-lg overflow-hidden">
+              <div className="relative w-full aspect-[1.71/1] bg-slate-200 dark:bg-slate-900/50 rounded-lg overflow-hidden">
                 {/* Mapa SVG de fondo */}
-                <div className="absolute inset-0 opacity-40">
+                <div className="absolute inset-0 opacity-60 dark:opacity-40">
                   {mapMarkup ? (
                     <div
                       className="w-full h-full"
@@ -415,8 +415,8 @@ const ShippingCountries = () => {
 
                       {/* Tooltip */}
                       {hoveredCountry === country.name && (
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-4 py-2 bg-slate-800/95 rounded-lg whitespace-nowrap z-50">
-                          <div className="text-white font-semibold text-sm flex items-center gap-2">
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-4 py-2 bg-white/95 dark:bg-slate-800/95 rounded-lg whitespace-nowrap z-50 shadow-lg">
+                          <div className="text-gray-900 dark:text-white font-semibold text-sm flex items-center gap-2">
                             <span className="text-xl">{country.flag}</span>
                             {country.name}
                             {country.shipping === 'free' && (
@@ -427,7 +427,7 @@ const ShippingCountries = () => {
                           </div>
                           {/* Flecha del tooltip */}
                           <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
-                            <div className="border-[6px] border-transparent border-t-slate-800/95" />
+                            <div className="border-[6px] border-transparent border-t-white/95 dark:border-t-slate-800/95" />
                           </div>
                         </div>
                       )}
@@ -441,7 +441,7 @@ const ShippingCountries = () => {
                   className="absolute w-10 h-10 z-40 pointer-events-none will-change-transform"
                   style={{ left: "0%", top: "0%", transform: "translate(-50%, -50%)" }}
                 >
-                  <svg viewBox="0 0 24 24" className="w-full h-full text-cyan-300">
+                  <svg viewBox="0 0 24 24" className="w-full h-full text-cyan-600 dark:text-cyan-300">
                     <path
                       fill="currentColor"
                       d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"

@@ -82,16 +82,34 @@ export default function RootLayout({
               };
 
               try {
-                const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-                applyTheme(mediaQuery.matches);
+                // Primero verificar si hay una preferencia guardada
+                const savedTheme = localStorage.getItem("theme");
+                
+                if (savedTheme === "dark" || savedTheme === "light") {
+                  // Usar la preferencia guardada
+                  applyTheme(savedTheme === "dark");
+                } else {
+                  // Si no hay preferencia guardada, usar la preferencia del sistema
+                  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+                  applyTheme(mediaQuery.matches);
 
-                if (typeof mediaQuery.addEventListener === "function") {
-                  mediaQuery.addEventListener("change", (event) => applyTheme(event.matches));
-                } else if (typeof mediaQuery.addListener === "function") {
-                  mediaQuery.addListener((event) => applyTheme(event.matches));
+                  // Escuchar cambios en la preferencia del sistema solo si no hay tema guardado
+                  if (typeof mediaQuery.addEventListener === "function") {
+                    mediaQuery.addEventListener("change", (event) => {
+                      if (!localStorage.getItem("theme")) {
+                        applyTheme(event.matches);
+                      }
+                    });
+                  } else if (typeof mediaQuery.addListener === "function") {
+                    mediaQuery.addListener((event) => {
+                      if (!localStorage.getItem("theme")) {
+                        applyTheme(event.matches);
+                      }
+                    });
+                  }
                 }
               } catch (error) {
-                // Fallback seguro para navegadores sin soporte de matchMedia
+                // Fallback seguro para navegadores sin soporte de matchMedia o localStorage
                 root.dataset.theme = "dark";
                 root.classList.add("dark");
               }

@@ -90,7 +90,15 @@ p {
   color: var(--color-text-on-accent) !important;
 }
 
-.text-white, p, h1, h2, h3, h4, h5, h6 {
+/* Solo aplicar efectos de texto en modo oscuro */
+[data-theme="dark"] .text-white,
+[data-theme="dark"] p,
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
   color: #ffffff !important;
   -webkit-text-stroke: 1px rgba(0, 0, 0, 0.95);
   text-shadow:
@@ -102,8 +110,24 @@ p {
   paint-order: stroke fill;
 }
 
-#header .theme-text-primary,
-#header .theme-text-on-accent {
+/* En modo día, sin efectos de texto */
+[data-theme="light"] .text-white,
+[data-theme="light"] p,
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: var(--color-text-primary) !important;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  paint-order: normal;
+}
+
+/* Efectos para el header solo en modo oscuro */
+[data-theme="dark"] #header .theme-text-primary,
+[data-theme="dark"] #header .theme-text-on-accent {
   -webkit-text-stroke: 1px rgba(0, 0, 0, 0.9);
   text-shadow:
     -2px -2px 2px rgba(0, 0, 0, 0.9),
@@ -114,15 +138,228 @@ p {
   paint-order: stroke fill;
 }
 
-#header .theme-text-primary a,
-#header .theme-text-primary strong,
-#header .theme-text-primary span,
-#header .theme-text-on-accent a,
-#header .theme-text-on-accent strong,
-#header .theme-text-on-accent span {
+/* En modo día, header sin efectos SOLO cuando tiene scroll */
+[data-theme="light"] #header.header-scrolled .theme-text-primary,
+[data-theme="light"] #header.header-scrolled .theme-text-on-accent {
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  paint-order: normal;
+}
+
+/* Cuando el header está sobre el hero (sin scroll), SIEMPRE usar efectos de modo oscuro */
+#header:not(.header-scrolled) .theme-text-primary,
+#header:not(.header-scrolled) .theme-text-on-accent,
+#header:not(.header-scrolled) .text-white {
+  color: #ffffff !important;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.9);
+  text-shadow:
+    -2px -2px 2px rgba(0, 0, 0, 0.9),
+    2px -2px 2px rgba(0, 0, 0, 0.9),
+    -2px 2px 2px rgba(0, 0, 0, 0.9),
+    2px 2px 2px rgba(0, 0, 0, 0.9),
+    0 0 8px rgba(0, 0, 0, 0.75);
+  paint-order: stroke fill;
+}
+
+/* Heredar efectos del padre solo en modo oscuro */
+[data-theme="dark"] #header .theme-text-primary a,
+[data-theme="dark"] #header .theme-text-primary strong,
+[data-theme="dark"] #header .theme-text-primary span,
+[data-theme="dark"] #header .theme-text-on-accent a,
+[data-theme="dark"] #header .theme-text-on-accent strong,
+[data-theme="dark"] #header .theme-text-on-accent span {
   -webkit-text-stroke: inherit;
   text-shadow: inherit;
   paint-order: inherit;
+}
+
+/* En modo día con scroll, sin efectos */
+[data-theme="light"] #header.header-scrolled .theme-text-primary a,
+[data-theme="light"] #header.header-scrolled .theme-text-primary strong,
+[data-theme="light"] #header.header-scrolled .theme-text-primary span,
+[data-theme="light"] #header.header-scrolled .theme-text-on-accent a,
+[data-theme="light"] #header.header-scrolled .theme-text-on-accent strong,
+[data-theme="light"] #header.header-scrolled .theme-text-on-accent span {
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  paint-order: normal;
+}
+
+/* Cuando está sobre el hero, heredar los efectos siempre */
+#header:not(.header-scrolled) .theme-text-primary a,
+#header:not(.header-scrolled) .theme-text-primary strong,
+#header:not(.header-scrolled) .theme-text-primary span,
+#header:not(.header-scrolled) .theme-text-on-accent a,
+#header:not(.header-scrolled) .theme-text-on-accent strong,
+#header:not(.header-scrolled) .theme-text-on-accent span,
+#header:not(.header-scrolled) .text-white a,
+#header:not(.header-scrolled) .text-white strong,
+#header:not(.header-scrolled) .text-white span {
+  -webkit-text-stroke: inherit;
+  text-shadow: inherit;
+  paint-order: inherit;
+}
+
+/* ============================================
+   HeroPost - SIEMPRE en modo oscuro
+   ============================================ */
+
+/* Forzar colores de modo oscuro en el HeroPost independientemente del tema */
+.hero-post-section .theme-text-primary,
+.hero-post-section .theme-text-secondary,
+.hero-post-section .theme-text-on-accent,
+.hero-post-section p,
+.hero-post-section h1,
+.hero-post-section h2,
+.hero-post-section h3 {
+  color: #ffffff !important;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.95) !important;
+  text-shadow:
+    -2px -2px 2px rgba(0, 0, 0, 0.95),
+    2px -2px 2px rgba(0, 0, 0, 0.95),
+    -2px 2px 2px rgba(0, 0, 0, 0.95),
+    2px 2px 2px rgba(0, 0, 0, 0.95),
+    0 0 8px rgba(0, 0, 0, 0.8) !important;
+  paint-order: stroke fill !important;
+}
+
+/* Asegurar que los elementos hijos también tengan el estilo correcto */
+.hero-post-section .theme-text-primary *,
+.hero-post-section .theme-text-secondary *,
+.hero-post-section .theme-text-on-accent *,
+.hero-post-section p *,
+.hero-post-section h1 *,
+.hero-post-section h2 *,
+.hero-post-section h3 * {
+  -webkit-text-stroke: inherit !important;
+  text-shadow: inherit !important;
+  paint-order: inherit !important;
+}
+
+/* Botón de acción del HeroPost - SIEMPRE con estilo de modo oscuro */
+.hero-post-section a.bg-white {
+  background-color: #1f2937 !important;
+  color: #ffffff !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  paint-order: normal !important;
+}
+
+.hero-post-section a.bg-white:hover {
+  background-color: #111827 !important;
+}
+
+/* ============================================
+   Botones - Modo día con fondos oscuros
+   ============================================ */
+
+/* En modo día, cualquier elemento con fondo azul, índigo, slate oscuro, etc. debe tener texto blanco */
+[data-theme="light"] .bg-blue-500,
+[data-theme="light"] .bg-blue-600,
+[data-theme="light"] .bg-blue-700,
+[data-theme="light"] .bg-indigo-500,
+[data-theme="light"] .bg-indigo-600,
+[data-theme="light"] .bg-slate-700,
+[data-theme="light"] .bg-slate-800,
+[data-theme="light"] .bg-slate-900,
+[data-theme="light"] .bg-gray-700,
+[data-theme="light"] .bg-gray-800,
+[data-theme="light"] .bg-gray-900 {
+  color: #ffffff !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  paint-order: normal !important;
+}
+
+/* Asegurar que los elementos hijos también tengan texto blanco */
+[data-theme="light"] .bg-blue-500 *,
+[data-theme="light"] .bg-blue-600 *,
+[data-theme="light"] .bg-blue-700 *,
+[data-theme="light"] .bg-indigo-500 *,
+[data-theme="light"] .bg-indigo-600 *,
+[data-theme="light"] .bg-slate-700 *,
+[data-theme="light"] .bg-slate-800 *,
+[data-theme="light"] .bg-slate-900 *,
+[data-theme="light"] .bg-gray-700 *,
+[data-theme="light"] .bg-gray-800 *,
+[data-theme="light"] .bg-gray-900 * {
+  color: #ffffff !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  paint-order: normal !important;
+}
+
+/* Elementos con clase text-white en modo día dentro de fondos oscuros */
+[data-theme="light"] button .text-white,
+[data-theme="light"] a .text-white,
+[data-theme="light"] [class*="bg-blue"] .text-white,
+[data-theme="light"] [class*="bg-indigo"] .text-white,
+[data-theme="light"] [class*="bg-slate"] .text-white,
+[data-theme="light"] [class*="bg-gray-7"] .text-white,
+[data-theme="light"] [class*="bg-gray-8"] .text-white,
+[data-theme="light"] [class*="bg-gray-9"] .text-white {
+  color: #ffffff !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  paint-order: normal !important;
+}
+
+/* ============================================
+   Sección de Pricing - Adaptación de colores
+   ============================================ */
+
+/* En modo oscuro, convertir textos grises oscuros a claros */
+[data-theme="dark"] section .text-gray-900,
+[data-theme="dark"] section .text-gray-800,
+[data-theme="dark"] section .text-gray-700,
+[data-theme="dark"] section .text-gray-600,
+[data-theme="dark"] section .text-black {
+  color: #e5e7eb !important;
+}
+
+[data-theme="dark"] section .text-gray-500 {
+  color: #9ca3af !important;
+}
+
+[data-theme="dark"] section .text-gray-400 {
+  color: #6b7280 !important;
+}
+
+/* Fondos grises en modo oscuro */
+[data-theme="dark"] section .bg-gray-100 {
+  background-color: #1e293b !important;
+}
+
+[data-theme="dark"] section .bg-white {
+  background-color: #0f172a !important;
+}
+
+/* Bordes en modo oscuro */
+[data-theme="dark"] section .border-gray-300,
+[data-theme="dark"] section .border-gray-200 {
+  border-color: #334155 !important;
+}
+
+/* ============================================
+   Posts - Sin efectos de texto
+   ============================================ */
+
+/* En posts, eliminar efectos de text-stroke en ambos modos */
+article p,
+article h1,
+article h2,
+article h3,
+article h4,
+article h5,
+article h6,
+article li,
+article td,
+article th,
+article blockquote,
+article a {
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  paint-order: normal !important;
 }
 
 [data-theme="dark"] .theme-invert-dark {
@@ -135,12 +372,22 @@ p {
   color: #000000 !important;
 }
 
-.text-white a,
-.text-white strong,
-.text-white span {
+/* Heredar efectos solo en modo oscuro */
+[data-theme="dark"] .text-white a,
+[data-theme="dark"] .text-white strong,
+[data-theme="dark"] .text-white span {
   -webkit-text-stroke: inherit;
   text-shadow: inherit;
   paint-order: stroke fill;
+}
+
+/* En modo día, sin efectos */
+[data-theme="light"] .text-white a,
+[data-theme="light"] .text-white strong,
+[data-theme="light"] .text-white span {
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  paint-order: normal;
 }
 
 .theme-surface {
