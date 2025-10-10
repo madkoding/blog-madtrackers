@@ -1,7 +1,6 @@
 "use client";
 
 import { useLang } from "../../lang-context";
-import { useState } from "react";
 import Link from "next/link";
 
 interface Country {
@@ -14,7 +13,6 @@ interface Country {
 
 const ShippingCountries = () => {
   const { lang } = useLang();
-  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
 
   // Países simplificados - sin animaciones complejas
   const countries: Country[] = [
@@ -51,8 +49,6 @@ const ShippingCountries = () => {
                 key={country.code}
                 href={country.link}
                 className="group relative flex flex-col items-center justify-center gap-2 p-4 rounded-lg bg-gray-100 dark:bg-slate-900/40 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-cyan-400"
-                onMouseEnter={() => setHoveredCountry(country.name)}
-                onMouseLeave={() => setHoveredCountry(null)}
               >
                 <span className="text-4xl" aria-label={country.name}>
                   {country.flag}
