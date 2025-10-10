@@ -9,7 +9,6 @@ import { exo2, faustina } from "./fonts";
 import ResourceOptimizer from "./_components/common/ResourceOptimizer";
 import CriticalCSS from "./_components/common/CriticalCSS";
 import ConditionalAnalytics from "./_components/common/ConditionalAnalytics";
-import CountrySimulator from "./_components/dev/CountrySimulator";
 import GlobalProductStructuredData from "./_components/common/GlobalProductStructuredData";
 import RecaptchaProvider from "./_components/RecaptchaProvider";
 
@@ -193,7 +192,6 @@ export default function RootLayout({
         <ConditionalAnalytics />
         <RecaptchaProvider>
           <LangProvider>
-            <CountrySimulator />
             <NavBar />
             <div className="min-h-screen">{children}</div>
             <Footer />

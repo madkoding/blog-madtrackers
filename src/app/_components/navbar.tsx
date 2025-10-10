@@ -7,6 +7,7 @@ import Link from "next/link";
 import { translations } from "../i18n";
 import { useLang } from "../lang-context";
 import { ThemeToggle } from "./ThemeToggle";
+import CountrySimulator from "./dev/CountrySimulator";
 
 /**
  * Botón de navegación genérico
@@ -333,6 +334,7 @@ export function NavBar() {
             <li className="ml-2">
               <ThemeToggle />
             </li>
+            <CountrySimulator />
           </ul>
         </div>
       </div>
